@@ -1,128 +1,155 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap as useLeafletMap } from 'react-leaflet';
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap as useLeafletMap,
+} from 'react-leaflet';
 import L from 'leaflet';
 import { useMap } from '@/providers/MapContext';
 import { useFilter } from '@/providers/FilterContext';
 import { Location, Category } from '@/types/location';
-import { MAP_CONFIG } from '@/utils/constants';
+import { MAP_CONFIG, AKHAND_BHARAT_BOUNDS } from '@/utils/constants';
 import 'leaflet/dist/leaflet.css';
 
-const createIcon = (emoji: string, isSelected: boolean = false) => {
-  return L.divIcon({
-    html: `
-      <div style="
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        filter: ${isSelected ? 'drop-shadow(0 0 6px #D4AF37)' : 'none'};
-        transition: filter 0.2s ease;
-      ">
-        ${emoji}
-      </div>
-    `,
+// ─── Marker Icons (pre-cached) ──────────────────────────────────────────────
+
+const createIcon = (emoji: string, isSelected = false) =>
+  L.divIcon({
+    html: `<div style="
+      font-size:24px;display:flex;align-items:center;justify-content:center;
+      filter:${isSelected ? 'drop-shadow(0 0 6px #D4AF37)' : 'none'};
+      transition:filter .2s ease;
+    ">${emoji}</div>`,
     className: 'custom-marker',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   });
+
+const ICONS = {
+  mountain: { normal: createIcon('🏔️'), selected: createIcon('🏔️', true) },
+  river:    { normal: createIcon('🌊'), selected: createIcon('🌊', true) },
+  temple:   { normal: createIcon('🛕'), selected: createIcon('🛕', true) },
 };
 
-const getIcon = (category: Category, isSelected: boolean) => {
-  if (isSelected) {
-    switch (category) {
-      case 'mountain': return createIcon('🏔️', true);
-      case 'river': return createIcon('🌊', true);
-      case 'temple': return createIcon('🛕', true);
-    }
-  }
-  switch (category) {
-    case 'mountain': return createIcon('🏔️');
-    case 'river': return createIcon('🌊');
-    case 'temple': return createIcon('🛕');
-  }
-};
+const getIcon = (cat: Category, sel: boolean) =>
+  sel ? ICONS[cat].selected : ICONS[cat].normal;
+
+// ─── Marker Layer ───────────────────────────────────────────────────────────
 
 interface MarkerLayerProps {
   locations: Location[];
-  onMarkerClick: (location: Location) => void;
+  onMarkerClick: (loc: Location) => void;
 }
 
 function MarkerLayer({ locations, onMarkerClick }: MarkerLayerProps) {
   const { selectedLocation } = useMap();
   const { activeFilters } = useFilter();
 
-  const filteredLocations = locations.filter(loc => activeFilters[loc.category]);
-
   return (
     <>
-      {filteredLocations.map(location => {
-        const isSelected = selectedLocation?.id === location.id;
-        const icon = getIcon(location.category, isSelected);
-
-        return (
-          <Marker
-            key={location.id}
-            position={[location.latitude, location.longitude]}
-            icon={icon}
-            eventHandlers={{
-              click: () => onMarkerClick(location),
-            }}
-          >
-            <Popup>
-              <div className="min-w-[200px]">
-                <h3 className="font-semibold text-base mb-1">{location.name}</h3>
-                {location.nameHindi && (
-                  <p className="text-sm opacity-80 mb-2">{location.nameHindi}</p>
-                )}
-                <button
-                  onClick={() => onMarkerClick(location)}
-                  className="text-xs px-3 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 transition-colors"
-                >
-                  View Details
-                </button>
-              </div>
-            </Popup>
-          </Marker>
-        );
-      })}
+      {locations
+        .filter((loc) => activeFilters[loc.category])
+        .map((loc) => {
+          const sel = selectedLocation?.id === loc.id;
+          return (
+            <Marker
+              key={loc.id}
+              position={[loc.latitude, loc.longitude]}
+              icon={getIcon(loc.category, sel)}
+              eventHandlers={{ click: () => onMarkerClick(loc) }}
+            >
+              <Popup>
+                <div className="min-w-[200px]">
+                  <h3 className="font-semibold text-base mb-1">{loc.name}</h3>
+                  {loc.nameHindi && (
+                    <p className="text-sm opacity-80 mb-2">{loc.nameHindi}</p>
+                  )}
+                  <button
+                    onClick={() => onMarkerClick(loc)}
+                    className="text-xs px-3 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 transition-colors"
+                  >
+                    View Details
+                  </button>
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
     </>
   );
 }
 
-interface MapViewProps {
-  center: [number, number];
-  zoom: number;
-}
+// ─── Viewport Controller ─────────────────────────────────────────────────────
+// Runs inside MapContainer. Sequence:
+//   1. invalidateSize  — force correct container measurement
+//   2. fitBounds        — fill viewport with Akhand Bharat bounds
+//   3. setMaxBounds     — hard-lock panning
 
-function MapView({ center, zoom }: MapViewProps) {
+function MapViewController() {
   const map = useLeafletMap();
+  const didInit = useRef(false);
+
+  const applyViewport = () => {
+    // Step 9: Force container size recalculation
+    map.invalidateSize({ animate: false });
+
+    // Step 3: Exact bounds fit — zero padding
+    map.fitBounds(AKHAND_BHARAT_BOUNDS, {
+      padding: [0, 0],
+      animate: false,
+    });
+
+    // Step 4: Hard bounds lock
+    map.setMaxBounds(AKHAND_BHARAT_BOUNDS);
+    map.options.maxBoundsViscosity = MAP_CONFIG.MAX_BOUNDS_VISCOSITY;
+  };
 
   useEffect(() => {
-    map.setView(center, zoom);
-  }, [map, center, zoom]);
+    if (didInit.current) return;
+    didInit.current = true;
+
+    // Step 8: Zoom range
+    map.options.minZoom = MAP_CONFIG.MIN_ZOOM;
+    map.options.maxZoom = MAP_CONFIG.MAX_ZOOM;
+
+    applyViewport();
+
+    // Second pass — catches CSS paint race
+    requestAnimationFrame(() => applyViewport());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map]);
+
+  // Resize handler — keep bounds fitted after viewport changes
+  useEffect(() => {
+    const onResize = () => applyViewport();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map]);
 
   return null;
 }
 
+// ─── CulturalMap ─────────────────────────────────────────────────────────────
+
 interface CulturalMapProps {
   locations: Location[];
-  onMarkerClick: (location: Location) => void;
+  onMarkerClick: (loc: Location) => void;
 }
 
 export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
-  const [isMounted, setIsMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
+  if (!mounted) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-background">
-        <div className="text-textSecondary">Loading map...</div>
+      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1a1a1a' }}>
+        <span style={{ color: '#A0A0A0' }}>Loading map…</span>
       </div>
     );
   }
@@ -130,17 +157,26 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
   return (
     <MapContainer
       center={MAP_CONFIG.CENTER}
-      zoom={MAP_CONFIG.INITIAL_ZOOM}
+      zoom={MAP_CONFIG.MIN_ZOOM}
       minZoom={MAP_CONFIG.MIN_ZOOM}
       maxZoom={MAP_CONFIG.MAX_ZOOM}
-      className="w-full h-full"
+      zoomSnap={MAP_CONFIG.ZOOM_SNAP}       /* Step 7 */
+      zoomDelta={MAP_CONFIG.ZOOM_DELTA}     /* Step 7 */
+      maxBounds={AKHAND_BHARAT_BOUNDS}      /* Step 4 */
+      maxBoundsViscosity={MAP_CONFIG.MAX_BOUNDS_VISCOSITY}
+      worldCopyJump={MAP_CONFIG.WORLD_COPY_JUMP}  /* Step 6 */
       zoomControl={true}
+      scrollWheelZoom={true}
+      style={{ width: '100%', height: '100%' }}   /* Step 1 */
     >
       <TileLayer
         attribution={MAP_CONFIG.TILE_ATTRIBUTION}
         url={MAP_CONFIG.TILE_URL}
+        noWrap={MAP_CONFIG.TILE_NO_WRAP}
+        bounds={AKHAND_BHARAT_BOUNDS}
+        keepBuffer={MAP_CONFIG.TILE_KEEP_BUFFER}
       />
-      <MapView center={MAP_CONFIG.CENTER} zoom={MAP_CONFIG.INITIAL_ZOOM} />
+      <MapViewController />
       <MarkerLayer locations={locations} onMarkerClick={onMarkerClick} />
     </MapContainer>
   );

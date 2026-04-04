@@ -8,14 +8,26 @@ import { Sidebar } from '@/components/Sidebar/Sidebar';
 import { FilterBar } from '@/components/FilterControls/FilterBar';
 import { Location } from '@/types/location';
 
-// Dynamic import to avoid SSR issues with Leaflet
+// Dynamic import — Leaflet requires browser APIs
 const CulturalMap = dynamic(
-  () => import('@/components/Map/Map').then(mod => ({ default: mod.CulturalMap })),
+  () =>
+    import('@/components/Map/Map').then((mod) => ({
+      default: mod.CulturalMap,
+    })),
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full flex items-center justify-center bg-background">
-        <div className="text-textSecondary">Loading map...</div>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#1a1a1a',
+        }}
+      >
+        <div style={{ color: '#A0A0A0' }}>Loading map…</div>
       </div>
     ),
   }
@@ -31,9 +43,9 @@ function MapContent() {
     async function loadData() {
       try {
         const [mountains, rivers, temples] = await Promise.all([
-          fetch('/data/mountains.json').then(r => r.json()),
-          fetch('/data/rivers.json').then(r => r.json()),
-          fetch('/data/temples.json').then(r => r.json()),
+          fetch('/data/mountains.json').then((r) => r.json()),
+          fetch('/data/rivers.json').then((r) => r.json()),
+          fetch('/data/temples.json').then((r) => r.json()),
         ]);
         setLocations([...mountains, ...rivers, ...temples]);
       } catch (err) {
@@ -46,58 +58,135 @@ function MapContent() {
     loadData();
   }, []);
 
-  const handleMarkerClick = useCallback((location: Location) => {
-    openSidebar(location);
-  }, [openSidebar]);
+  const handleMarkerClick = useCallback(
+    (location: Location) => {
+      openSidebar(location);
+    },
+    [openSidebar]
+  );
 
   if (error) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-background">
-        <div className="text-red-400">{error}</div>
+      <div
+        style={{
+          width: '100%',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#1a1a1a',
+          color: '#ef4444',
+        }}
+      >
+        {error}
       </div>
     );
   }
 
   return (
-    <div className="w-full h-screen flex flex-col bg-background">
-      {/* Header */}
-      <header className="flex-shrink-0 bg-surface border-b border-border px-6 py-4">
-        <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
+    <div
+      id="map-shell"
+      style={{
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#1a1a1a',
+        overflow: 'hidden',
+      }}
+    >
+      {/* ── Header ─────────────────────────────────────────────────────── */}
+      <header
+        style={{
+          flexShrink: 0,
+          backgroundColor: '#252525',
+          borderBottom: '1px solid #333333',
+          padding: '12px 20px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+          }}
+        >
           <div>
-            <h1 className="font-cinzel text-2xl font-semibold text-textPrimary">
+            <h1
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontSize: '1.5rem',
+                fontWeight: 600,
+                color: '#F5F5F5',
+                margin: 0,
+                lineHeight: 1.3,
+              }}
+            >
               अखंड भारत दर्शन
             </h1>
-            <p className="text-textSecondary text-sm mt-0.5">
+            <p
+              style={{
+                color: '#A0A0A0',
+                fontSize: '0.8rem',
+                margin: '2px 0 0 0',
+              }}
+            >
               Akhand Bharat Cultural Map
             </p>
           </div>
-          <div className="text-right">
-            <span className="text-textSecondary text-xs">
+          <div>
+            <span style={{ color: '#A0A0A0', fontSize: '0.75rem' }}>
               {locations.length} sacred sites
             </span>
           </div>
         </div>
       </header>
 
-      {/* Filter Controls */}
-      <div className="flex-shrink-0 p-4">
-        <div className="max-w-screen-2xl mx-auto">
-          <FilterBar />
-        </div>
+      {/* ── Filter Controls ────────────────────────────────────────────── */}
+      <div
+        style={{
+          flexShrink: 0,
+          padding: '8px 20px',
+        }}
+      >
+        <FilterBar />
       </div>
 
-      {/* Map Area */}
-      <div className="flex-1 relative min-h-0">
+      {/* ── Map Viewport ───────────────────────────────────────────────── */}
+      {/* flex: 1 + minHeight: 0 ensures the map fills ALL remaining space */}
+      <div
+        id="map-viewport"
+        style={{
+          flex: 1,
+          minHeight: 0,
+          position: 'relative',
+          width: '100%',
+        }}
+      >
         {isLoading ? (
-          <div className="w-full h-full flex items-center justify-center bg-background">
-            <div className="text-textSecondary">Loading locations...</div>
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#1a1a1a',
+              color: '#A0A0A0',
+            }}
+          >
+            Loading locations…
           </div>
         ) : (
-          <CulturalMap locations={locations} onMarkerClick={handleMarkerClick} />
+          <CulturalMap
+            locations={locations}
+            onMarkerClick={handleMarkerClick}
+          />
         )}
       </div>
 
-      {/* Sidebar */}
+      {/* ── Sidebar (overlay) ──────────────────────────────────────────── */}
       <Sidebar />
     </div>
   );

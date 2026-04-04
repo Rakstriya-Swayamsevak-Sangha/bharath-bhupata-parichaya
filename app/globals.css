@@ -49,6 +49,23 @@ html, body {
 .leaflet-container {
   background: var(--color-background) !important;
   font-family: 'Source Sans 3', system-ui, sans-serif !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Clip tile rendering to viewport bounds — prevents edge bleed */
+.leaflet-tile-pane {
+  will-change: transform;
+}
+
+/* Remove default Leaflet icon chrome from custom emoji markers */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .leaflet-popup-content-wrapper {

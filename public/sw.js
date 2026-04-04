@@ -49,14 +49,12 @@ self.addEventListener('fetch', (event) => {
             return cachedResponse;
           }
           return fetch(request).then((networkResponse) => {
-            // Only cache tiles at reasonable zoom levels
             const zoom = parseInt(url.pathname.split('/')[1]);
             if (zoom >= 4 && zoom <= 12) {
               cache.put(request, networkResponse.clone());
             }
             return networkResponse;
           }).catch(() => {
-            // Return a placeholder for failed tile requests
             return new Response('', { status: 503 });
           });
         });
@@ -72,7 +70,6 @@ self.addEventListener('fetch', (event) => {
         return cachedResponse;
       }
       return fetch(request).then((networkResponse) => {
-        // Cache successful responses
         if (networkResponse.ok) {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -81,7 +78,6 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(() => {
-        // For navigation requests, return the cached index
         if (request.mode === 'navigate') {
           return caches.match('/');
         }

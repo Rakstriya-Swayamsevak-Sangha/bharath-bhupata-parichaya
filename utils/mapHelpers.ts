@@ -1,10 +1,11 @@
 import { Location } from '@/types/location';
 
 /**
- * Validates if coordinates are within reasonable bounds for the Indian subcontinent
+ * Validates if coordinates are within Akhand Bharat region bounds
+ * Southwest: [4.5, 58.0], Northeast: [37.5, 97.5]
  */
 export function isValidCoordinate(lat: number, lng: number): boolean {
-  return lat >= 6 && lat <= 36 && lng >= 68 && lng <= 98;
+  return lat >= 4.5 && lat <= 37.5 && lng >= 58.0 && lng <= 97.5;
 }
 
 /**
