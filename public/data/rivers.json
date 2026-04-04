@@ -1,0 +1,92 @@
+[
+  {
+    "id": "rv-001",
+    "name": "Ganga",
+    "nameHindi": "गंगा",
+    "category": "river",
+    "latitude": 25.3176,
+    "longitude": 83.0089,
+    "description": "The holiest river in Hinduism, flowing from the Gangotri Glacier in the Himalayas to the Bay of Bengal. Spans 2,525 km across the northern Indian subcontinent.",
+    "historicalSignificance": "Considered the mother goddess Ganga, purveyor of moksha (salvation). Cities like Varanasi, Allahabad, and Haridwar are sacred pilgrimage sites along its banks.",
+    "metadata": {
+      "length": "2,525 km",
+      "source": "Gangotri Glacier, Uttarakhand",
+      "delta": "Sundarbans, West Bengal"
+    }
+  },
+  {
+    "id": "rv-002",
+    "name": "Yamuna",
+    "nameHindi": "यमुना",
+    "category": "river",
+    "latitude": 25.5921,
+    "longitude": 79.5526,
+    "description": "The largest tributary of the Ganga, flowing parallel to the Ganga for 1,376 km. Arises from the Yamunotri Glacier in the Himalayas.",
+    "historicalSignificance": "Considered the daughter of the sun god Surya and the goddess Yamuna. The Yamuna-A Ganga sangam is a major pilgrimage site.",
+    "metadata": {
+      "length": "1,376 km",
+      "source": "Yamunotri Glacier, Uttarakhand",
+      "major_cities": "Mathura, Vrindavan, Allahabad"
+    }
+  },
+  {
+    "id": "rv-003",
+    "name": "Saraswati",
+    "nameHindi": "सरस्वती",
+    "category": "river",
+    "latitude": 29.3167,
+    "longitude": 77.1500,
+    "description": "The sacred river described in the Vedas as a flowing river of light. Now believed to be the Ghaggar-Hakra river that dried up around 2600 BCE.",
+    "historicalSignificance": "Mentioned extensively in the Rig Veda as a divine river flowing from the mountains to the sea. The Indus Valley civilization flourished along its banks.",
+    "metadata": {
+      "length": "~1,600 km (ancient)",
+      "source": "Adi Badri, Haryana (claimed)",
+      "status": "Mostly dried up"
+    }
+  },
+  {
+    "id": "rv-004",
+    "name": "Narmada",
+    "nameHindi": "नर्मदा",
+    "category": "river",
+    "latitude": 22.0106,
+    "longitude": 73.0333,
+    "description": "The fifth longest river in the Indian subcontinent at 1,312 km, flowing from the Amarkantak Plateau to the Arabian Sea. One of the seven sacred rivers in Hinduism.",
+    "historicalSignificance": "Called the Rewa in ancient texts. The Narmada Parikrama pilgrimage circuit is one of the longest walking pilgrimages at over 2,600 km.",
+    "metadata": {
+      "length": "1,312 km",
+      "source": "Amarkantak Plateau, Madhya Pradesh",
+      "confluence": "Arabian Sea, Gujarat"
+    }
+  },
+  {
+    "id": "rv-005",
+    "name": "Brahmaputra",
+    "nameHindi": "ब्रह्मपुत्र",
+    "category": "river",
+    "latitude": 26.7833,
+    "longitude": 93.2500,
+    "description": "One of the major rivers of Asia, originating in the Tibetan Himalayas and flowing through India and Bangladesh for 3,969 km to the Bay of Bengal.",
+    "historicalSignificance": "Known as the son of Brahma, it is unique among major rivers as it is masculine in gender in Hindu tradition. The Majuli island in Assam is the largest river island.",
+    "metadata": {
+      "length": "3,969 km",
+      "source": "Himalaya (Yarlung Tsangpo)",
+      "delta": "Ganges-Brahmaputra Delta, Bangladesh"
+    }
+  },
+  {
+    "id": "rv-006",
+    "name": "Kaveri",
+    "nameHindi": "कावेरी",
+    "category": "river",
+    "latitude": 12.5080,
+    "longitude": 77.0480,
+    "description": "A sacred river of South India, flowing from the Talacauvery Hills in Karnataka to the Bay of Bengal in Tamil Nadu. Spans 802 km through the Deccan Plateau.",
+    "historicalSignificance": "Known as the Ganga of the South, it is considered a divine river in Tamil Nadu. The Kumbakonam temples and the Rameshwaram pilgrimage routes follow its course.",
+    "metadata": {
+      "length": "802 km",
+      "source": "Talacauvery Hills, Karnataka",
+      "delta": "Poompuhar, Tamil Nadu"
+    }
+  }
+]

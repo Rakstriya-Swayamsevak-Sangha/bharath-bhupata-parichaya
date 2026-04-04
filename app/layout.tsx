@@ -1,0 +1,23 @@
+import type { Metadata } from 'next';
+import './globals.css';
+
+export const metadata: Metadata = {
+  title: 'Akhand Bharat Darshana | अखंड भारत दर्शन',
+  description: 'Interactive cultural map of the Indian subcontinent featuring mountains, rivers, and sacred temples.',
+  manifest: '/manifest.json',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      </head>
+      <body className="antialiased">{children}</body>
+    </html>
+  );
+}

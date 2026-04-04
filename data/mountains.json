@@ -1,0 +1,92 @@
+[
+  {
+    "id": "mt-001",
+    "name": "Mount Kailash",
+    "nameHindi": "माउंट कैलाश",
+    "category": "mountain",
+    "latitude": 31.0672,
+    "longitude": 81.3115,
+    "description": "A 6,638 meters sacred mountain in the Kailash Range near Lake Manasarovar. Considered the abode of Lord Shiva and the axis of the world in Hindu, Buddhist, Jain, and Bon traditions.",
+    "historicalSignificance": "Pilgrimage site for over a millennium, circumambulated by devotees despite its unclimbed status.",
+    "metadata": {
+      "elevation": "6,638 m",
+      "range": "Kailash Range",
+      "location": "Tibet Autonomous Region, China"
+    }
+  },
+  {
+    "id": "mt-002",
+    "name": "Nanda Devi",
+    "nameHindi": "नंदा देवी",
+    "category": "mountain",
+    "latitude": 30.3782,
+    "longitude": 79.9726,
+    "description": "The second-highest mountain in India at 7,816 meters. Nanda Devi is surrounded by spectacular glaciers and is considered the patron goddess of the Uttarakhand Himalayas.",
+    "historicalSignificance": "Formerly climbed in 1936, the summit was closed to expeditions after 1983 due to religious sensitivity.",
+    "metadata": {
+      "elevation": "7,816 m",
+      "range": "Garhwal Himalayas",
+      "location": "Uttarakhand, India"
+    }
+  },
+  {
+    "id": "mt-003",
+    "name": "Kamet",
+    "nameHindi": "कामेत",
+    "category": "mountain",
+    "latitude": 30.9169,
+    "longitude": 79.5953,
+    "description": "The second-highest mountain in the Garhwal Himalayas at 7,756 meters. It rises dramatically above the Mana Pass and has historically been important in trade routes.",
+    "historicalSignificance": "First climbed in 1931 by a British expedition, opening the door to high-altitude climbing in the region.",
+    "metadata": {
+      "elevation": "7,756 m",
+      "range": "Garhwal Himalayas",
+      "location": "Uttarakhand, India"
+    }
+  },
+  {
+    "id": "mt-004",
+    "name": "Saltoro Kangri",
+    "nameHindi": "साल्टोरो कंगड़ी",
+    "category": "mountain",
+    "latitude": 35.3994,
+    "longitude": 76.1789,
+    "description": "The highest peak in the Saltoro Range of the Karakoram at 7,742 meters. Located near the Siachen Glacier, it holds strategic significance.",
+    "historicalSignificance": "First summited in 1960, it remains one of the least climbed major peaks due to its remote location.",
+    "metadata": {
+      "elevation": "7,742 m",
+      "range": "Saltoro Range, Karakoram",
+      "location": "Ladakh, India"
+    }
+  },
+  {
+    "id": "mt-005",
+    "name": "Vindhya Range",
+    "nameHindi": "विन्ध्य पर्वत",
+    "category": "mountain",
+    "latitude": 24.1055,
+    "longitude": 81.8417,
+    "description": "An ancient mountain range running east-west across central India, forming the traditional boundary between North and South India. Rich in forests and mineral resources.",
+    "historicalSignificance": "Described in ancient texts as the boundary of Aryavarta, the land of the Aryans.",
+    "metadata": {
+      "elevation": "4,476 m (highest point)",
+      "range": "Vindhya Range",
+      "location": "Madhya Pradesh, India"
+    }
+  },
+  {
+    "id": "mt-006",
+    "name": "Satpura Range",
+    "nameHindi": "सतपुड़ा पर्वत",
+    "category": "mountain",
+    "latitude": 22.2670,
+    "longitude": 78.1670,
+    "description": "A range of hills in central India running east-west, forming the watershed between the Narmada and Tapti rivers. Known for its unique ecology and tribal communities.",
+    "historicalSignificance": "The ancient Sanskrit name Satpura means 'seven folded', referring to its seven peaks.",
+    "metadata": {
+      "elevation": "1,350 m (Dhupgarh peak)",
+      "range": "Satpura Range",
+      "location": "Madhya Pradesh, India"
+    }
+  }
+]

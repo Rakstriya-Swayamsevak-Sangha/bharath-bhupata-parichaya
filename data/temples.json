@@ -1,0 +1,98 @@
+[
+  {
+    "id": "tp-001",
+    "name": "Kedarnath Temple",
+    "nameHindi": "केदारनाथ मंदिर",
+    "category": "temple",
+    "latitude": 30.7346,
+    "longitude": 79.0669,
+    "description": "One of the twelve Jyotirlingas, dedicated to Lord Shiva. Situated at 3,583 meters in the Rudraprayag district of Uttarakhand, it is the highest among the 12 Jyotirlingas.",
+    "historicalSignificance": "Built by the Pandavas around 8,000 years ago according to legend. The current structure dates to the 8th century when Adi Shankaracharya revived it.",
+    "metadata": {
+      "deity": "Lord Shiva (Kedarnath)",
+      "builtYear": "8th Century CE (legend: 8,000 years ago)",
+      "architecture": "Stone, Himalayan style",
+      "altitude": "3,583 m"
+    }
+  },
+  {
+    "id": "tp-002",
+    "name": "Badrinath Temple",
+    "nameHindi": "बदरीनाथ मंदिर",
+    "category": "temple",
+    "latitude": 30.7433,
+    "longitude": 79.4938,
+    "description": "The most sacred pilgrimage site for Hindus, dedicated to Lord Vishnu. Located at 3,133 meters in the Chamoli district along the Alaknanda River.",
+    "historicalSignificance": "Established by Adi Shankaracharya in the 8th century. One of the four Char Dhams of Hindu pilgrimage. The temple is closed for six months due to extreme winter.",
+    "metadata": {
+      "deity": "Lord Vishnu (Badrinath)",
+      "builtYear": "8th Century CE",
+      "architecture": "Vishwakarma stha",
+      "altitude": "3,133 m"
+    }
+  },
+  {
+    "id": "tp-003",
+    "name": "Somnath Temple",
+    "nameHindi": "सोमनाथ मंदिर",
+    "category": "temple",
+    "latitude": 20.8889,
+    "longitude": 70.4019,
+    "description": "The first of the twelve Jyotirlingas, located on the western coast of Gujarat. Rebuilt multiple times, the current temple was completed in 1951.",
+    "historicalSignificance": "Destroyed and rebuilt several times by Mahmud of Ghazni, Allauddin Khalji, and Aurangzeb. Each destruction and rebuilding symbolizes the resilience of dharma.",
+    "metadata": {
+      "deity": "Lord Shiva (Somnath)",
+      "builtYear": "1951 CE (current structure)",
+      "architecture": "Maru-Gurjara",
+      "coast": "Arabian Sea, Gujarat"
+    }
+  },
+  {
+    "id": "tp-004",
+    "name": "Konark Sun Temple",
+    "nameHindi": "कोणार्क सूर्य मंदिर",
+    "category": "temple",
+    "latitude": 19.8876,
+    "longitude": 86.0945,
+    "description": "A 13th-century temple dedicated to the Sun God, built by King Narasimhadeva I of the Eastern Ganga Dynasty. Shaped as a colossal chariot with elaborately carved stone wheels.",
+    "historicalSignificance": "A masterpiece of Odishan architecture and a UNESCO World Heritage Site. The temple's alignment precisely tracks the sun's path.",
+    "metadata": {
+      "deity": "Sun God (Surya)",
+      "builtYear": "1250 CE",
+      "architecture": "Kalinga architecture",
+      "material": "Khondalite stone"
+    }
+  },
+  {
+    "id": "tp-005",
+    "name": "Kailash Temple",
+    "nameHindi": "कैलाश मंदिर",
+    "category": "temple",
+    "latitude": 16.9628,
+    "longitude": 73.5368,
+    "description": "A monumental rock-cut temple at Ellora, carved from a single basalt cliff. Dedicated to Shiva, it represents Mount Kailash, the abode of Lord Shiva.",
+    "historicalSignificance": "Carved between 757-783 CE under the Rashtrakuta king Krishna I. Considered one of the most remarkable cave temples in the world.",
+    "metadata": {
+      "deity": "Lord Shiva",
+      "builtYear": "757-783 CE",
+      "architecture": "Rock-cut (cave temple)",
+      "location": "Ellora Caves, Maharashtra"
+    }
+  },
+  {
+    "id": "tp-006",
+    "name": "Ramanathaswamy Temple",
+    "nameHindi": "रामनाथस्वामी मंदिर",
+    "category": "temple",
+    "latitude": 9.2876,
+    "longitude": 79.3175,
+    "description": "A Hindu temple dedicated to Lord Shiva, located on Rameshwaram Island in Tamil Nadu. Part of the Char Dham pilgrimage and one of the twelve Jyotirlingas.",
+    "historicalSignificance": "According to the Ramayana, Rama worshipped Shiva here after returning from Lanka. Built by the Pandavas and later expanded by the Chola kings.",
+    "metadata": {
+      "deity": "Lord Shiva (Ramanathaswamy)",
+      "builtYear": "12th Century CE (expanded)",
+      "architecture": "Dravidian",
+      "corridor": "Longest temple corridor in India"
+    }
+  }
+]

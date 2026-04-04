@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sI \"https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap\")",
+      "Bash(curl -sI \"https://tile.openstreetmap.org/5/10/12.png\")",
+      "Bash(npm run:*)"
+    ]
+  }
+}
