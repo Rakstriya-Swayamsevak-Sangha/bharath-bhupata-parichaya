@@ -3,7 +3,12 @@
     "allow": [
       "Bash(curl -sI \"https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap\")",
       "Bash(curl -sI \"https://tile.openstreetmap.org/5/10/12.png\")",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npm search:*)",
+      "Bash(npm view:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node -e \"const r = require\\('react-leaflet'\\); console.log\\(Object.keys\\(r\\).filter\\(k => k.toLowerCase\\(\\).includes\\('decorator'\\) || k.toLowerCase\\(\\).includes\\('polyline'\\)\\)\\)\")"
     ]
   }
 }

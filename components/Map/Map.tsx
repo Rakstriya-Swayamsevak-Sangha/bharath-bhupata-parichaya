@@ -94,21 +94,30 @@ const createMountainIcon = (isMain: boolean, isSelected = false) => {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// RIVER LABEL ICON — positioned at river midpoint for name display
+// RIVER LABEL ICON — Cinzel serif, italic, soft shadow for map integration
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const createRiverLabelIcon = (name: string, isSelected = false) =>
   L.divIcon({
     html: `<div class="river-label ${isSelected ? 'river-label--selected' : ''}">${name}</div>`,
     className: 'custom-marker',
-    iconSize: [100, 24],
-    iconAnchor: [50, 12],
-    popupAnchor: [0, -16],
+    iconSize: [120, 28],
+    iconAnchor: [60, 14],
+    popupAnchor: [0, -18],
   });
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// RIVER LAYER — Continuous flowing polylines with geographic accuracy
+// RIVER LAYER — Cultural soft dashed rendering
+//
+// Two dashed layers per river create a hand-drawn, flowing feel:
+//   Layer 1 — Soft ambient : wide dashed spread, very low opacity (~0.10)
+//   Layer 2 — Main flow     : thin dashed line, higher opacity (~0.55)
+//
+// All layers use uniform weight throughout — no thickening at the delta.
+// Muted blues (#4A90E2 family) harmonize with the parchment background.
 // ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── River Layer Component ────────────────────────────────────────────────────
 
 interface RiverLayerProps {
   rivers: Location[];
@@ -120,9 +129,31 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
   const { activeFilters } = useFilter();
 
   const visible = useMemo(
-    () => rivers.filter((r) => activeFilters.river && r.flowPath && r.flowPath.length > 1),
+    () =>
+      rivers.filter((r) => activeFilters.river && r.flowPath && r.flowPath.length > 1),
     [rivers, activeFilters]
   );
+
+  // ── Palette: saturated deep blues that stand out on parchment ──────────────
+  const PALETTE = {
+    // Layer 1 — outer glow halo (light blue luminance)
+    glowColor:    '#8AB8DC',
+    glowOpacity:     0.18,
+    glowWeight:        9,
+    glowDash:          '1, 0',   // solid (0 gap = continuous glow)
+    // Layer 2 — soft ambient dashed
+    outerColor:    '#4A7EB8',
+    outerOpacity:    0.25,
+    outerWeight:        3.5,
+    outerDash:          '5, 8',
+    // Layer 3 — main river line (saturated, clearly visible)
+    coreColor:      '#1E5FA8',
+    coreColorSel:   '#2980C8',
+    coreOpacity:     0.80,
+    coreOpacitySel:  0.95,
+    coreWeight:         1.5,
+    coreDash:           '1, 6',
+  };
 
   return (
     <>
@@ -130,45 +161,66 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
         const sel = selectedLocation?.id === river.id;
         const path = river.flowPath as [number, number][];
 
-        // Place label at ~40% along the path for better visual balance
+        // Label at ~40% along path
         const labelIdx = Math.floor(path.length * 0.4);
         const labelPoint = path[labelIdx];
 
+        const coreColor   = sel ? PALETTE.coreColorSel  : PALETTE.coreColor;
+        const coreOpacity = sel ? PALETTE.coreOpacitySel : PALETTE.coreOpacity;
+
         return (
           <React.Fragment key={river.id}>
-            {/* Shadow/glow line (wider, behind) — gives depth */}
+            {/* ── Layer 1: Outer glow halo ─────────────────────────────────── */}
             <Polyline
               positions={path}
-              smoothFactor={4}
+              smoothFactor={1.8}
               pathOptions={{
-                color: '#2C5AA0',
-                weight: sel ? 9 : 7,
-                opacity: 0.1,
+                color: PALETTE.glowColor,
+                weight: PALETTE.glowWeight,
+                opacity: PALETTE.glowOpacity,
+                dashArray: PALETTE.glowDash,
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
               interactive={false}
             />
 
-            {/* Main river line — continuous, no dashes */}
+            {/* ── Layer 2: Soft dashed ambient ───────────────────────────── */}
             <Polyline
               positions={path}
-              smoothFactor={4}
+              smoothFactor={1.5}
               pathOptions={{
-                color: sel ? '#5BA3E0' : '#3E7CB1',
-                weight: sel ? 3.2 : 2.5,
-                opacity: sel ? 0.92 : 0.85,
+                color: PALETTE.outerColor,
+                weight: PALETTE.outerWeight,
+                opacity: PALETTE.outerOpacity,
+                dashArray: PALETTE.outerDash,
+                lineCap: 'round',
+                lineJoin: 'round',
+              }}
+              interactive={false}
+            />
+
+            {/* ── Layer 3: Main dashed flow (interactive) ─────────────────── */}
+            <Polyline
+              positions={path}
+              smoothFactor={1.5}
+              pathOptions={{
+                color: coreColor,
+                weight: PALETTE.coreWeight,
+                opacity: coreOpacity,
+                dashArray: PALETTE.coreDash,
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
               eventHandlers={{ click: () => onRiverClick(river) }}
             />
 
-            {/* River name label at calculated position */}
+            {/* ── River name label ───────────────────────────────────────── */}
             <Marker
               position={labelPoint}
               icon={createRiverLabelIcon(river.name, sel)}
               eventHandlers={{ click: () => onRiverClick(river) }}
+              zIndexOffset={30}
             >
               <Popup>
                 <div className="popup-inner">

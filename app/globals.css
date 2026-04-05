@@ -171,7 +171,7 @@ html, body {
   font-size: 11px;
   font-weight: 600;
   font-style: italic;
-  color: #2C5AA0;
+  color: #1E4080;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-align: center;
@@ -185,19 +185,19 @@ html, body {
 }
 
 .river-label:hover {
-  color: #1E4A8A;
+  color: #1A3570;
   text-shadow:
     0 1px 3px rgba(255, 255, 255, 0.9),
     0 0 6px rgba(255, 255, 255, 0.5);
 }
 
 .river-label--selected {
-  color: #1A3F7A;
+  color: #1540A0;
   font-weight: 700;
   font-size: 12px;
   text-shadow:
     0 1px 3px rgba(255, 255, 255, 0.9),
-    0 0 8px rgba(74, 144, 226, 0.3);
+    0 0 8px rgba(30, 95, 168, 0.3);
 }
 
 /* ─── Leaflet SVG polyline hand-drawn treatment ─────────────────────────── */
