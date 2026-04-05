@@ -1,5 +1,5 @@
-const CACHE_NAME = 'akhand-bharat-v1';
-const TILE_CACHE_NAME = 'akhand-bharat-tiles-v1';
+const CACHE_NAME = 'akhand-bharat-v2';
+const TILE_CACHE_NAME = 'akhand-bharat-tiles-v2';
 
 // Resources to cache on install
 const STATIC_ASSETS = [
@@ -9,6 +9,7 @@ const STATIC_ASSETS = [
   '/data/rivers.json',
   '/data/temples.json',
   '/manifest.json',
+  '/parchment-texture.png',
 ];
 
 // Install event - cache static assets
@@ -40,8 +41,8 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Handle map tiles with cache-first strategy
-  if (url.hostname.includes('tile.openstreetmap.org')) {
+  // Handle CartoDB Positron tiles with cache-first strategy
+  if (url.hostname.includes('basemaps.cartocdn.com')) {
     event.respondWith(
       caches.open(TILE_CACHE_NAME).then((cache) => {
         return cache.match(request).then((cachedResponse) => {
@@ -50,7 +51,7 @@ self.addEventListener('fetch', (event) => {
           }
           return fetch(request).then((networkResponse) => {
             const zoom = parseInt(url.pathname.split('/')[1]);
-            if (zoom >= 4 && zoom <= 12) {
+            if (zoom >= 4 && zoom <= 10) {
               cache.put(request, networkResponse.clone());
             }
             return networkResponse;

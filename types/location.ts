@@ -18,6 +18,12 @@ export interface Location {
   description: string;
   historicalSignificance?: string;
   metadata?: LocationMetadata;
+
+  /** River flow path — array of [lat, lng] waypoints from source to delta */
+  flowPath?: [number, number][];
+
+  /** Mountain range satellite peaks — array of {lat, lng, label?} around the main summit */
+  rangePoints?: { lat: number; lng: number; label?: string }[];
 }
 
 export type FilterState = {

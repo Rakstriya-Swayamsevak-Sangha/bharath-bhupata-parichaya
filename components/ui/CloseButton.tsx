@@ -12,18 +12,19 @@ export function CloseButton({ onClick, className = '' }: CloseButtonProps) {
     <button
       onClick={onClick}
       className={`
-        w-10 h-10 flex items-center justify-center
-        rounded-full transition-all duration-200
-        text-textSecondary hover:text-textPrimary
-        hover:bg-surface-hover
-        focus:outline-none focus:ring-2 focus:ring-primary
+        w-8 h-8 flex items-center justify-center
+        rounded-sm transition-all duration-200
+        text-textSecondary hover:text-primary
+        hover:bg-background
+        focus:outline-none
+        border border-transparent hover:border-border
         ${className}
       `}
       aria-label="Close"
     >
       <svg
-        width="20"
-        height="20"
+        width="16"
+        height="16"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

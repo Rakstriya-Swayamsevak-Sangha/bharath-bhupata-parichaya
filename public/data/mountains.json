@@ -12,7 +12,13 @@
       "elevation": "6,638 m",
       "range": "Kailash Range",
       "location": "Tibet Autonomous Region, China"
-    }
+    },
+    "rangePoints": [
+      { "lat": 31.20, "lng": 81.10, "label": "Kailash North" },
+      { "lat": 30.95, "lng": 81.50, "label": "Kailash East" },
+      { "lat": 31.15, "lng": 81.60, "label": "Gurla Mandhata" },
+      { "lat": 31.30, "lng": 81.20 }
+    ]
   },
   {
     "id": "mt-002",
@@ -27,7 +33,13 @@
       "elevation": "7,816 m",
       "range": "Garhwal Himalayas",
       "location": "Uttarakhand, India"
-    }
+    },
+    "rangePoints": [
+      { "lat": 30.50, "lng": 79.80, "label": "Nanda Devi East" },
+      { "lat": 30.25, "lng": 80.10, "label": "Trisul" },
+      { "lat": 30.55, "lng": 80.05 },
+      { "lat": 30.30, "lng": 79.75 }
+    ]
   },
   {
     "id": "mt-003",
@@ -42,7 +54,12 @@
       "elevation": "7,756 m",
       "range": "Garhwal Himalayas",
       "location": "Uttarakhand, India"
-    }
+    },
+    "rangePoints": [
+      { "lat": 31.05, "lng": 79.45, "label": "Abi Gamin" },
+      { "lat": 30.80, "lng": 79.70 },
+      { "lat": 31.00, "lng": 79.75 }
+    ]
   },
   {
     "id": "mt-004",
@@ -57,7 +74,13 @@
       "elevation": "7,742 m",
       "range": "Saltoro Range, Karakoram",
       "location": "Ladakh, India"
-    }
+    },
+    "rangePoints": [
+      { "lat": 35.55, "lng": 76.05, "label": "K12" },
+      { "lat": 35.30, "lng": 76.35 },
+      { "lat": 35.50, "lng": 76.30, "label": "Sia Kangri" },
+      { "lat": 35.25, "lng": 76.00 }
+    ]
   },
   {
     "id": "mt-005",
@@ -72,7 +95,14 @@
       "elevation": "4,476 m (highest point)",
       "range": "Vindhya Range",
       "location": "Madhya Pradesh, India"
-    }
+    },
+    "rangePoints": [
+      { "lat": 24.25, "lng": 80.50 },
+      { "lat": 23.95, "lng": 81.20 },
+      { "lat": 24.20, "lng": 82.40 },
+      { "lat": 24.00, "lng": 83.10 },
+      { "lat": 24.30, "lng": 81.00 }
+    ]
   },
   {
     "id": "mt-006",
@@ -87,6 +117,13 @@
       "elevation": "1,350 m (Dhupgarh peak)",
       "range": "Satpura Range",
       "location": "Madhya Pradesh, India"
-    }
+    },
+    "rangePoints": [
+      { "lat": 22.40, "lng": 77.50 },
+      { "lat": 22.15, "lng": 78.50 },
+      { "lat": 22.35, "lng": 79.00 },
+      { "lat": 22.10, "lng": 77.80 },
+      { "lat": 22.45, "lng": 78.30 }
+    ]
   }
 ]

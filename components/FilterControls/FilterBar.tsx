@@ -18,19 +18,34 @@ function FilterButton({ category, isActive, onToggle }: FilterButtonProps) {
     <button
       onClick={onToggle}
       className={`
-        inline-flex items-center gap-2 px-4 py-2 rounded-full
-        text-sm font-medium transition-all duration-200
-        border focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background
+        inline-flex items-center gap-2 px-4 py-2 rounded-sm
+        text-xs font-medium transition-all duration-200
+        border focus:outline-none
         ${isActive
-          ? 'text-white border-transparent'
-          : 'text-textSecondary border-border hover:border-textSecondary'
+          ? 'text-textPrimary border-transparent'
+          : 'text-textSecondary border-border hover:border-accent/40 hover:text-accent'
         }
       `}
-      style={isActive ? { backgroundColor: config.color } : undefined}
+      style={isActive ? {
+        backgroundColor: config.markerBg,
+        borderColor: config.color,
+      } : undefined}
       aria-pressed={isActive}
     >
-      <span>{config.icon}</span>
-      <span>{config.label}</span>
+      <span style={{
+        fontFamily: "'Cinzel', serif",
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        fontSize: '10px',
+      }}>
+        {config.label}
+      </span>
+      <span style={{
+        fontSize: '9px',
+        color: isActive ? 'rgba(240,230,211,0.5)' : 'rgba(168,152,130,0.5)',
+      }}>
+        {config.labelEn}
+      </span>
     </button>
   );
 }
@@ -41,27 +56,41 @@ export function FilterBar() {
   const allActive = activeFilters.mountain && activeFilters.river && activeFilters.temple;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-4 bg-surface/80 backdrop-blur-sm rounded-xl border border-border">
-      <span className="text-textSecondary text-xs uppercase tracking-wider mr-2">
-        Filter:
+    <div className="flex flex-wrap items-center gap-2 p-3 bg-surface/80 backdrop-blur-sm rounded-sm border border-border">
+      <span
+        className="text-textSecondary mr-2"
+        style={{
+          fontFamily: "'Cinzel', serif",
+          fontSize: '9px',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+        }}
+      >
+        दर्शन :
       </span>
 
       <button
         onClick={() => setAllFilters(!allActive)}
         className={`
-          inline-flex items-center gap-2 px-4 py-2 rounded-full
-          text-sm font-medium transition-all duration-200
-          border focus:outline-none focus:ring-2 focus:ring-primary
+          inline-flex items-center gap-2 px-4 py-2 rounded-sm
+          text-xs font-medium transition-all duration-200
+          border focus:outline-none
           ${allActive
-            ? 'bg-secondary text-background border-transparent'
-            : 'text-textSecondary border-border hover:border-textSecondary'
+            ? 'bg-primary/15 text-primary border-primary/30'
+            : 'text-textSecondary border-border hover:border-accent/40 hover:text-accent'
           }
         `}
+        style={{
+          fontFamily: "'Cinzel', serif",
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          fontSize: '10px',
+        }}
       >
         All
       </button>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         {(['mountain', 'river', 'temple'] as Category[]).map(category => (
           <FilterButton
             key={category}
