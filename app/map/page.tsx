@@ -6,6 +6,8 @@ import { MapProvider, useMap } from '@/providers/MapContext';
 import { FilterProvider } from '@/providers/FilterContext';
 import { Sidebar } from '@/components/Sidebar/Sidebar';
 import { FilterBar } from '@/components/FilterControls/FilterBar';
+import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
+import { KnowledgePanel } from '@/components/KnowledgePanel/KnowledgePanel';
 import { Location } from '@/types/location';
 
 const CulturalMap = dynamic(
@@ -32,10 +34,11 @@ const CulturalMap = dynamic(
 );
 
 function MapContent() {
-  const { openSidebar } = useMap();
+  const { openSidebar, setSelectedLocation } = useMap();
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showKnowledge, setShowKnowledge] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -58,9 +61,15 @@ function MapContent() {
 
   const handleMarkerClick = useCallback(
     (location: Location) => {
-      openSidebar(location);
+      if (location.category === 'mountain') {
+        setSelectedLocation(location);
+        setShowKnowledge(true);
+      } else {
+        openSidebar(location);
+        setShowKnowledge(false);
+      }
     },
-    [openSidebar]
+    [openSidebar, setSelectedLocation]
   );
 
   if (error) {
@@ -98,6 +107,7 @@ function MapContent() {
         <h1 className="title">
           Akhand Bharat Darshan
         </h1>
+        <LanguageSwitcher />
       </header>
 
       {/* ── Cultural Intro Strip ───────────────────── */}
@@ -140,7 +150,6 @@ function MapContent() {
               </div>
             ) : (
               <CulturalMap
-                locations={locations}
                 onMarkerClick={handleMarkerClick}
               />
             )}
@@ -150,6 +159,12 @@ function MapContent() {
 
       {/* ── Sidebar (overlay) ──────────────────────────────────────────── */}
       <Sidebar />
+
+      {/* ── Knowledge Panel (Mountain specific archival sheet) ─────────── */}
+      <KnowledgePanel onClose={() => {
+        setSelectedLocation(null); // Fix: use setSelectedLocation to deselect
+        setShowKnowledge(false);
+      }} />
     </div>
   );
 }

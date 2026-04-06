@@ -17,6 +17,10 @@ import {
 import L from 'leaflet';
 import { useMap } from '@/providers/MapContext';
 import { useFilter } from '@/providers/FilterContext';
+import { useLanguageStore } from '@/store/languageStore';
+import { getContent } from '@/lib/i18n';
+import { mountainsGeometry } from '@/data/mountainsGeometry';
+import { riversGeometry } from '@/data/riversGeometry';
 import { Location, Category } from '@/types/location';
 import {
   MAP_CONFIG,
@@ -30,37 +34,37 @@ import 'leaflet/dist/leaflet.css';
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const SACRED_CITIES = [
-  { name: "Takshashila", coords: [33.745, 72.787] },
-  { name: "Amritsar", coords: [31.634, 74.872] },
-  { name: "Indraprastha", coords: [28.6139, 77.2090] },
-  { name: "Mathura", coords: [27.4924, 77.6737] },
-  { name: "Ayodhya", coords: [26.7999, 82.2042] },
-  { name: "Vaishali", coords: [25.9870, 85.1290] },
-  { name: "Patliputra", coords: [25.5941, 85.1376] },
-  { name: "Prayag", coords: [25.4358, 81.8463] },
-  { name: "Gaya", coords: [24.7955, 85.0002] },
-  { name: "Avanthika", coords: [23.1765, 75.7885] },
-  { name: "Dwarka", coords: [22.2442, 68.9685] },
-  { name: "Somanath", coords: [20.8880, 70.4012] },
-  { name: "Nagpur", coords: [21.1458, 79.0882] },
-  { name: "Puri", coords: [19.8135, 85.8312] },
-  { name: "Vijaynagar", coords: [15.3350, 76.4600] },
-  { name: "Kanchi", coords: [12.8342, 79.7036] }
+  { id: "takshashila", name: "Takshashila", coords: [33.745, 72.787] },
+  { id: "amritsar", name: "Amritsar", coords: [31.634, 74.872] },
+  { id: "indraprastha", name: "Indraprastha", coords: [28.6139, 77.2090] },
+  { id: "mathura", name: "Mathura", coords: [27.4924, 77.6737] },
+  { id: "ayodhya", name: "Ayodhya", coords: [26.7999, 82.2042] },
+  { id: "vaishali", name: "Vaishali", coords: [25.9870, 85.1290] },
+  { id: "patliputra", name: "Patliputra", coords: [25.5941, 85.1376] },
+  { id: "prayag", name: "Prayag", coords: [25.4358, 81.8463] },
+  { id: "gaya", name: "Gaya", coords: [24.7955, 85.0002] },
+  { id: "avanthika", name: "Avanthika", coords: [23.1765, 75.7885] },
+  { id: "dwarka", name: "Dwarka", coords: [22.2442, 68.9685] },
+  { id: "somanath", name: "Somanath", coords: [20.8880, 70.4012] },
+  { id: "nagpur", name: "Nagpur", coords: [21.1458, 79.0882] },
+  { id: "puri", name: "Puri", coords: [19.8135, 85.8312] },
+  { id: "vijayanagar", name: "Vijaynagar", coords: [15.3350, 76.4600] },
+  { id: "kanchi", name: "Kanchi", coords: [12.8342, 79.7036] }
 ];
 
-function adjustCoords(name: string, lat: number, lng: number): [number, number] {
+function adjustCoords(id: string, lat: number, lng: number): [number, number] {
   const offsetMap: Record<string, [number, number]> = {
-    "Vaishali": [0.15, 0.2],
-    "Patliputra": [-0.1, 0.2],
-    "Prayag": [-0.1, -0.3],
-    "Mathura": [0.1, -0.2],
-    "Indraprastha": [0.15, 0.15],
+    "vaishali": [0.15, 0.2],
+    "patliputra": [-0.1, 0.2],
+    "prayag": [-0.1, -0.3],
+    "mathura": [0.1, -0.2],
+    "indraprastha": [0.15, 0.15],
   };
 
-  if (offsetMap[name]) {
+  if (offsetMap[id]) {
     return [
-      lat + offsetMap[name][0],
-      lng + offsetMap[name][1]
+      lat + offsetMap[id][0],
+      lng + offsetMap[id][1]
     ];
   }
 
@@ -126,24 +130,16 @@ const distort = ([lat, lng]: [number, number]): [number, number] => [
   lng * 1.01,
 ];
 
-interface MountainLayerProps {
-  mountains: Location[];
-  onMountainClick: (loc: Location) => void;
-}
-
 // ─── Subdued Cartographic Mountain Strokes ─────────────────────────────────────
-function MountainLinesLayer({ mountains }: { mountains: Location[] }) {
+function MountainLinesLayer() {
   const { activeFilters } = useFilter();
 
-  const visible = useMemo(
-    () => mountains.filter((m) => activeFilters.mountain && m.coords && m.coords.length > 1),
-    [mountains, activeFilters]
-  );
+  if (!activeFilters.mountain) return null;
 
   return (
     <>
-      {visible.map((mt) => {
-        const coords = mt.coords as [number, number][];
+      {mountainsGeometry.map((mt) => {
+        const coords = mt.path;
 
         // Controlled, precise structural bend (zig-zag) instead of random chaos
         // Alternates slightly on the axis to create a stable, beautiful hand-drawn wave
@@ -153,7 +149,7 @@ function MountainLinesLayer({ mountains }: { mountains: Location[] }) {
           return [lat + bendX, lng + bendY] as [number, number];
         });
 
-        const mainWeight = mt.id === 'mt-001' ? 2.2 : 1.7; // Hierarchical weighting
+        const mainWeight = mt.id === 'himalaya' ? 2.2 : 1.7; // Hierarchical weighting
 
         return (
           <React.Fragment key={`${mt.id}-lines`}>
@@ -221,21 +217,19 @@ function MountainLinesLayer({ mountains }: { mountains: Location[] }) {
 }
 
 // ─── Interaction & Labelling ─────────────────────────────────────────────────
-function MountainLabelsLayer({ mountains, onMountainClick }: MountainLayerProps) {
-  const { selectedLocation } = useMap();
+function MountainLabelsLayer({ onMountainClick }: { onMountainClick: (loc: Location) => void }) {
+  const { lang } = useLanguageStore();
+  const content = getContent(lang);
   const { activeFilters } = useFilter();
 
-  const visible = useMemo(
-    () => mountains.filter((m) => activeFilters.mountain && m.coords && m.coords.length > 1),
-    [mountains, activeFilters]
-  );
+  if (!activeFilters.mountain) return null;
 
   return (
     <>
-      {visible.map((mt) => {
-        const coords = mt.coords as [number, number][];
+      {mountainsGeometry.map((mt) => {
+        const coords = mt.path;
         const centerIdx = Math.floor(coords.length / 2);
-        const sel = selectedLocation?.id === mt.id;
+        const label = content.mountains[mt.id as keyof typeof content.mountains] ?? mt.id;
 
         let angle = 0;
         if (coords.length >= 2) {
@@ -255,30 +249,20 @@ function MountainLabelsLayer({ mountains, onMountainClick }: MountainLayerProps)
             <Polyline
               positions={coords}
               pathOptions={{ color: 'transparent', weight: 18, opacity: 0 }}
-              eventHandlers={{ click: () => onMountainClick(mt) }}
+              eventHandlers={{ click: () => onMountainClick({ id: mt.id, category: 'mountain', name: mt.id } as Location) }}
             />
             {/* Rotated range label (Elevated above line) */}
             <Marker
               position={coords[centerIdx]}
               icon={L.divIcon({
-                html: `<div class="mountain-label" style="transform: rotate(${angle}deg); transform-origin: center center;">${mt.name}</div>`,
+                html: `<div class="mountain-label" style="transform: rotate(${angle}deg); transform-origin: center center;">${label}</div>`,
                 className: 'custom-marker',
                 iconSize: [140, 22],
-                // 11 is center, bump to 19 to elevate label ~8px above the mountain line
                 iconAnchor: [70, 19],
               })}
-              zIndexOffset={sel ? 100 : 0}
-              eventHandlers={{ click: () => onMountainClick(mt) }}
-            >
-              <Popup>
-                <div className="popup-inner">
-                  <h3>{mt.name}</h3>
-                  {mt.nameHindi && <p>{mt.nameHindi}</p>}
-                  {mt.metadata?.elevation && <p style={{ fontSize: '11px', opacity: 0.7 }}>▲ {mt.metadata.elevation}</p>}
-                  <button onClick={() => onMountainClick(mt)} className="popup-btn">View Details ›</button>
-                </div>
-              </Popup>
-            </Marker>
+              zIndexOffset={0}
+              eventHandlers={{ click: () => onMountainClick({ id: mt.id, category: 'mountain', name: mt.id } as Location) }}
+            />
           </React.Fragment>
         );
       })}
@@ -303,20 +287,12 @@ const createRiverLabelIcon = (name: string, isSelected = false) =>
 // RIVER LAYER — Cultural soft dashed rendering
 // ═══════════════════════════════════════════════════════════════════════════════
 
-interface RiverLayerProps {
-  rivers: Location[];
-  onRiverClick: (loc: Location) => void;
-}
-
-function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
-  const { selectedLocation } = useMap();
+function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void }) {
+  const { lang } = useLanguageStore();
+  const content = getContent(lang);
   const { activeFilters } = useFilter();
 
-  const visible = useMemo(
-    () =>
-      rivers.filter((r) => activeFilters.river && r.flowPath && r.flowPath.length > 1),
-    [rivers, activeFilters]
-  );
+  if (!activeFilters.river) return null;
 
   const PALETTE = {
     glowColor: '#8AB8DC',
@@ -337,13 +313,11 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
 
   return (
     <>
-      {visible.map((river) => {
-        const sel = selectedLocation?.id === river.id;
-        const path = river.flowPath as [number, number][];
+      {riversGeometry.map((river) => {
+        const path = river.path;
         const labelIdx = Math.floor(path.length * 0.4);
         const labelPoint = path[labelIdx];
-        const coreColor = sel ? PALETTE.coreColorSel : PALETTE.coreColor;
-        const coreOpacity = sel ? PALETTE.coreOpacitySel : PALETTE.coreOpacity;
+        const label = content.rivers[river.id as keyof typeof content.rivers] ?? river.id;
 
         return (
           <React.Fragment key={river.id}>
@@ -377,31 +351,21 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
               positions={path}
               smoothFactor={1.5}
               pathOptions={{
-                color: coreColor,
+                color: PALETTE.coreColor,
                 weight: PALETTE.coreWeight,
-                opacity: coreOpacity,
+                opacity: PALETTE.coreOpacity,
                 dashArray: PALETTE.coreDash,
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
-              eventHandlers={{ click: () => onRiverClick(river) }}
+              eventHandlers={{ click: () => onRiverClick({ id: river.id } as Location) }}
             />
             <Marker
               position={labelPoint}
-              icon={createRiverLabelIcon(river.name, sel)}
-              eventHandlers={{ click: () => onRiverClick(river) }}
+              icon={createRiverLabelIcon(label, false)}
+              eventHandlers={{ click: () => onRiverClick({ id: river.id } as Location) }}
               zIndexOffset={30}
-            >
-              <Popup>
-                <div className="popup-inner">
-                  <h3>{river.name}</h3>
-                  {river.nameHindi && <p>{river.nameHindi}</p>}
-                  <button onClick={() => onRiverClick(river)} className="popup-btn">
-                    View Details ›
-                  </button>
-                </div>
-              </Popup>
-            </Marker>
+            />
           </React.Fragment>
         );
       })}
@@ -415,16 +379,19 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
 
 function SacredCitiesLayer() {
   const { activeFilters } = useFilter();
+  const { lang } = useLanguageStore();
+  const content = getContent(lang);
 
   if (!activeFilters.temple) return null;
 
   return (
     <>
       {SACRED_CITIES.map((city) => {
-        const [lat, lng] = adjustCoords(city.name, city.coords[0], city.coords[1]);
+        const translatedName = content.sacredCities.find((c: { id: string; name: string }) => c.id === city.id)?.name ?? city.name;
+        const [lat, lng] = adjustCoords(city.id, city.coords[0], city.coords[1]);
         return (
           <Marker
-            key={city.name}
+            key={city.id}
             position={[lat, lng]}
             icon={createSacredMarker()}
           >
@@ -435,7 +402,7 @@ function SacredCitiesLayer() {
               className="sacred-label"
               opacity={0.9}
             >
-              {city.name}
+              {translatedName}
             </Tooltip>
           </Marker>
         );
@@ -580,11 +547,10 @@ function MapViewController() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 interface CulturalMapProps {
-  locations: Location[];
   onMarkerClick: (loc: Location) => void;
 }
 
-export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
+export function CulturalMap({ onMarkerClick }: CulturalMapProps) {
   const [mounted, setMounted] = useState(false);
   const [bordersData, setBordersData] = useState<any>(null);
   const [stateBorders, setStateBorders] = useState<any>(null);
@@ -600,11 +566,6 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
       .then(setStateBorders)
       .catch(console.error);
   }, []);
-
-  // Split locations by category for separate layer rendering
-  const rivers = useMemo(() => locations.filter((l) => l.category === 'river'), [locations]);
-  const mountains = useMemo(() => locations.filter((l) => l.category === 'mountain'), [locations]);
-  const temples = useMemo(() => locations.filter((l) => l.category === 'temple'), [locations]);
 
   if (!mounted) {
     return (
@@ -653,7 +614,7 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
 
       {/* ── Layer 2: Terrain (glow + core line) ──────── */}
       <Pane name="terrainPane" style={{ zIndex: 200 }}>
-        <MountainLinesLayer mountains={mountains} />
+        <MountainLinesLayer />
       </Pane>
 
       {/* ── Layer 2.5: Static Map Labels ──────── */}
@@ -692,12 +653,12 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
 
       {/* ── Layer 4: Rivers ─────────────── */}
       <Pane name="riverPane" style={{ zIndex: 400 }}>
-        <RiverLayer rivers={rivers} onRiverClick={onMarkerClick} />
+        <RiverLayer onRiverClick={onMarkerClick} />
       </Pane>
 
       {/* ── Layer 5: Mountain labels ──────── */}
       <Pane name="peakPane" style={{ zIndex: 500 }}>
-        <MountainLabelsLayer mountains={mountains} onMountainClick={onMarkerClick} />
+        <MountainLabelsLayer onMountainClick={onMarkerClick} />
       </Pane>
 
       {/* ── Layer 6: Sacred Cities (highest z-order) ───────── */}
