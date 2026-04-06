@@ -105,7 +105,7 @@ interface MountainLayerProps {
   onMountainClick: (loc: Location) => void;
 }
 
-// ─── Minimalistic Mountain Renderer ──────────────────────────────────────────────
+// ─── Subdued Cartographic Mountain Strokes ─────────────────────────────────────
 function MountainLinesLayer({ mountains }: { mountains: Location[] }) {
   const { activeFilters } = useFilter();
 
@@ -118,31 +118,70 @@ function MountainLinesLayer({ mountains }: { mountains: Location[] }) {
     <>
       {visible.map((mt) => {
         const coords = mt.coords as [number, number][];
-        const path = coords.map(distort);
+        
+        // Controlled, precise structural bend (zig-zag) instead of random chaos
+        // Alternates slightly on the axis to create a stable, beautiful hand-drawn wave
+        const path = coords.map(([lat, lng], i) => {
+          const bendX = i % 2 === 0 ? 0.04 : -0.04;
+          const bendY = i % 2 === 0 ? -0.04 : 0.04;
+          return [lat + bendX, lng + bendY] as [number, number];
+        });
+
+        const mainWeight = mt.id === 'mt-001' ? 2.2 : 1.7; // Hierarchical weighting
 
         return (
           <React.Fragment key={`${mt.id}-lines`}>
-            {/* Glow layer (background) */}
+            {/* Depth Shadow Layer (down-right offset) */}
             <Polyline
-              positions={path}
-              smoothFactor={3}
+              positions={path.map(([lat, lng]) => [lat - 0.015, lng + 0.015])}
+              smoothFactor={3.5}
               pathOptions={{
-                color: '#9C7A4A',
-                weight: 6,
-                opacity: 0.18,
+                color: 'rgba(0,0,0,0.08)',
+                weight: mainWeight + 1,
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
               interactive={false}
             />
-            {/* Core line (sharp) */}
+
+            {/* Glow Layer (Soft aura) */}
+            <Polyline
+              positions={path}
+              smoothFactor={3.5}
+              pathOptions={{
+                color: '#A1866F',
+                weight: 5,
+                opacity: 0.12,
+                lineCap: 'round',
+                lineJoin: 'round',
+                className: 'terrain-polygon-blur', // softness
+              }}
+              interactive={false}
+            />
+
+            {/* Main Core Stroke (Ink) */}
             <Polyline
               positions={path}
               smoothFactor={3}
               pathOptions={{
                 color: '#4A3722',
-                weight: 2,
-                opacity: 0.9,
+                weight: mainWeight,
+                opacity: 0.85,
+                lineCap: 'round',
+                lineJoin: 'round',
+              }}
+              interactive={false}
+            />
+
+            {/* Subtle Highlight Layer (dashed) */}
+            <Polyline
+              positions={path.map(([lat, lng]) => [lat + 0.01, lng - 0.01])}
+              smoothFactor={3.5}
+              pathOptions={{
+                color: '#C2A98A',
+                weight: 0.8,
+                opacity: 0.25,
+                dashArray: "2,4",
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
@@ -186,24 +225,25 @@ function MountainLabelsLayer({ mountains, onMountainClick }: MountainLayerProps)
 
         return (
           <React.Fragment key={`${mt.id}-labels`}>
-            {/* Invisible wide clickable path (distorted to match rendered mountain) */}
+            {/* Invisible wide clickable path */}
             <Polyline
-              positions={coords.map(distort)}
+              positions={coords}
               pathOptions={{ color: 'transparent', weight: 18, opacity: 0 }}
               eventHandlers={{ click: () => onMountainClick(mt) }}
-            />
-            {/* Rotated range label */}
-            <Marker
-              position={distort(coords[centerIdx])}
-              icon={L.divIcon({
-                html: `<div class="mountain-label" style="transform: rotate(${angle}deg); transform-origin: center center;">${mt.name}</div>`,
-                className: 'custom-marker',
-                iconSize: [140, 22],
-                iconAnchor: [70, 11],
-              })}
-              zIndexOffset={sel ? 100 : 0}
-              eventHandlers={{ click: () => onMountainClick(mt) }}
-            >
+             />
+            {/* Rotated range label (Elevated above line) */}
+             <Marker
+               position={coords[centerIdx]}
+               icon={L.divIcon({
+                 html: `<div class="mountain-label" style="transform: rotate(${angle}deg); transform-origin: center center;">${mt.name}</div>`,
+                 className: 'custom-marker',
+                 iconSize: [140, 22],
+                 // 11 is center, bump to 19 to elevate label ~8px above the mountain line
+                 iconAnchor: [70, 19],
+               })}
+               zIndexOffset={sel ? 100 : 0}
+               eventHandlers={{ click: () => onMountainClick(mt) }}
+             >
               <Popup>
                 <div className="popup-inner">
                   <h3>{mt.name}</h3>
