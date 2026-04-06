@@ -6,6 +6,7 @@ import {
   TileLayer,
   Marker,
   Popup,
+  Tooltip,
   Polyline,
   Polygon,
   GeoJSON,
@@ -25,36 +26,61 @@ import { AKHAND_BHARAT_BOUNDS } from '@/utils/mapBounds';
 import 'leaflet/dist/leaflet.css';
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// TEMPLE MARKER ICONS — Traditional SVG (kept from existing system)
+// SACRED CITIES MARKERS — Copper engraving aesthetic
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const TEMPLE_SVG = `<svg viewBox="0 0 24 24" width="16" height="16"><rect x="7" y="12" width="10" height="9" fill="#A0522D" stroke="#6B3410" stroke-width="1"/><polygon points="12,3 5,12 19,12" fill="#C47A4C" stroke="#6B3410" stroke-width="1"/><rect x="10.5" y="15" width="3" height="6" fill="#6B3410"/></svg>`;
+const SACRED_CITIES = [
+  { name: "Takshashila", coords: [33.745, 72.787] },
+  { name: "Amritsar", coords: [31.634, 74.872] },
+  { name: "Indraprastha", coords: [28.6139, 77.2090] },
+  { name: "Mathura", coords: [27.4924, 77.6737] },
+  { name: "Ayodhya", coords: [26.7999, 82.2042] },
+  { name: "Vaishali", coords: [25.9870, 85.1290] },
+  { name: "Patliputra", coords: [25.5941, 85.1376] },
+  { name: "Prayag", coords: [25.4358, 81.8463] },
+  { name: "Gaya", coords: [24.7955, 85.0002] },
+  { name: "Avanthika", coords: [23.1765, 75.7885] },
+  { name: "Dwarka", coords: [22.2442, 68.9685] },
+  { name: "Somanath", coords: [20.8880, 70.4012] },
+  { name: "Nagpur", coords: [21.1458, 79.0882] },
+  { name: "Puri", coords: [19.8135, 85.8312] },
+  { name: "Vijaynagar", coords: [15.3350, 76.4600] },
+  { name: "Kanchi", coords: [12.8342, 79.7036] }
+];
 
-const createTempleIcon = (isSelected = false) => {
-  const cfg = CATEGORY_CONFIG.temple;
-  const size = isSelected ? 36 : 28;
-  const borderWidth = isSelected ? 2 : 1.5;
+function adjustCoords(name: string, lat: number, lng: number): [number, number] {
+  const offsetMap: Record<string, [number, number]> = {
+    "Vaishali": [0.15, 0.2],
+    "Patliputra": [-0.1, 0.2],
+    "Prayag": [-0.1, -0.3],
+    "Mathura": [0.1, -0.2],
+    "Indraprastha": [0.15, 0.15],
+  };
 
+  if (offsetMap[name]) {
+    return [
+      lat + offsetMap[name][0],
+      lng + offsetMap[name][1]
+    ];
+  }
+
+  return [lat, lng];
+}
+
+const createSacredMarker = (isSelected = false) => {
   return L.divIcon({
-    html: `<div class="cultural-marker ${isSelected ? 'cultural-marker--selected' : ''}" style="
-      width:${size}px;height:${size}px;
-      background:${cfg.markerBg};
-      border:${borderWidth}px solid ${isSelected ? '#8B4513' : 'rgba(160,82,45,0.4)'};
-      box-shadow:${isSelected
-        ? '0 0 8px rgba(139,69,19,0.3), 0 2px 6px rgba(0,0,0,0.4)'
-        : '0 2px 4px rgba(0,0,0,0.3)'};
-      animation:${isSelected ? 'pulseGlow 2.5s ease-in-out infinite' : 'none'};
-    ">${TEMPLE_SVG}</div>`,
-    className: 'custom-marker',
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    popupAnchor: [0, -(size / 2) - 4],
+    className: 'custom-marker', // clears leaflet defaults
+    html: `
+      <div class="marker-wrapper ${isSelected ? 'marker-wrapper--selected' : ''}">
+        <div class="marker-glow"></div>
+        <div class="marker-core">
+          <div class="marker-symbol">ॐ</div>
+        </div>
+      </div>
+    `,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
   });
-};
-
-const TEMPLE_ICONS = {
-  normal: createTempleIcon(false),
-  selected: createTempleIcon(true),
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -384,44 +410,33 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// TEMPLE LAYER — Traditional point markers (unchanged behavior)
+// SACRED CITIES LAYER
 // ═══════════════════════════════════════════════════════════════════════════════
 
-interface TempleLayerProps {
-  temples: Location[];
-  onTempleClick: (loc: Location) => void;
-}
-
-function TempleLayer({ temples, onTempleClick }: TempleLayerProps) {
-  const { selectedLocation } = useMap();
+function SacredCitiesLayer() {
   const { activeFilters } = useFilter();
 
-  const visible = useMemo(
-    () => temples.filter(() => activeFilters.temple),
-    [temples, activeFilters]
-  );
+  if (!activeFilters.temple) return null;
 
   return (
     <>
-      {visible.map((temple) => {
-        const sel = selectedLocation?.id === temple.id;
+      {SACRED_CITIES.map((city) => {
+        const [lat, lng] = adjustCoords(city.name, city.coords[0], city.coords[1]);
         return (
           <Marker
-            key={temple.id}
-            position={[temple.latitude, temple.longitude]}
-            icon={sel ? TEMPLE_ICONS.selected : TEMPLE_ICONS.normal}
-            eventHandlers={{ click: () => onTempleClick(temple) }}
-            zIndexOffset={sel ? 1000 : 0}
+            key={city.name}
+            position={[lat, lng]}
+            icon={createSacredMarker()}
           >
-            <Popup>
-              <div className="popup-inner">
-                <h3>{temple.name}</h3>
-                {temple.nameHindi && <p>{temple.nameHindi}</p>}
-                <button onClick={() => onTempleClick(temple)} className="popup-btn">
-                  View Details ›
-                </button>
-              </div>
-            </Popup>
+            <Tooltip
+              permanent
+              direction="bottom"
+              offset={[0, 14]}
+              className="sacred-label"
+              opacity={0.9}
+            >
+              {city.name}
+            </Tooltip>
           </Marker>
         );
       })}
@@ -613,9 +628,9 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
         <MountainLabelsLayer mountains={mountains} onMountainClick={onMarkerClick} />
       </Pane>
 
-      {/* ── Layer 6: Temples / POIs (highest z-order) ───────── */}
+      {/* ── Layer 6: Sacred Cities (highest z-order) ───────── */}
       <Pane name="poiPane" style={{ zIndex: 600 }}>
-        <TempleLayer temples={temples} onTempleClick={onMarkerClick} />
+        <SacredCitiesLayer />
       </Pane>
 
       {/* ── Final Mask Layer: Hides everything completely outside defined bounds ───────── */}
