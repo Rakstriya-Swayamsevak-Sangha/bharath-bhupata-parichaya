@@ -93,113 +93,59 @@ function MapContent() {
         overflow: 'hidden',
       }}
     >
-      {/* ── Header — Ancient Manuscript Banner ───────────────────────── */}
-      <header
-        style={{
-          flexShrink: 0,
-          background: 'linear-gradient(180deg, #2A2520 0%, #231F1B 100%)',
-          borderBottom: '1px solid #3D352D',
-          padding: '14px 24px',
-          zIndex: 20,
-        }}
-      >
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-        }}>
-          <div>
-            <h1 style={{
-              fontFamily: "'Noto Serif Devanagari', serif",
-              fontSize: '1.35rem',
-              fontWeight: 600,
-              color: '#FF9933',
-              margin: 0,
-              lineHeight: 1.3,
-              letterSpacing: '0.02em',
-            }}>
-              अखंड भारत दर्शन
-            </h1>
-            <p style={{
-              fontFamily: "'Cinzel', serif",
-              color: '#A89882',
-              fontSize: '0.7rem',
-              margin: '4px 0 0 0',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-            }}>
-              Cultural Atlas of Akhand Bharat
-            </p>
-          </div>
-
-          {/* Sacred sites counter */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '5px 14px',
-            borderRadius: '2px',
-            background: 'rgba(255, 153, 51, 0.08)',
-            border: '1px solid rgba(255, 153, 51, 0.2)',
-          }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF9933" strokeWidth="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            <span style={{
-              fontFamily: "'Cinzel', serif",
-              color: '#FF9933',
-              fontSize: '0.7rem',
-              fontWeight: 500,
-              letterSpacing: '0.08em',
-            }}>
-              {locations.length} Sacred Sites
-            </span>
-          </div>
-        </div>
+      {/* ── Header (Minimal) ───────────────────────── */}
+      <header className="header shrink-0 relative z-20">
+        <h1 className="title">
+          Akhand Bharat Darshan
+        </h1>
       </header>
 
-      {/* ── Filter Controls ────────────────────────────────────────────── */}
-      <div style={{
-        flexShrink: 0,
-        padding: '8px 24px',
-        background: 'rgba(28, 26, 23, 0.9)',
-        zIndex: 15,
-      }}>
-        <FilterBar />
+      {/* ── Cultural Intro Strip ───────────────────── */}
+      <div className="intro shrink-0 relative z-10">
+        <p>
+          Explore the sacred geography of Bharat — rivers, mountains, and ancient cities that shaped civilization.
+        </p>
       </div>
 
-      {/* ── Map Viewport (with vignette) ───────────────────────────────── */}
-      <div
-        id="map-viewport"
-        style={{
-          flex: 1,
-          minHeight: 0,
-          position: 'relative',
-          width: '100%',
-        }}
-      >
-        {isLoading ? (
-          <div style={{
-            width: '100%', height: '100%',
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            backgroundColor: '#1C1A17', gap: '14px',
-          }}>
-            <div className="map-loading-spinner" />
-            <span style={{ color: '#A89882', fontFamily: "'Cinzel', serif", fontSize: '13px', letterSpacing: '0.1em' }}>
-              Discovering sacred sites…
-            </span>
+      {/* ── Main Layout (Sidebar + Map) ────────────── */}
+      <div className="mainLayout flex-1 w-full relative z-0">
+        
+        {/* ── Left Sidebar ─────────────────────────── */}
+        <div className="sidebar shrink-0">
+          <h3>Explore</h3>
+          
+          <FilterBar />
+
+          <div className="flex-1"></div>
+
+          <div className="count">
+            {locations.length} Sacred Sites
           </div>
-        ) : (
-          <CulturalMap
-            locations={locations}
-            onMarkerClick={handleMarkerClick}
-          />
-        )}
+        </div>
 
-
+        {/* ── Map Container Overlay ────────────────── */}
+        <div className="map-container relative">
+          <div className="map-frame">
+            {isLoading ? (
+              <div style={{
+                width: '100%', height: '100%',
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+                backgroundColor: 'transparent', gap: '14px',
+              }}>
+                <div className="map-loading-spinner" style={{ borderColor: 'rgba(207,174,123,0.3)', borderTopColor: '#CFAE7B' }} />
+                <span style={{ color: '#8B5E34', fontFamily: "'Cinzel', serif", fontSize: '13px', letterSpacing: '0.1em' }}>
+                  Discovering sacred sites…
+                </span>
+              </div>
+            ) : (
+              <CulturalMap
+                locations={locations}
+                onMarkerClick={handleMarkerClick}
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       {/* ── Sidebar (overlay) ──────────────────────────────────────────── */}
