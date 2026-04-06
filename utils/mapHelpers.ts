@@ -48,7 +48,7 @@ export function filterLocations(
  */
 export function getMarkerColor(category: string): string {
   const colors: Record<string, string> = {
-    mountain: '#4A90A4',
+    mountain: '#5C4033',
     river: '#3B82F6',
     temple: '#E07A3C',
   };

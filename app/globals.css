@@ -70,14 +70,13 @@ html, body {
 }
 
 /* ─── Step 1: Subtle warmth on tile pane — preserve geographic context ──── */
-/* Gentle sepia tint that warms the basemap without hiding borders/labels.
-   sepia(0.25)     — light parchment warmth
-   saturate(0.75)  — preserve some color for borders
-   brightness(0.95)— very subtle darkening
-   contrast(0.95)  — maintain label readability */
+/* Gentle sepia tint that warms the basemap without hiding borders/labels. */
 .leaflet-tile-pane {
   will-change: transform;
-  filter: sepia(0.25) saturate(0.75) brightness(0.95) contrast(0.95);
+}
+
+.leaflet-tile {
+  filter: sepia(0.6) contrast(0.9) brightness(0.95);
 }
 
 /* ─── Tile blending — softened for readability ─────────────────────────── */
@@ -87,21 +86,7 @@ html, body {
   opacity: 0.92;
 }
 
-/* ─── Step 7: Subtle vignette — refined edge framing ───────────────────── */
-/* Very gentle edge darkening that frames the map without reducing
-   center readability. Purely atmospheric — no content obscured. */
-.map-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: 400;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 55%,
-    rgba(28, 26, 23, 0.12) 78%,
-    rgba(28, 26, 23, 0.30) 100%
-  );
-}
+
 
 /* ─── Parchment texture layer — reduced to subtle hint ─────────────────── */
 /* Opacity lowered from 0.3 → 0.15 so the basemap (with borders) stays
@@ -146,23 +131,22 @@ html, body {
   transform: scale(1.2);
 }
 
-/* ─── Mountain peak markers ─────────────────────────────────────────────── */
+/* ─── Mountain peak markers — Terrain system ────────────────────────────── */
+/* Peak icons reduced to subtle suggestions, not primary visual elements */
 .mountain-peak {
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.2 !important;
+  transform: scale(0.6) !important;
 }
 
-.mountain-peak--main:hover {
-  transform: scale(1.15);
-}
-
-.mountain-peak--satellite {
-  opacity: 0.75;
-}
-
-.mountain-peak--satellite:hover {
-  opacity: 1;
-  transform: scale(1.1);
+/* ─── Mountain range label — earthy serif typography ─────────────────────── */
+.mountain-label {
+  font-family: "Cinzel", serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  opacity: 0.6;
+  color: #5C4A2E;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 /* ─── River labels — high contrast with cultural typography ─────────────── */
@@ -372,5 +356,9 @@ html, body {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+}
+
+/* ─── Terrain Polygons (Soft Edges) ─────────────────────────────────────── */
+.terrain-polygon-blur {
+  filter: blur(4px);
 }

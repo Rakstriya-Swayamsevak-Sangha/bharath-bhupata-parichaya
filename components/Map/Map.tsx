@@ -7,6 +7,10 @@ import {
   Marker,
   Popup,
   Polyline,
+  Polygon,
+  GeoJSON,
+  ImageOverlay,
+  Pane,
   useMap as useLeafletMap,
 } from 'react-leaflet';
 import L from 'leaflet';
@@ -54,44 +58,167 @@ const TEMPLE_ICONS = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// MOUNTAIN RANGE ICONS — Clustered triangle symbols
+// MOUNTAIN SYSTEM — Terrain-Based Cartographic Rendering
+//
+// 3-layer approach:
+//   1. Terrain Zones     — soft polygon fills, defines mountain mass
+//   2. Internal Texture   — sparse hatching for grain/depth
+//   3. Ridge Lines        — directional strokes scaled by importance
+//
+// Rendering rules (non-negotiable):
+//   smoothFactor: 3  — maintains natural curvature
+//   lineJoin: "round" — no sharp angles
+//   lineCap: "round"  — soft terminations
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const createMountainIcon = (isMain: boolean, isSelected = false) => {
-  const size = isMain ? (isSelected ? 34 : 26) : 16;
-  const fill = isMain ? '#8B7D65' : '#7A6E58';
-  const stroke = isMain ? '#5C4E3A' : '#6B5F4E';
-  const opacity = isMain ? 1 : 0.7;
-  const innerFill = isMain ? '#B09A7A' : '#A08E72';
-
-  const borderColor = isSelected ? '#8B4513' : 'rgba(160,130,100,0.35)';
-  const shadow = isSelected
-    ? '0 0 6px rgba(139,69,19,0.25), 0 2px 5px rgba(0,0,0,0.35)'
-    : isMain
-      ? '0 2px 4px rgba(0,0,0,0.25)'
-      : '0 1px 2px rgba(0,0,0,0.15)';
-
-  const svg = isMain
-    ? `<svg viewBox="0 0 24 24" width="${size * 0.55}" height="${size * 0.55}"><polygon points="12,2 2,22 22,22" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/><polygon points="12,7 6,22 18,22" fill="${innerFill}" stroke="none"/></svg>`
-    : `<svg viewBox="0 0 24 24" width="10" height="10"><polygon points="12,4 4,20 20,20" fill="${fill}" stroke="${stroke}" stroke-width="1" opacity="${opacity}"/></svg>`;
-
-  return L.divIcon({
-    html: `<div class="mountain-peak ${isMain ? 'mountain-peak--main' : 'mountain-peak--satellite'} ${isSelected ? 'cultural-marker--selected' : ''}" style="
-      width:${size}px;height:${size}px;
-      background:rgba(92,78,58,${isMain ? 0.8 : 0.45});
-      border:${isMain ? 1.5 : 1}px solid ${borderColor};
-      border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:${shadow};
-      animation:${isSelected ? 'pulseGlow 2.5s ease-in-out infinite' : 'none'};
-      transition:all 0.25s ease;
-    ">${svg}</div>`,
-    className: 'custom-marker',
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    popupAnchor: [0, -(size / 2) - 4],
-  });
+const MT_PALETTE = {
+  ridge:     '#7A6445',
+  shadow:    '#4E3B24',
+  highlight: '#A8906A',
 };
+
+// Per-range configuration
+// zoneWidth = perpendicular spread for terrain zone polygon
+// density   = number of parallel ridge strokes
+// importance = visual weight multiplier (1.0 = HIGH, 0.6 = MED, 0.3 = LOW)
+const TERRAIN_CONFIG: Record<string, { zoneWidth: number; density: number; importance: number }> = {
+  'mt-001': { zoneWidth: 3.0, density: 8, importance: 1.0 },  // Himalaya — HIGH
+  'mt-002': { zoneWidth: 1.2, density: 4, importance: 0.5 },  // Sahyadri — LOW (elongated)
+  'mt-003': { zoneWidth: 0.8, density: 2, importance: 0.35 }, // Malaya — LOW
+  'mt-004': { zoneWidth: 1.0, density: 3, importance: 0.4 }, // Mahendra — LOW (coastal slant)
+  'mt-005': { zoneWidth: 1.8, density: 5, importance: 0.7 }, // Vindhya — MEDIUM
+  'mt-006': { zoneWidth: 1.6, density: 4, importance: 0.65 },// Aravalli — MEDIUM
+  'mt-007': { zoneWidth: 1.2, density: 3, importance: 0.5 }, // Satpura — MEDIUM-LOW
+};
+
+// Jitter — removes machine-precision look, gives hand-drawn feel
+const jitter = () => (Math.random() - 0.5) * 0.25;
+
+// Distortion — stylized map compresses north-south slightly, stretches east-west
+const distort = ([lat, lng]: [number, number]): [number, number] => [
+  lat * 0.98 + 0.5,
+  lng * 1.01,
+];
+
+interface MountainLayerProps {
+  mountains: Location[];
+  onMountainClick: (loc: Location) => void;
+}
+
+// ─── Minimalistic Mountain Renderer ──────────────────────────────────────────────
+function MountainLinesLayer({ mountains }: { mountains: Location[] }) {
+  const { activeFilters } = useFilter();
+
+  const visible = useMemo(
+    () => mountains.filter((m) => activeFilters.mountain && m.coords && m.coords.length > 1),
+    [mountains, activeFilters]
+  );
+
+  return (
+    <>
+      {visible.map((mt) => {
+        const coords = mt.coords as [number, number][];
+        const path = coords.map(distort);
+
+        return (
+          <React.Fragment key={`${mt.id}-lines`}>
+            {/* Glow layer (background) */}
+            <Polyline
+              positions={path}
+              smoothFactor={3}
+              pathOptions={{
+                color: '#9C7A4A',
+                weight: 6,
+                opacity: 0.18,
+                lineCap: 'round',
+                lineJoin: 'round',
+              }}
+              interactive={false}
+            />
+            {/* Core line (sharp) */}
+            <Polyline
+              positions={path}
+              smoothFactor={3}
+              pathOptions={{
+                color: '#4A3722',
+                weight: 2,
+                opacity: 0.9,
+                lineCap: 'round',
+                lineJoin: 'round',
+              }}
+              interactive={false}
+            />
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+}
+
+// ─── Interaction & Labelling ─────────────────────────────────────────────────
+function MountainLabelsLayer({ mountains, onMountainClick }: MountainLayerProps) {
+  const { selectedLocation } = useMap();
+  const { activeFilters } = useFilter();
+
+  const visible = useMemo(
+    () => mountains.filter((m) => activeFilters.mountain && m.coords && m.coords.length > 1),
+    [mountains, activeFilters]
+  );
+
+  return (
+    <>
+      {visible.map((mt) => {
+        const coords = mt.coords as [number, number][];
+        const centerIdx = Math.floor(coords.length / 2);
+        const sel = selectedLocation?.id === mt.id;
+
+        let angle = 0;
+        if (coords.length >= 2) {
+          const p1 = coords[0];
+          const p2 = coords[coords.length - 1];
+          const latDiff = p2[0] - p1[0];
+          const lngDiff = p2[1] - p1[1];
+          let cssAngle = Math.atan2(-latDiff, lngDiff) * (180 / Math.PI);
+          if (cssAngle > 90)  cssAngle -= 180;
+          if (cssAngle < -90) cssAngle += 180;
+          angle = cssAngle;
+        }
+
+        return (
+          <React.Fragment key={`${mt.id}-labels`}>
+            {/* Invisible wide clickable path (distorted to match rendered mountain) */}
+            <Polyline
+              positions={coords.map(distort)}
+              pathOptions={{ color: 'transparent', weight: 18, opacity: 0 }}
+              eventHandlers={{ click: () => onMountainClick(mt) }}
+            />
+            {/* Rotated range label */}
+            <Marker
+              position={distort(coords[centerIdx])}
+              icon={L.divIcon({
+                html: `<div class="mountain-label" style="transform: rotate(${angle}deg); transform-origin: center center;">${mt.name}</div>`,
+                className: 'custom-marker',
+                iconSize: [140, 22],
+                iconAnchor: [70, 11],
+              })}
+              zIndexOffset={sel ? 100 : 0}
+              eventHandlers={{ click: () => onMountainClick(mt) }}
+            >
+              <Popup>
+                <div className="popup-inner">
+                  <h3>{mt.name}</h3>
+                  {mt.nameHindi && <p>{mt.nameHindi}</p>}
+                  {mt.metadata?.elevation && <p style={{ fontSize: '11px', opacity: 0.7 }}>▲ {mt.metadata.elevation}</p>}
+                  <button onClick={() => onMountainClick(mt)} className="popup-btn">View Details ›</button>
+                </div>
+              </Popup>
+            </Marker>
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // RIVER LABEL ICON — Cinzel serif, italic, soft shadow for map integration
@@ -108,16 +235,7 @@ const createRiverLabelIcon = (name: string, isSelected = false) =>
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // RIVER LAYER — Cultural soft dashed rendering
-//
-// Two dashed layers per river create a hand-drawn, flowing feel:
-//   Layer 1 — Soft ambient : wide dashed spread, very low opacity (~0.10)
-//   Layer 2 — Main flow     : thin dashed line, higher opacity (~0.55)
-//
-// All layers use uniform weight throughout — no thickening at the delta.
-// Muted blues (#4A90E2 family) harmonize with the parchment background.
 // ═══════════════════════════════════════════════════════════════════════════════
-
-// ─── River Layer Component ────────────────────────────────────────────────────
 
 interface RiverLayerProps {
   rivers: Location[];
@@ -134,22 +252,18 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
     [rivers, activeFilters]
   );
 
-  // ── Palette: saturated deep blues that stand out on parchment ──────────────
   const PALETTE = {
-    // Layer 1 — outer glow halo (light blue luminance)
     glowColor:    '#8AB8DC',
     glowOpacity:     0.18,
     glowWeight:        9,
-    glowDash:          '1, 0',   // solid (0 gap = continuous glow)
-    // Layer 2 — soft ambient dashed
+    glowDash:          '1, 0',
     outerColor:    '#4A7EB8',
     outerOpacity:    0.25,
     outerWeight:        3.5,
     outerDash:          '5, 8',
-    // Layer 3 — main river line (saturated, clearly visible)
     coreColor:      '#1E5FA8',
     coreColorSel:   '#2980C8',
-    coreOpacity:     0.80,
+    coreOpacity:     0.60,
     coreOpacitySel:  0.95,
     coreWeight:         1.5,
     coreDash:           '1, 6',
@@ -160,17 +274,13 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
       {visible.map((river) => {
         const sel = selectedLocation?.id === river.id;
         const path = river.flowPath as [number, number][];
-
-        // Label at ~40% along path
         const labelIdx = Math.floor(path.length * 0.4);
         const labelPoint = path[labelIdx];
-
         const coreColor   = sel ? PALETTE.coreColorSel  : PALETTE.coreColor;
         const coreOpacity = sel ? PALETTE.coreOpacitySel : PALETTE.coreOpacity;
 
         return (
           <React.Fragment key={river.id}>
-            {/* ── Layer 1: Outer glow halo ─────────────────────────────────── */}
             <Polyline
               positions={path}
               smoothFactor={1.8}
@@ -184,8 +294,6 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
               }}
               interactive={false}
             />
-
-            {/* ── Layer 2: Soft dashed ambient ───────────────────────────── */}
             <Polyline
               positions={path}
               smoothFactor={1.5}
@@ -199,8 +307,6 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
               }}
               interactive={false}
             />
-
-            {/* ── Layer 3: Main dashed flow (interactive) ─────────────────── */}
             <Polyline
               positions={path}
               smoothFactor={1.5}
@@ -214,8 +320,6 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
               }}
               eventHandlers={{ click: () => onRiverClick(river) }}
             />
-
-            {/* ── River name label ───────────────────────────────────────── */}
             <Marker
               position={labelPoint}
               icon={createRiverLabelIcon(river.name, sel)}
@@ -227,66 +331,6 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
                   <h3>{river.name}</h3>
                   {river.nameHindi && <p>{river.nameHindi}</p>}
                   <button onClick={() => onRiverClick(river)} className="popup-btn">
-                    View Details ›
-                  </button>
-                </div>
-              </Popup>
-            </Marker>
-          </React.Fragment>
-        );
-      })}
-    </>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// MOUNTAIN LAYER — Clustered range symbols
-// ═══════════════════════════════════════════════════════════════════════════════
-
-interface MountainLayerProps {
-  mountains: Location[];
-  onMountainClick: (loc: Location) => void;
-}
-
-function MountainLayer({ mountains, onMountainClick }: MountainLayerProps) {
-  const { selectedLocation } = useMap();
-  const { activeFilters } = useFilter();
-
-  const visible = useMemo(
-    () => mountains.filter((m) => activeFilters.mountain),
-    [mountains, activeFilters]
-  );
-
-  return (
-    <>
-      {visible.map((mt) => {
-        const sel = selectedLocation?.id === mt.id;
-
-        return (
-          <React.Fragment key={mt.id}>
-            {/* Satellite peaks (smaller triangles around main peak) */}
-            {mt.rangePoints?.map((pt, i) => (
-              <Marker
-                key={`${mt.id}-sat-${i}`}
-                position={[pt.lat, pt.lng]}
-                icon={createMountainIcon(false, false)}
-                eventHandlers={{ click: () => onMountainClick(mt) }}
-                zIndexOffset={sel ? 500 : 0}
-              />
-            ))}
-
-            {/* Main peak (larger, interactive) */}
-            <Marker
-              position={[mt.latitude, mt.longitude]}
-              icon={createMountainIcon(true, sel)}
-              eventHandlers={{ click: () => onMountainClick(mt) }}
-              zIndexOffset={sel ? 1000 : 100}
-            >
-              <Popup>
-                <div className="popup-inner">
-                  <h3>{mt.name}</h3>
-                  {mt.nameHindi && <p>{mt.nameHindi}</p>}
-                  <button onClick={() => onMountainClick(mt)} className="popup-btn">
                     View Details ›
                   </button>
                 </div>
@@ -389,6 +433,11 @@ function MapViewController() {
   useEffect(() => {
     if (didInit.current) return;
     didInit.current = true;
+
+    // Fix tilePane to be at zIndex 100
+    const tilePane = map.getPane('tilePane');
+    if (tilePane) tilePane.style.zIndex = '100';
+
     map.options.minZoom = MAP_CONFIG.MIN_ZOOM;
     map.options.maxZoom = MAP_CONFIG.MAX_ZOOM;
     applyViewport();
@@ -415,7 +464,20 @@ interface CulturalMapProps {
 
 export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [bordersData, setBordersData] = useState<any>(null);
+  const [stateBorders, setStateBorders] = useState<any>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    fetch('/countries.geojson')
+      .then(r => r.json())
+      .then(setBordersData)
+      .catch(console.error);
+    fetch('/india_states.geojson')
+      .then(r => r.json())
+      .then(setStateBorders)
+      .catch(console.error);
+  }, []);
 
   // Split locations by category for separate layer rendering
   const rivers = useMemo(() => locations.filter((l) => l.category === 'river'), [locations]);
@@ -453,10 +515,13 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
       scrollWheelZoom={true}
       style={{ width: '100%', height: '100%' }}
     >
-      {/* Base tiles — sepia-filtered via CSS */}
+      {/* Viewport controller fixes tilePane z-index before other components */}
+      <MapViewController />
+
+      {/* ── Layer 1: Base tiles — CartoDB light_nolabels ──────── */}
       <TileLayer
         attribution={MAP_CONFIG.TILE_ATTRIBUTION}
-        url={MAP_CONFIG.TILE_URL}
+        url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
         noWrap={MAP_CONFIG.TILE_NO_WRAP}
         bounds={AKHAND_BHARAT_BOUNDS}
       />
@@ -464,17 +529,81 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
       {/* Parchment texture */}
       <ParchmentOverlay />
 
-      {/* Viewport controller */}
-      <MapViewController />
+      {/* ── Layer 2: Terrain (glow + core line) ──────── */}
+      <Pane name="terrainPane" style={{ zIndex: 200 }}>
+        <MountainLinesLayer mountains={mountains} />
+      </Pane>
 
-      {/* ── Layer 1: Rivers (polylines — lowest z-order) ─────────────── */}
-      <RiverLayer rivers={rivers} onRiverClick={onMarkerClick} />
+      {/* ── Layer 3: Borders ──────── */}
+      <Pane name="borderPane" style={{ zIndex: 300 }}>
+        {bordersData && (
+          <GeoJSON
+            data={bordersData}
+            style={{
+              color: "#7A6A4F",
+              weight: 0.8,
+              opacity: 0.4,
+              fillOpacity: 0
+            }}
+            interactive={false}
+          />
+        )}
+        {stateBorders && (
+          <GeoJSON
+            data={stateBorders}
+            style={{
+              color: "#7A6A4F",
+              weight: 0.5,
+              opacity: 0.25,
+              dashArray: "2,4",
+              fillOpacity: 0
+            }}
+            interactive={false}
+          />
+        )}
+      </Pane>
 
-      {/* ── Layer 2: Mountains (clustered ranges — mid z-order) ──────── */}
-      <MountainLayer mountains={mountains} onMountainClick={onMarkerClick} />
+      {/* ── Layer 4: Rivers ─────────────── */}
+      <Pane name="riverPane" style={{ zIndex: 400 }}>
+        <RiverLayer rivers={rivers} onRiverClick={onMarkerClick} />
+      </Pane>
 
-      {/* ── Layer 3: Temples (point markers — highest z-order) ───────── */}
-      <TempleLayer temples={temples} onTempleClick={onMarkerClick} />
+      {/* ── Layer 5: Mountain labels ──────── */}
+      <Pane name="peakPane" style={{ zIndex: 500 }}>
+        <MountainLabelsLayer mountains={mountains} onMountainClick={onMarkerClick} />
+      </Pane>
+
+      {/* ── Layer 6: Temples / POIs (highest z-order) ───────── */}
+      <Pane name="poiPane" style={{ zIndex: 600 }}>
+        <TempleLayer temples={temples} onTempleClick={onMarkerClick} />
+      </Pane>
+
+      {/* ── Final Mask Layer: Hides everything completely outside defined bounds ───────── */}
+      <Pane name="maskPane" style={{ zIndex: 800 }}>
+        <Polygon
+          positions={[
+            [
+              [-90, -180],
+              [90, -180],
+              [90, 180],
+              [-90, 180],
+            ],
+            [
+              [5, 60],
+              [5, 100],
+              [37, 100],
+              [37, 60],
+            ]
+          ]}
+          pathOptions={{
+            color: 'transparent',
+            fillColor: '#1C1A17',
+            fillOpacity: 1,
+            weight: 0
+          }}
+          interactive={false}
+        />
+      </Pane>
     </MapContainer>
   );
 }

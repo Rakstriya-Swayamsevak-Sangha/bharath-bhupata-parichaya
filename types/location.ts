@@ -22,8 +22,8 @@ export interface Location {
   /** River flow path — array of [lat, lng] waypoints from source to delta */
   flowPath?: [number, number][];
 
-  /** Mountain range satellite peaks — array of {lat, lng, label?} around the main summit */
-  rangePoints?: { lat: number; lng: number; label?: string }[];
+  /** Mountain range direct coords — array of [lat, lng] points for proper real-world ranges */
+  coords?: [number, number][];
 }
 
 export type FilterState = {

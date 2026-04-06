@@ -199,8 +199,7 @@ function MapContent() {
           />
         )}
 
-        {/* Step 6: Vignette overlay — canvas atmosphere */}
-        <div className="map-vignette" />
+
       </div>
 
       {/* ── Sidebar (overlay) ──────────────────────────────────────────── */}
