@@ -6,7 +6,7 @@ export const PARCHMENT_TEXTURE_URL = '/parchment-texture.png';
 
 // ─── Map Engine Configuration ───────────────────────────────────────────────
 export const MAP_CONFIG = {
-  CENTER: [21.0, 78.0] as [number, number],
+  CENTER: [19.0, 80.0] as [number, number],
 
   // Zoom
   MIN_ZOOM: 4,

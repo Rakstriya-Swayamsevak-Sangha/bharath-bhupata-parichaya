@@ -22,10 +22,28 @@ export function FilterProvider({ children }: { children: ReactNode }) {
   const [activeFilters, setActiveFilters] = useState<Record<Category, boolean>>(DEFAULT_FILTERS);
 
   const toggleFilter = useCallback((category: Category) => {
-    setActiveFilters(prev => ({
-      ...prev,
-      [category]: !prev[category],
-    }));
+    setActiveFilters(prev => {
+      const isAllActive = prev.mountain && prev.river && prev.temple;
+      
+      if (isAllActive) {
+        return {
+          mountain: category === 'mountain',
+          river: category === 'river',
+          temple: category === 'temple',
+        };
+      }
+      
+      const next = {
+        ...prev,
+        [category]: !prev[category],
+      };
+      
+      if (!next.mountain && !next.river && !next.temple) {
+        return { mountain: true, river: true, temple: true };
+      }
+      
+      return next;
+    });
   }, []);
 
   const setAllFilters = useCallback((active: boolean) => {

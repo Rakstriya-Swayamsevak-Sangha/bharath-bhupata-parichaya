@@ -5,6 +5,6 @@ import L from 'leaflet';
 // This file is client-only — Leaflet requires `window` and cannot
 // be imported during SSR. Import this only from client components.
 export const AKHAND_BHARAT_BOUNDS = L.latLngBounds(
-  [5, 60],   // SW
-  [37, 100],  // NE
+  [-2, 55],   // SW expanded west and south
+  [40, 105],  // NE expanded east and north
 );

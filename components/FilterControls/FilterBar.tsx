@@ -33,7 +33,7 @@ export function FilterBar() {
   return (
     <>
       <button
-        onClick={() => setAllFilters(!allActive)}
+        onClick={() => setAllFilters(true)}
         className={`filter ${allActive ? 'active' : ''}`}
       >
         All

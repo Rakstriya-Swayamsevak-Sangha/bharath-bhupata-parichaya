@@ -98,8 +98,8 @@ const createSacredMarker = (isSelected = false) => {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const MT_PALETTE = {
-  ridge:     '#7A6445',
-  shadow:    '#4E3B24',
+  ridge: '#7A6445',
+  shadow: '#4E3B24',
   highlight: '#A8906A',
 };
 
@@ -144,7 +144,7 @@ function MountainLinesLayer({ mountains }: { mountains: Location[] }) {
     <>
       {visible.map((mt) => {
         const coords = mt.coords as [number, number][];
-        
+
         // Controlled, precise structural bend (zig-zag) instead of random chaos
         // Alternates slightly on the axis to create a stable, beautiful hand-drawn wave
         const path = coords.map(([lat, lng], i) => {
@@ -244,7 +244,7 @@ function MountainLabelsLayer({ mountains, onMountainClick }: MountainLayerProps)
           const latDiff = p2[0] - p1[0];
           const lngDiff = p2[1] - p1[1];
           let cssAngle = Math.atan2(-latDiff, lngDiff) * (180 / Math.PI);
-          if (cssAngle > 90)  cssAngle -= 180;
+          if (cssAngle > 90) cssAngle -= 180;
           if (cssAngle < -90) cssAngle += 180;
           angle = cssAngle;
         }
@@ -256,20 +256,20 @@ function MountainLabelsLayer({ mountains, onMountainClick }: MountainLayerProps)
               positions={coords}
               pathOptions={{ color: 'transparent', weight: 18, opacity: 0 }}
               eventHandlers={{ click: () => onMountainClick(mt) }}
-             />
+            />
             {/* Rotated range label (Elevated above line) */}
-             <Marker
-               position={coords[centerIdx]}
-               icon={L.divIcon({
-                 html: `<div class="mountain-label" style="transform: rotate(${angle}deg); transform-origin: center center;">${mt.name}</div>`,
-                 className: 'custom-marker',
-                 iconSize: [140, 22],
-                 // 11 is center, bump to 19 to elevate label ~8px above the mountain line
-                 iconAnchor: [70, 19],
-               })}
-               zIndexOffset={sel ? 100 : 0}
-               eventHandlers={{ click: () => onMountainClick(mt) }}
-             >
+            <Marker
+              position={coords[centerIdx]}
+              icon={L.divIcon({
+                html: `<div class="mountain-label" style="transform: rotate(${angle}deg); transform-origin: center center;">${mt.name}</div>`,
+                className: 'custom-marker',
+                iconSize: [140, 22],
+                // 11 is center, bump to 19 to elevate label ~8px above the mountain line
+                iconAnchor: [70, 19],
+              })}
+              zIndexOffset={sel ? 100 : 0}
+              eventHandlers={{ click: () => onMountainClick(mt) }}
+            >
               <Popup>
                 <div className="popup-inner">
                   <h3>{mt.name}</h3>
@@ -319,20 +319,20 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
   );
 
   const PALETTE = {
-    glowColor:    '#8AB8DC',
-    glowOpacity:     0.18,
-    glowWeight:        9,
-    glowDash:          '1, 0',
-    outerColor:    '#4A7EB8',
-    outerOpacity:    0.25,
-    outerWeight:        3.5,
-    outerDash:          '5, 8',
-    coreColor:      '#1E5FA8',
-    coreColorSel:   '#2980C8',
-    coreOpacity:     0.60,
-    coreOpacitySel:  0.95,
-    coreWeight:         1.5,
-    coreDash:           '1, 6',
+    glowColor: '#8AB8DC',
+    glowOpacity: 0.18,
+    glowWeight: 9,
+    glowDash: '1, 0',
+    outerColor: '#4A7EB8',
+    outerOpacity: 0.25,
+    outerWeight: 3.5,
+    outerDash: '5, 8',
+    coreColor: '#1E5FA8',
+    coreColorSel: '#2980C8',
+    coreOpacity: 0.60,
+    coreOpacitySel: 0.95,
+    coreWeight: 1.5,
+    coreDash: '1, 6',
   };
 
   return (
@@ -342,7 +342,7 @@ function RiverLayer({ rivers, onRiverClick }: RiverLayerProps) {
         const path = river.flowPath as [number, number][];
         const labelIdx = Math.floor(path.length * 0.4);
         const labelPoint = path[labelIdx];
-        const coreColor   = sel ? PALETTE.coreColorSel  : PALETTE.coreColor;
+        const coreColor = sel ? PALETTE.coreColorSel : PALETTE.coreColor;
         const coreOpacity = sel ? PALETTE.coreOpacitySel : PALETTE.coreOpacity;
 
         return (
@@ -440,6 +440,73 @@ function SacredCitiesLayer() {
           </Marker>
         );
       })}
+    </>
+  );
+}
+
+function formatLabel(name: string) {
+  if (name.includes("(")) {
+    const [main, sub] = name.split("(");
+    return `
+      <div class="label-main">${main.trim()}</div>
+      <div class="label-sub">${sub.replace(")", "").trim()}</div>
+    `;
+  }
+  return `<div class="label-main">${name}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// STATIC GEOGRAPHY LABELS (Countries & Oceans)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const COUNTRY_LABELS = [
+  { name: "AFGHANISTAN (GANDHARA)", coords: [33.5, 68.0] as [number, number] },
+  { name: "PAKISTAN", coords: [28.5, 70.0] as [number, number] },
+  { name: "NEPAL", coords: [28.2, 84.5] as [number, number] },
+  { name: "BANGLADESH", coords: [23.7, 90.3] as [number, number] },
+  { name: "BRAHMADESH", coords: [21.5, 96.0] as [number, number] },
+  { name: "SRI LANKA", coords: [7.8, 80.7] as [number, number] }
+];
+
+const OCEAN_LABELS = [
+  { name: "ARABIAN SEA (SINDHU SAGAR)", coords: [16.0, 62.0] as [number, number] },
+  { name: "INDIAN OCEAN (HINDU MAHASAGAR)", coords: [3.2, 79.5] as [number, number] },
+  { name: "BAY OF BENGAL (GANGA SAGAR)", coords: [18.5, 90.0] as [number, number] }
+];
+
+function StaticLabelsLayer() {
+  // Static scale typography — centered markers to prevent drifting on zoom closer
+  const labelWidth = 200;
+  const labelHeight = 60;
+
+  return (
+    <>
+      {COUNTRY_LABELS.map((item, idx) => (
+        <Marker
+          key={`country-${idx}`}
+          position={item.coords}
+          interactive={false}
+          icon={L.divIcon({
+            className: 'custom-marker',
+            html: `<div class="country-label">${formatLabel(item.name)}</div>`,
+            iconSize: [labelWidth, labelHeight],
+            iconAnchor: [labelWidth / 2, labelHeight / 2],
+          })}
+        />
+      ))}
+      {OCEAN_LABELS.map((item, idx) => (
+        <Marker
+          key={`ocean-${idx}`}
+          position={item.coords}
+          interactive={false}
+          icon={L.divIcon({
+            className: 'custom-marker',
+            html: `<div class="ocean-label">${formatLabel(item.name)}</div>`,
+            iconSize: [labelWidth, labelHeight],
+            iconAnchor: [labelWidth / 2, labelHeight / 2],
+          })}
+        />
+      ))}
     </>
   );
 }
@@ -589,6 +656,11 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
         <MountainLinesLayer mountains={mountains} />
       </Pane>
 
+      {/* ── Layer 2.5: Static Map Labels ──────── */}
+      <Pane name="staticLabelsPane" style={{ zIndex: 250 }}>
+        <StaticLabelsLayer />
+      </Pane>
+
       {/* ── Layer 3: Borders ──────── */}
       <Pane name="borderPane" style={{ zIndex: 300 }}>
         {bordersData && (
@@ -644,10 +716,10 @@ export function CulturalMap({ locations, onMarkerClick }: CulturalMapProps) {
               [-90, 180],
             ],
             [
-              [5, 60],
-              [5, 100],
-              [37, 100],
-              [37, 60],
+              [-2, 55],
+              [-2, 105],
+              [40, 105],
+              [40, 55],
             ]
           ]}
           pathOptions={{
