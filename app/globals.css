@@ -865,6 +865,74 @@ body {
   text-transform: uppercase;
 }
 
+.kp-meta-badge {
+  display: inline-block;
+  align-self: center;
+  margin: 4px 0;
+  padding: 2px 10px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #d4af37;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.kp-relation {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: #92a8d1; /* Soft blue for tributaries/relations */
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 4px 0;
+  opacity: 0.9;
+}
+
+.kp-type-tag {
+  display: inline-block;
+  margin: 4px 4px 4px 0;
+  padding: 2px 8px;
+  background: rgba(120, 144, 156, 0.1);
+  border: 1px dashed rgba(120, 144, 156, 0.3);
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+  color: #78909c;
+  text-transform: uppercase;
+}
+
+.kp-scale-tag {
+  display: inline-block;
+  margin: 4px 4px 4px 0;
+  padding: 2px 8px;
+  background: rgba(43, 175, 99, 0.08); /* Soft emerald/green tint for large systems */
+  border: 1px solid rgba(43, 175, 99, 0.15);
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+  color: #2baf63;
+  text-transform: uppercase;
+}
+
+.kp-importance-tag {
+  display: inline-block;
+  margin: 4px 4px 4px 0;
+  padding: 2px 8px;
+  background: rgba(63, 81, 181, 0.08); /* Soft indigo for cultural importance */
+  border: 1px solid rgba(63, 81, 181, 0.15);
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+  color: #3f51b5;
+  text-transform: uppercase;
+}
+
 /* ─── Hero Image ────────────────────────────────────────── */
 .kp-hero {
   position: relative;
@@ -998,6 +1066,100 @@ body {
   border-radius: 4px;
   border-left: 2px solid rgba(212, 175, 55, 0.2);
 }
+
+/* ─── River Specific Styles ──────────────────────────────── */
+.kp-panel.river-theme .kp-hero {
+  height: 180px;
+}
+
+.kp-flow-strip {
+  position: relative;
+  padding: 10px 0 20px;
+  margin: -10px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.flow-line {
+  position: absolute;
+  top: 13px;
+  left: 30px;
+  right: 30px;
+  height: 1px;
+  background: linear-gradient(to right, 
+    rgba(100, 120, 140, 0), 
+    rgba(100, 120, 140, 0.4) 15%, 
+    rgba(100, 120, 140, 0.4) 85%, 
+    rgba(100, 120, 140, 0)
+  );
+  z-index: 1;
+}
+
+.flow-nodes {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 10px;
+  z-index: 2;
+}
+
+.flow-node-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.flow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #78909c;
+  border: 1px solid rgba(135, 206, 235, 0.2);
+  box-shadow: 0 0 6px rgba(120, 144, 156, 0.3);
+}
+
+.flow-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  color: rgba(120, 144, 156, 0.7);
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.flow-arrow {
+  color: rgba(120, 144, 156, 0.3);
+  font-size: 10px;
+  margin-top: -14px;
+}
+
+.river-label--selected {
+  color: #2980C8 !important;
+  text-shadow: 0 0 12px rgba(41, 128, 200, 0.5);
+  font-weight: 600;
+  transform: translateY(-2px);
+}
+
+/* Subtle animation for flow strip */
+.kp-flow-strip .flow-dot {
+  animation: flowPulse 4s infinite ease-in-out;
+}
+
+@keyframes flowPulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 10px rgba(120, 144, 156, 0.5); }
+}
+
+/* Staggered animation for progress feel */
+.flow-node-container:nth-of-type(1) .flow-dot { animation-delay: 0s; }
+.flow-node-container:nth-of-type(3) .flow-dot { animation-delay: 1s; }
+.flow-node-container:nth-of-type(5) .flow-dot { animation-delay: 2s; }
+.flow-node-container:nth-of-type(7) .flow-dot { animation-delay: 3s; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    RESPONSIVE — Mobile

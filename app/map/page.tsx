@@ -61,7 +61,7 @@ function MapContent() {
 
   const handleMarkerClick = useCallback(
     (location: Location) => {
-      if (location.category === 'mountain') {
+      if (location.category === 'mountain' || location.category === 'river') {
         setSelectedLocation(location);
         setShowKnowledge(true);
       } else {

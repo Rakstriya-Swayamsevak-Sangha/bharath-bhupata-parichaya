@@ -10,6 +10,31 @@ export interface MountainKnowledge {
     kn: string;
     hi: string;
   };
+  meta?: {
+    en: string;
+    kn: string;
+    hi: string;
+  };
+  relation?: {
+    en: string;
+    kn: string;
+    hi: string;
+  };
+  type?: {
+    en: string;
+    kn: string;
+    hi: string;
+  };
+  scale?: {
+    en: string;
+    kn: string;
+    hi: string;
+  };
+  importance?: {
+    en: string;
+    kn: string;
+    hi: string;
+  };
   facts: {
     length?: string;
     highest_peak?: string;

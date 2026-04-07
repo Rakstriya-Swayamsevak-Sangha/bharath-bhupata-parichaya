@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { mountainKnowledge } from '@/data/mountainKnowledge';
+import { riverKnowledge } from '@/data/riverKnowledge';
 
 interface KnowledgePanelProps {
   onClose: () => void;
@@ -16,25 +17,60 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   const [localLocation, setLocalLocation] = useState(selectedLocation);
 
   const factLabels: Record<string, Record<string, string>> = {
-    en: { length: 'Length', highestPeak: 'Highest Peak', highest_peak: 'Highest Peak', extent: 'Extent', elevation: 'Elevation', altitude: 'Altitude' },
-    kn: { length: 'ಉದ್ದ', highestPeak: 'ಅತಿಎತ್ತರದ ಶಿಖರ', highest_peak: 'ಅತಿಎತ್ತರದ ಶಿಖರ', extent: 'ವಿಸ್ತರಣೆ', elevation: 'ಎತ್ತರ', altitude: 'ಎತ್ತರ' },
-    hi: { length: 'लंबाई', highestPeak: 'सर्वोच्च शिखर', highest_peak: 'सर्वोच्च शिखर', extent: 'विस्तार', elevation: 'ऊंचाई', altitude: 'ऊंचाई' },
+    en: { 
+      length: 'Length', 
+      highestPeak: 'Highest Peak', 
+      highest_peak: 'Highest Peak', 
+      extent: 'Extent', 
+      elevation: 'Elevation', 
+      altitude: 'Altitude',
+      origin: 'Origin',
+      mouth: 'Mouth',
+      confluence: 'Confluence',
+      tributaries: 'Tributaries'
+    },
+    kn: { 
+      length: 'ಉದ್ದ', 
+      highestPeak: 'ಅತಿಎತ್ತರದ ಶಿಖರ', 
+      highest_peak: 'ಅತಿಎತ್ತರದ ಶಿಖರ', 
+      extent: 'ವಿಸ್ತರಣೆ', 
+      elevation: 'ಎತ್ತರ', 
+      altitude: 'ಎತ್ತರ',
+      origin: 'ಉಗಮ',
+      mouth: 'ಸಂಗಮ',
+      confluence: 'ಸಂಗಮ',
+      tributaries: 'ಉಪನದಿಗಳು'
+    },
+    hi: { 
+      length: 'लंबाई', 
+      highestPeak: 'सर्वोच्च शिखर', 
+      highest_peak: 'सर्वोच्च शिखर', 
+      extent: 'विस्तार', 
+      elevation: 'ऊंचाई', 
+      altitude: 'ऊंचाई',
+      origin: 'उद्गम',
+      mouth: 'मुहाना',
+      confluence: 'संगम',
+      tributaries: 'सहायक नदियां'
+    },
   };
 
   useEffect(() => {
-    if (selectedLocation?.category === 'mountain') {
+    if (selectedLocation?.category === 'mountain' || selectedLocation?.category === 'river') {
       setLocalLocation(selectedLocation);
       const timer = setTimeout(() => setIsVisible(true), 10);
       return () => clearTimeout(timer);
     } else {
       setIsVisible(false);
-      // Let animation finish before clearing localLocation
     }
   }, [selectedLocation]);
 
-  if (!localLocation || localLocation.category !== 'mountain') return null;
+  if (!localLocation) return null;
+  if (localLocation.category !== 'mountain' && localLocation.category !== 'river') return null;
 
-  const knowledge = mountainKnowledge[localLocation.id];
+  const isRiver = localLocation.category === 'river';
+  const knowledge = isRiver ? riverKnowledge[localLocation.id] : mountainKnowledge[localLocation.id];
+  
   if (!knowledge) return null;
 
   const title = knowledge.title?.[lang] || knowledge.title?.en || localLocation.name;
@@ -47,7 +83,6 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
     setIsVisible(false);
     setTimeout(() => {
       onClose();
-      // Only clear local context after external state is handled
       setTimeout(() => setLocalLocation(null), 100);
     }, 320);
   };
@@ -56,8 +91,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
     <>
       <div className={`kp-backdrop ${isVisible ? 'opacity-100' : 'opacity-0'}`} onClick={handleClose} />
       
-      <aside className={`kp-panel ${isVisible ? 'visible' : 'hidden'}`}>
-        {/* Archival Trilingual Switcher */}
+      <aside className={`kp-panel ${isVisible ? 'visible' : 'hidden'} ${isRiver ? 'river-theme' : 'mountain-theme'}`}>
         <div className="kp-lang-switcher">
           {(['en', 'kn', 'hi'] as const).map((l) => (
             <button
@@ -74,23 +108,52 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
         </button>
 
         <div className="kp-content">
-          {/* 1. HEADER SECTION */}
           <div className="kp-header">
             <h1 className="kp-title">{title}</h1>
+            {knowledge.meta?.[lang] && (
+              <span className="kp-meta-badge">{knowledge.meta[lang]}</span>
+            )}
+            {knowledge.type?.[lang] && (
+              <span className="kp-type-tag">{knowledge.type[lang]}</span>
+            )}
+            {knowledge.scale?.[lang] && (
+              <span className="kp-scale-tag">{knowledge.scale[lang]}</span>
+            )}
+            {knowledge.importance?.[lang] && (
+              <span className="kp-importance-tag">{knowledge.importance[lang]}</span>
+            )}
+            {knowledge.relation?.[lang] && (
+              <p className="kp-relation">{knowledge.relation[lang]}</p>
+            )}
             {subtitle && <p className="kp-subtitle">{subtitle}</p>}
           </div>
 
-          {/* 2. HERO IMAGE */}
+          {isRiver && 'flow' in knowledge && (
+            <div className="kp-flow-strip">
+              <div className="flow-line" />
+              <div className="flow-nodes">
+                {knowledge.flow[lang].split(' → ').map((node, i, arr) => (
+                  <React.Fragment key={i}>
+                    <div className="flow-node-container">
+                      <div className="flow-dot" />
+                      <span className="flow-label">{node}</span>
+                    </div>
+                    {i < arr.length - 1 && <div className="flow-arrow">→</div>}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="kp-hero">
             <img 
-              src={knowledge.image || `/images/mountains/${localLocation.id}.jpg`} 
+              src={knowledge.image || `/place-images/${localLocation.category}s/${localLocation.id}.jpg`} 
               alt={title}
               className="kp-hero-img"
             />
             <div className="kp-hero-overlay" />
           </div>
 
-          {/* 3. KEY FACTS BLOCK */}
           <div className="kp-facts">
             {Object.entries(knowledge.facts).map(([key, value]) => (
               <div key={key} className="kp-fact-row">
@@ -100,16 +163,23 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
             ))}
           </div>
 
-          {/* 4. DESCRIPTION SECTION */}
           <div className="kp-section">
+            <h3 className="kp-section-label">
+              {isRiver 
+                ? (lang === 'kn' ? 'ನದಿಯ ಹರಿವು' : lang === 'hi' ? 'नदी का प्रवाह' : 'Course Description')
+                : (lang === 'kn' ? 'ವಿವರಣೆ' : lang === 'hi' ? 'विवरण' : 'Description')
+              }
+            </h3>
             <p className="kp-description">{description}</p>
           </div>
 
-          {/* 5. CULTURAL INSIGHT SECTION */}
           <div className="kp-section kp-cultural">
             <div className="kp-divider" />
             <h3 className="kp-section-label">
-              {lang === 'kn' ? 'ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ' : lang === 'hi' ? 'सांस्कृतिक महत्व' : 'Cultural Significance'}
+              {isRiver
+                ? (lang === 'kn' ? 'ನಾಗರಿಕತೆ ಮತ್ತು ಸಂಸ್ಕೃತಿ' : lang === 'hi' ? 'सभ्यता और संस्कृति' : 'Civilization & Culture')
+                : (lang === 'kn' ? 'ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ' : lang === 'hi' ? 'सांस्कृतिक महत्व' : 'Cultural Significance')
+              }
             </h3>
             <p className="kp-cultural-text">{cultural}</p>
           </div>

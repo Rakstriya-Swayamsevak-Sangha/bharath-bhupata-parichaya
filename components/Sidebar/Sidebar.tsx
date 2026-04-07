@@ -100,7 +100,9 @@ function LocationCard({ location }: LocationCardProps) {
               <circle cx="12" cy="10" r="3" />
             </svg>
             <span>
-              {location.latitude.toFixed(4)}°N, {location.longitude.toFixed(4)}°E
+              {location.latitude !== undefined && location.longitude !== undefined 
+                ? `${location.latitude.toFixed(4)}°N, ${location.longitude.toFixed(4)}°E`
+                : 'Coordinates Unavailable'}
             </span>
           </div>
         </div>

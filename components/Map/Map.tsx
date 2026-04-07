@@ -290,6 +290,7 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
   const { lang } = useLanguageStore();
   const content = getContent(lang);
   const { activeFilters } = useFilter();
+  const { selectedLocation } = useMap();
 
   if (!activeFilters.river) return null;
 
@@ -307,63 +308,107 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
     coreOpacity: 0.60,
     coreOpacitySel: 0.95,
     coreWeight: 1.5,
+    coreWeightSel: 2.2,
     coreDash: '1, 6',
   };
 
   return (
     <>
       {riversGeometry.map((river) => {
+        const isSelected = selectedLocation?.id === river.id;
         const path = river.path;
         const labelIdx = Math.floor(path.length * 0.4);
         const labelPoint = path[labelIdx];
         const label = content.rivers[river.id as keyof typeof content.rivers] ?? river.id;
 
+        // 🎯 Dynamic Visual Hierarchy
+        let scale = 1.0;
+        if (river.id === 'ganga') scale = 1.6;
+        if (river.id === 'brahmaputra') scale = 2.2;
+        if (river.id === 'sindhu') scale = 1.3;
+        if (river.id === 'yamuna') scale = 0.8;
+        if (river.id === 'gandaki') scale = 0.7;
+        if (river.id === 'narmada') scale = 1.25;
+        if (river.id === 'godavari') scale = 1.45;
+        if (river.id === 'mahanadi') scale = 1.15;
+        if (river.id === 'krishna') scale = 1.35;
+        if (river.id === 'kaveri') scale = 1.0;
+        
+        const isSaraswati = river.id === 'saraswati';
+        let coreColor = PALETTE.coreColor;
+        if (river.id === 'yamuna') coreColor = '#104975'; // Yamuna slightly darker
+        if (river.id === 'narmada') coreColor = '#1565c0'; // Narmada strong independent blue
+        if (river.id === 'godavari') coreColor = '#1e88e5'; // Godavari bright respectable blue
+        if (river.id === 'mahanadi') coreColor = '#2baf63bb'; // Mahanadi slightly teal for delta/marshy feel
+        if (river.id === 'krishna') coreColor = '#1976d2'; // Krishna deep flow blue
+        if (river.id === 'kaveri') coreColor = '#3f51b5'; // Kaveri rich temple-zone indigo
+
         return (
           <React.Fragment key={river.id}>
+            {/* Base Glow */}
             <Polyline
               positions={path}
               smoothFactor={1.8}
               pathOptions={{
-                color: PALETTE.glowColor,
-                weight: PALETTE.glowWeight,
-                opacity: PALETTE.glowOpacity,
-                dashArray: PALETTE.glowDash,
+                color: isSelected ? '#A8D8FC' : PALETTE.glowColor,
+                weight: (isSelected ? 12 : PALETTE.glowWeight) * scale,
+                opacity: isSaraswati ? 0.1 : (isSelected ? 0.35 : PALETTE.glowOpacity),
+                dashArray: isSaraswati ? '2, 10' : PALETTE.glowDash,
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
               interactive={false}
             />
+            {/* Outer Soft Dashed */}
             <Polyline
               positions={path}
               smoothFactor={1.5}
               pathOptions={{
                 color: PALETTE.outerColor,
-                weight: PALETTE.outerWeight,
-                opacity: PALETTE.outerOpacity,
-                dashArray: PALETTE.outerDash,
+                weight: (isSelected ? 5 : PALETTE.outerWeight) * scale,
+                opacity: isSaraswati ? 0.15 : (isSelected ? 0.4 : PALETTE.outerOpacity),
+                dashArray: isSaraswati ? '4, 12' : PALETTE.outerDash,
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
               interactive={false}
             />
+            {/* Core Fine Dashed */}
             <Polyline
               positions={path}
               smoothFactor={1.5}
               pathOptions={{
-                color: PALETTE.coreColor,
-                weight: PALETTE.coreWeight,
-                opacity: PALETTE.coreOpacity,
-                dashArray: PALETTE.coreDash,
+                color: isSelected ? PALETTE.coreColorSel : coreColor,
+                weight: (isSelected ? PALETTE.coreWeightSel : PALETTE.coreWeight) * scale,
+                opacity: isSaraswati ? 0.3 : (isSelected ? PALETTE.coreOpacitySel : PALETTE.coreOpacity),
+                dashArray: isSaraswati ? '2, 8' : (isSelected ? '0' : PALETTE.coreDash),
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
-              eventHandlers={{ click: () => onRiverClick({ id: river.id } as Location) }}
+              eventHandlers={{ 
+                click: () => onRiverClick({ 
+                  id: river.id, 
+                  category: 'river', 
+                  name: river.id,
+                  latitude: labelPoint[0],
+                  longitude: labelPoint[1]
+                } as Location) 
+              }}
             />
+            {/* Label */}
             <Marker
               position={labelPoint}
-              icon={createRiverLabelIcon(label, false)}
-              eventHandlers={{ click: () => onRiverClick({ id: river.id } as Location) }}
-              zIndexOffset={30}
+              icon={createRiverLabelIcon(label, isSelected)}
+              eventHandlers={{ 
+                click: () => onRiverClick({ 
+                  id: river.id, 
+                  category: 'river', 
+                  name: river.id,
+                  latitude: labelPoint[0],
+                  longitude: labelPoint[1]
+                } as Location) 
+              }}
+              zIndexOffset={isSelected ? 100 : 30}
             />
           </React.Fragment>
         );
