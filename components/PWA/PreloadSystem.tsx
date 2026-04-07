@@ -52,7 +52,6 @@ export default function PreloadSystem() {
         '/data/rivers.json',
         '/manifest.json',
         '/favicon.png',
-        '/stage2.css',
         ...PRELOAD_IMAGES
       ];
 
