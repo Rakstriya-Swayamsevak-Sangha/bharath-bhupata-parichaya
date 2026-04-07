@@ -198,10 +198,19 @@ body {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: #5C4430;
-  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.15);
+  text-shadow: 0.5px 0.5px 1px rgba(255, 255, 255, 0.4);
   opacity: 0.85;
   white-space: nowrap;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mountain-label:hover {
+  opacity: 1;
+  color: #8B4513;
+  text-shadow: 0 0 4px rgba(212, 175, 55, 0.3);
+  transform: scale(1.05);
 }
 
 /* ─── Universal Label Engine — Hierarchical 2-Line Structure ────────────── */

@@ -17,7 +17,7 @@ export const mountainsGeometry: { id: string; path: [number, number][] }[] = [
   {
     id: "malaya",
     path: [
-      [11.0, 76.0], [9.75, 76.85], [8.5, 77.5]
+      [10.5, 76.6], [9.6, 77.1], [8.4, 77.4]
     ]
   },
   {

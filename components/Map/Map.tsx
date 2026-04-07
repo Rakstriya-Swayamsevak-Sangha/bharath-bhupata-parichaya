@@ -112,13 +112,12 @@ const MT_PALETTE = {
 // density   = number of parallel ridge strokes
 // importance = visual weight multiplier (1.0 = HIGH, 0.6 = MED, 0.3 = LOW)
 const TERRAIN_CONFIG: Record<string, { zoneWidth: number; density: number; importance: number }> = {
-  'mt-001': { zoneWidth: 3.0, density: 8, importance: 1.0 },  // Himalaya — HIGH
-  'mt-002': { zoneWidth: 1.2, density: 4, importance: 0.5 },  // Sahyadri — LOW (elongated)
-  'mt-003': { zoneWidth: 0.8, density: 2, importance: 0.35 }, // Malaya — LOW
-  'mt-004': { zoneWidth: 1.0, density: 3, importance: 0.4 }, // Mahendra — LOW (coastal slant)
-  'mt-005': { zoneWidth: 1.8, density: 5, importance: 0.7 }, // Vindhya — MEDIUM
-  'mt-006': { zoneWidth: 1.6, density: 4, importance: 0.65 },// Aravalli — MEDIUM
-  'mt-007': { zoneWidth: 1.2, density: 3, importance: 0.5 }, // Satpura — MEDIUM-LOW
+  'himalaya': { zoneWidth: 3.0, density: 8, importance: 1.0 },  // Himalaya — HIGH
+  'sahyadri': { zoneWidth: 1.2, density: 4, importance: 0.5 },  // Sahyadri — LOW (elongated)
+  'malaya': { zoneWidth: 0.8, density: 2, importance: 0.35 }, // Malaya — LOW
+  'mahendra': { zoneWidth: 1.0, density: 3, importance: 0.4 }, // Mahendra — LOW (coastal slant)
+  'vindhya': { zoneWidth: 1.8, density: 5, importance: 0.7 }, // Vindhya — MEDIUM
+  'aravalli': { zoneWidth: 1.6, density: 4, importance: 0.65 },// Aravalli — MEDIUM
 };
 
 // Jitter — removes machine-precision look, gives hand-drawn feel
@@ -248,7 +247,7 @@ function MountainLabelsLayer({ onMountainClick }: { onMountainClick: (loc: Locat
             {/* Invisible wide clickable path */}
             <Polyline
               positions={coords}
-              pathOptions={{ color: 'transparent', weight: 18, opacity: 0 }}
+              pathOptions={{ color: 'transparent', weight: 40, opacity: 0 }}
               eventHandlers={{ click: () => onMountainClick({ id: mt.id, category: 'mountain', name: mt.id } as Location) }}
             />
             {/* Rotated range label (Elevated above line) */}
