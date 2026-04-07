@@ -5,20 +5,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Ensure service worker can be served
-  async headers() {
-    return [
-      {
-        source: '/sw.js',
-        headers: [
-          {
-            key: 'Service-Worker-Allowed',
-            value: '/',
-          },
-        ],
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig;

@@ -26,6 +26,7 @@ import { mountainKnowledge } from '@/data/mountainKnowledge';
 import { riverKnowledge } from '@/data/riverKnowledge';
 import { citiesGeometry } from '@/data/citiesGeometry';
 import { Location, Category } from '@/types/location';
+import { UI_TEXT } from '@/data/uiText';
 import {
   MAP_CONFIG,
   CATEGORY_CONFIG,
@@ -681,6 +682,7 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
   const [mounted, setMounted] = useState(false);
   const [bordersData, setBordersData] = useState<any>(null);
   const [stateBorders, setStateBorders] = useState<any>(null);
+  const { lang } = useLanguageStore();
 
   useEffect(() => {
     setMounted(true);
@@ -704,7 +706,7 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
       }}>
         <div className="map-loading-spinner" />
         <span style={{ color: '#A89882', fontFamily: "'Cinzel', serif", fontSize: '13px', letterSpacing: '0.1em' }}>
-          Loading cultural atlas…
+          {UI_TEXT.loadingAtlas[lang]}
         </span>
       </div>
     );

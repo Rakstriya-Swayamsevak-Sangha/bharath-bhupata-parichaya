@@ -12,7 +12,8 @@
       "Bash(npm ls:*)",
       "Bash(python3 -c \"import json; data=json.load\\(open\\('public/data/mountains.json'\\)\\); [print\\(f['id'], f['name'], f.get\\('nameHindi',''\\)\\) for f in data]\")",
       "Bash(node -e \"const d=require\\('./public/data/mountains.json'\\); d.forEach\\(f=>console.log\\(f.id,f.name,f.nameHindi||''\\)\\)\")",
-      "Bash(node -e ':*)"
+      "Bash(node -e ':*)",
+      "Bash(curl -s http://localhost:3000)"
     ]
   }
 }

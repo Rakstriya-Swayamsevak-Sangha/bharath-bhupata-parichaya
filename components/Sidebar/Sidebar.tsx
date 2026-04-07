@@ -52,8 +52,8 @@ interface LocationCardProps {
 
 function LocationCard({ location }: LocationCardProps) {
   const { lang } = useLanguageStore();
-  const name = (lang === 'hi' && location.nameHindi) ? location.nameHindi : location.name;
-  
+  const name = location.name[lang] || location.name.en;
+
   return (
     <div className="animate-fade-in">
       <div className="flex items-start justify-between gap-4 mb-4">
@@ -61,9 +61,9 @@ function LocationCard({ location }: LocationCardProps) {
           <h2 className="font-cinzel text-2xl font-semibold text-primary mb-1">
             {name}
           </h2>
-          {(lang !== 'hi' && location.nameHindi) && (
+          {(lang !== 'hi' && location.name.hi) && (
             <p className="text-accent text-lg" style={{ fontFamily: "'Noto Serif Devanagari', serif" }}>
-              {location.nameHindi}
+              {location.name.hi}
             </p>
           )}
         </div>
@@ -88,7 +88,7 @@ function LocationCard({ location }: LocationCardProps) {
                 color: '#FF9933',
               }}
             >
-              Historical Significance
+              {UI_TEXT.historicalContext[lang]}
             </h3>
             <p className="text-textSecondary text-sm leading-relaxed">
               {location.historicalSignificance}
@@ -105,9 +105,9 @@ function LocationCard({ location }: LocationCardProps) {
               <circle cx="12" cy="10" r="3" />
             </svg>
             <span>
-              {location.latitude !== undefined && location.longitude !== undefined 
+              {location.latitude !== undefined && location.longitude !== undefined
                 ? `${location.latitude.toFixed(4)}°N, ${location.longitude.toFixed(4)}°E`
-                : 'Coordinates Unavailable'}
+                : UI_TEXT.coordinatesUnavailable[lang]}
             </span>
           </div>
         </div>

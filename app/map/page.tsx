@@ -55,7 +55,7 @@ function MapContent() {
           fetch('/data/mountains.json').then((r) => r.json()),
           fetch('/data/rivers.json').then((r) => r.json()),
         ]);
-        
+
         // Use Sacred Cities as our primary POI dataset
         const cityLocations: Location[] = citiesGeometry.map(city => ({
           id: city.id,
@@ -144,9 +144,9 @@ function MapContent() {
       <div className="mainLayout flex-1 w-full relative z-0 flex overflow-hidden">
 
         {/* ── Left Sidebar ─────────────────────────── */}
-        <motion.div 
+        <motion.div
           initial={false}
-          animate={{ 
+          animate={{
             width: isFilterOpen ? '260px' : '0px',
             opacity: isFilterOpen ? 1 : 0,
             x: isFilterOpen ? 0 : -20
@@ -157,15 +157,15 @@ function MapContent() {
             window.dispatchEvent(new Event('resize'));
           }}
           className="sidebar shrink-0 overflow-hidden"
-          style={{ 
-            display: 'flex', 
+          style={{
+            display: 'flex',
             flexDirection: 'column',
             borderRight: isFilterOpen ? '1px solid var(--color-border)' : 'none'
           }}
         >
           <div className="p-4 w-[260px]">
             <h3 style={{ textTransform: 'uppercase', fontSize: '11px', letterSpacing: '0.15em', opacity: 0.6, marginBottom: '16px' }}>
-              {lang === 'kn' ? 'ಅನ್ವೇಷಿಸಿ' : lang === 'hi' ? 'खोजें' : 'Explore'}
+              {UI_TEXT.explore[lang]}
             </h3>
 
             <FilterBar />
@@ -198,15 +198,16 @@ function MapContent() {
             padding: 0
           }}
         >
-          <motion.svg 
-            width="20" 
-            height="20" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
+          <motion.svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
+
             animate={{ rotate: isFilterOpen ? 0 : 180 }}
           >
             <path d="M15 18l-6-6 6-6" />

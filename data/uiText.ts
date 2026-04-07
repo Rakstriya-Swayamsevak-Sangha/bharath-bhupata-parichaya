@@ -69,6 +69,16 @@ export const UI_TEXT = {
     kn: "ನದಿಯ ಹರಿವು",
     hi: "नदी का प्रवाह"
   },
+  mountainDescription: {
+    en: "Description",
+    kn: "ವಿವರಣೆ",
+    hi: "विवरण"
+  },
+  mountainCultural: {
+    en: "Cultural Significance",
+    kn: "ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ",
+    hi: "सांस्कृतिक महत्व"
+  },
   region: {
     en: "Region",
     kn: "ಪ್ರದೇಶ",
@@ -88,5 +98,15 @@ export const UI_TEXT = {
     en: "Location Details",
     kn: "ಸ್ಥಳದ ವಿವರಗಳು",
     hi: "स्थान विवरण"
+  },
+  coordinatesUnavailable: {
+    en: "Coordinates Unavailable",
+    kn: "ನಿರ್ದೇಶಾಂಕಗಳು ಲಭ್ಯವಿಲ್ಲ",
+    hi: "निर्देशांक उपलब्ध नहीं"
+  },
+  explore: {
+    en: "Explore",
+    kn: "ಅನ್ವೇಷಿಸಿ",
+    hi: "खोजें"
   }
 };

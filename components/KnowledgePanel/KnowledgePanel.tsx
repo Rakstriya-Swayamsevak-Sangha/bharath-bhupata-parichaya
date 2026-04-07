@@ -267,7 +267,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                     ? UI_TEXT.historicalContext[lang]
                     : (isRiver
                       ? UI_TEXT.courseDescription[lang]
-                      : (lang === 'kn' ? 'ವಿವರಣೆ' : lang === 'hi' ? 'विवरण' : 'Description')
+                      : UI_TEXT.mountainDescription[lang]
                     )
                   }
                 </h3>
@@ -299,7 +299,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                   <h3 className="kp-section-label">
                     {isRiver
                       ? UI_TEXT.civilizationCulture[lang]
-                      : (lang === 'kn' ? 'ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ' : lang === 'hi' ? 'सांस्कृतिक महत्व' : 'Cultural Significance')
+                      : UI_TEXT.mountainCultural[lang]
                     }
                   </h3>
                   <p className="kp-cultural-text">{String(cultural)}</p>

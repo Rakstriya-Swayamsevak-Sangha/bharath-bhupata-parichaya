@@ -33,6 +33,8 @@ export const CATEGORY_CONFIG = {
   mountain: {
     label: 'Parvat',
     labelEn: 'Mountains',
+    labelKn: 'ಪರ್ವತಗಳು',
+    labelHi: 'पर्वत',
     icon: '▲',
     color: '#7B6B4F',  // dark earth / stone
     markerBg: '#5C4E3A',
@@ -40,6 +42,8 @@ export const CATEGORY_CONFIG = {
   river: {
     label: 'Nadi',
     labelEn: 'Rivers',
+    labelKn: 'ನದಿಗಳು',
+    labelHi: 'नदियाँ',
     icon: '〰',
     color: '#4A7C8B',  // river blue-grey (aged)
     markerBg: '#3A6270',
