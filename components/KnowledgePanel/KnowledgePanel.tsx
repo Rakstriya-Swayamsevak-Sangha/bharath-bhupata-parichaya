@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { mountainKnowledge } from '@/data/mountainKnowledge';
 import { riverKnowledge } from '@/data/riverKnowledge';
 import { cityKnowledge } from '@/data/cityKnowledge';
+import { UI_TEXT } from '@/data/uiText';
 
 interface KnowledgePanelProps {
   onClose: () => void;
@@ -14,6 +16,7 @@ interface KnowledgePanelProps {
 export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   const { selectedLocation } = useMap();
   const { lang, setLang } = useLanguageStore();
+  const shouldReduceMotion = useReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
   const [sheetMode, setSheetMode] = useState<'collapsed' | 'half' | 'full'>('full');
   const [localLocation, setLocalLocation] = useState(selectedLocation);
@@ -84,11 +87,22 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   let knowledge: any = null;
   if (isRiver) knowledge = riverKnowledge[localLocation.id];
   else if (isCity) knowledge = cityKnowledge[localLocation.id];
-  else knowledge = mountainKnowledge[localLocation.id];
+  else if (localLocation.category === 'mountain') knowledge = mountainKnowledge[localLocation.id];
+  
+  // Dynamic fallback for items not in static database (like temples.json)
+  if (!knowledge) {
+    knowledge = {
+      ...localLocation,
+      title: localLocation.name,
+      description: { en: localLocation.description, kn: localLocation.description, hi: localLocation.description },
+      facts: localLocation.metadata || {},
+      cultural: { en: localLocation.historicalSignificance || "", kn: localLocation.historicalSignificance || "", hi: localLocation.historicalSignificance || "" }
+    };
+  }
 
   if (!knowledge) return null;
 
-  const title = knowledge.title?.[lang] || knowledge.title?.en || localLocation.name;
+  const title = knowledge.title?.[lang] || knowledge.title?.en || (localLocation?.name ? localLocation.name[lang] : '');
   const subtitle = knowledge.subtitle?.[lang] || knowledge.subtitle?.en || '';
   const description = knowledge.description?.[lang] || knowledge.description?.en || '';
   const spiritual = isCity ? (knowledge.spiritual?.[lang] || knowledge.spiritual?.en || '') : '';
@@ -96,13 +110,18 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   const cultural = !isCity ? (knowledge.cultural?.[lang] || knowledge.cultural?.en || '') : '';
 
   const labels = factLabels[lang] || factLabels.en;
-
+  
   const handleClose = () => {
     setIsVisible(false);
+    // Framer motion will handle unmounting if we use AnimatePresence, 
+    // but for now keeping existing structure to avoid re-writing app/map/page logic.
+    // Sync with Framer duration: 0.2s
+    const delay = 200;
+    
     setTimeout(() => {
       onClose();
-      setTimeout(() => setLocalLocation(null), 100);
-    }, 320);
+      setTimeout(() => setLocalLocation(null), 50);
+    }, delay);
   };
 
   return (
@@ -190,15 +209,15 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
               {knowledge.identity && (
                 <div className="kp-identity-strip">
                   <div className="identity-item">
-                    <span className="identity-label">{lang === 'kn' ? 'ಪ್ರದೇಶ' : lang === 'hi' ? 'क्षेत्र' : 'Region'}</span>
+                    <span className="identity-label">{UI_TEXT.region[lang]}</span>
                     <span className="identity-value">{knowledge.identity.region[lang]}</span>
                   </div>
                   <div className="identity-item">
-                    <span className="identity-label">{lang === 'kn' ? 'ನದಿ' : lang === 'hi' ? 'नदी' : 'River'}</span>
+                    <span className="identity-label">{UI_TEXT.river[lang]}</span>
                     <span className="identity-value">{knowledge.identity.river[lang]}</span>
                   </div>
                   <div className="identity-item">
-                    <span className="identity-label">{lang === 'kn' ? 'ಕಾಲ' : lang === 'hi' ? 'युग' : 'Era'}</span>
+                    <span className="identity-label">{UI_TEXT.era[lang]}</span>
                     <span className="identity-value">{knowledge.identity.era[lang]}</span>
                   </div>
                 </div>
@@ -229,9 +248,13 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
 
                   <div className="kp-facts">
                     {Object.entries(knowledge.facts as Record<string, string>).map(([key, value]) => (
-                      <div key={key} className="kp-fact-row">
-                        <span className="kp-fact-label">{labels[key as keyof typeof labels] || key}</span>
-                        <span className="kp-fact-value">{value}</span>
+                      <div key={key} className="kp-fact-row" style={{ flexWrap: 'wrap', height: 'auto', minHeight: '32px' }}>
+                        <span className="kp-fact-label" style={{ flex: '0 0 100px' }}>
+                          {labels[key as keyof typeof labels] || key}
+                        </span>
+                        <span className="kp-fact-value" style={{ flex: '1', textAlign: 'right', whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                          {value}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -241,9 +264,9 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
               <div className="kp-section">
                 <h3 className="kp-section-label">
                   {isCity
-                    ? (lang === 'kn' ? 'ಐತಿಹಾಸಿಕ ಹಿನ್ನೆಲೆ' : lang === 'hi' ? 'ऐतिहासिक संदर्भ' : 'Historical Context')
+                    ? UI_TEXT.historicalContext[lang]
                     : (isRiver
-                      ? (lang === 'kn' ? 'ನದಿಯ ಹರಿವು' : lang === 'hi' ? 'नदी का प्रवाह' : 'Course Description')
+                      ? UI_TEXT.courseDescription[lang]
                       : (lang === 'kn' ? 'ವಿವರಣೆ' : lang === 'hi' ? 'विवरण' : 'Description')
                     )
                   }
@@ -256,14 +279,14 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                   <div className="kp-section kp-spiritual">
                     <div className="kp-divider" />
                     <h3 className="kp-section-label">
-                      {lang === 'kn' ? 'ಧಾರ್ಮಿಕ ಮಹತ್ವ' : lang === 'hi' ? 'आध्यात्मिक महत्व' : 'Spiritual Significance'}
+                      {UI_TEXT.spiritualSignificance[lang]}
                     </h3>
                     <p className="kp-description">{String(spiritual)}</p>
                   </div>
 
                   <div className="kp-section kp-living">
                     <h3 className="kp-section-label">
-                      {lang === 'kn' ? 'ಸಜೀವ ಸಂಪ್ರದಾಯ' : lang === 'hi' ? 'जीवंत परंपरा' : 'Living Tradition'}
+                      {UI_TEXT.livingTradition[lang]}
                     </h3>
                     <p className="kp-description">{String(living)}</p>
                   </div>
@@ -275,7 +298,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                   <div className="kp-divider" />
                   <h3 className="kp-section-label">
                     {isRiver
-                      ? (lang === 'kn' ? 'ನಾಗರಿಕತೆ ಮತ್ತು ಸಂಸ್ಕೃತಿ' : lang === 'hi' ? 'सभ्यता और संस्कृति' : 'Civilization & Culture')
+                      ? UI_TEXT.civilizationCulture[lang]
                       : (lang === 'kn' ? 'ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ' : lang === 'hi' ? 'सांस्कृतिक महत्व' : 'Cultural Significance')
                     }
                   </h3>

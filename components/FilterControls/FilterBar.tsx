@@ -4,7 +4,8 @@ import React from 'react';
 import { useFilter } from '@/providers/FilterContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { Category } from '@/types/location';
-import { CATEGORY_CONFIG } from '@/utils/constants';
+import { UI_TEXT } from '@/data/uiText';
+import { motion } from 'framer-motion';
 
 interface FilterButtonProps {
   category: Category;
@@ -14,33 +15,38 @@ interface FilterButtonProps {
 
 function FilterButton({ category, isActive, onToggle }: FilterButtonProps) {
   const { lang } = useLanguageStore();
-  const config = CATEGORY_CONFIG[category] as any;
-  const label = lang === 'kn' ? config.labelKn : lang === 'hi' ? config.labelHi : config.labelEn;
+  let label = '';
+  if (category === 'mountain') label = UI_TEXT.filterMountains[lang];
+  else if (category === 'river') label = UI_TEXT.filterRivers[lang];
+  else if (category === 'temple') label = UI_TEXT.filterSacredCities[lang];
 
   return (
-    <button
+    <motion.button
+      whileTap={{ scale: 0.97 }}
       onClick={onToggle}
       className={`filter ${isActive ? 'active' : ''}`}
       aria-pressed={isActive}
     >
       {label}
-    </button>
+    </motion.button>
   );
 }
 
 export function FilterBar() {
   const { activeFilters, toggleFilter, setAllFilters } = useFilter();
+  const { lang } = useLanguageStore();
 
   const allActive = activeFilters.mountain && activeFilters.river && activeFilters.temple;
 
   return (
     <>
-      <button
+      <motion.button
+        whileTap={{ scale: 0.97 }}
         onClick={() => setAllFilters(true)}
         className={`filter ${allActive ? 'active' : ''}`}
       >
-        All
-      </button>
+        {UI_TEXT.filterAll[lang]}
+      </motion.button>
 
       {(['mountain', 'river', 'temple'] as Category[]).map(category => (
         <FilterButton

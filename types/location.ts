@@ -10,8 +10,11 @@ export interface LocationMetadata {
 
 export interface Location {
   id: string;
-  name: string;
-  nameHindi?: string;
+  name: {
+    en: string;
+    kn: string;
+    hi: string;
+  };
   category: Category;
   latitude: number;
   longitude: number;

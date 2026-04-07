@@ -13,6 +13,7 @@ import {
   ImageOverlay,
   Pane,
   useMap as useLeafletMap,
+  ZoomControl,
 } from 'react-leaflet';
 import L from 'leaflet';
 import { useMap } from '@/providers/MapContext';
@@ -44,7 +45,7 @@ const createSacredMarker = (isSelected = false) => {
   return L.divIcon({
     className: 'custom-marker', // clears leaflet defaults
     html: `
-      <div class="marker-wrapper ${isSelected ? 'marker-wrapper--selected' : ''}">
+      <div class="marker-wrapper ${isSelected ? 'marker-active' : ''}">
         <div class="marker-glow"></div>
         <div class="marker-core">
           <div class="marker-symbol">ॐ</div>
@@ -217,7 +218,16 @@ function MountainLabelsLayer({ onMountainClick }: { onMountainClick: (loc: Locat
             <Polyline
               positions={coords}
               pathOptions={{ color: 'transparent', weight: 40, opacity: 0 }}
-              eventHandlers={{ click: () => onMountainClick({ id: mt.id, category: 'mountain', name: mt.id } as Location) }}
+              eventHandlers={{
+                click: () => onMountainClick({
+                  id: mt.id,
+                  category: 'mountain',
+                  name: mt.title,
+                  latitude: mt.labelCoords[0],
+                  longitude: mt.labelCoords[1],
+                  description: "",
+                } as unknown as Location)
+              }}
             />
             {/* Rotated range label (Elevated above line) */}
             <Marker
@@ -229,7 +239,16 @@ function MountainLabelsLayer({ onMountainClick }: { onMountainClick: (loc: Locat
                 iconAnchor: [70, 19],
               })}
               zIndexOffset={0}
-              eventHandlers={{ click: () => onMountainClick({ id: mt.id, category: 'mountain', name: mt.id } as Location) }}
+              eventHandlers={{
+                click: () => onMountainClick({
+                  id: mt.id,
+                  category: 'mountain',
+                  name: mt.title,
+                  latitude: mt.labelCoords[0],
+                  longitude: mt.labelCoords[1],
+                  description: "",
+                } as unknown as Location)
+              }}
             />
           </React.Fragment>
         );
@@ -358,10 +377,11 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
                 click: () => onRiverClick({
                   id: river.id,
                   category: 'river',
-                  name: river.id,
+                  name: river.title,
                   latitude: labelPoint[0],
-                  longitude: labelPoint[1]
-                } as Location)
+                  longitude: labelPoint[1],
+                  description: "",
+                } as unknown as Location)
               }}
             />
             {/* Label */}
@@ -372,10 +392,11 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
                 click: () => onRiverClick({
                   id: river.id,
                   category: 'river',
-                  name: river.id,
+                  name: river.title,
                   latitude: labelPoint[0],
-                  longitude: labelPoint[1]
-                } as Location)
+                  longitude: labelPoint[1],
+                  description: "",
+                } as unknown as Location)
               }}
               zIndexOffset={isSelected ? 100 : 30}
             />
@@ -390,32 +411,26 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
 // SACRED CITIES LAYER (High-Priority Cultural Centers)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function SacredCitiesLayer({ onItemClick }: { onItemClick: (loc: Location) => void }) {
+function POILayer({ onItemClick, locations }: { onItemClick: (loc: Location) => void; locations: Location[] }) {
+  const { selectedLocation } = useMap();
   const { activeFilters } = useFilter();
   const { lang } = useLanguageStore();
-  const content = getContent(lang);
-
-  if (!activeFilters.temple) return null;
 
   return (
     <>
-      {citiesGeometry.map((city) => {
-        const translatedName = (content.sacredCities as any[]).find((c: { id: string; name: string }) => c.id === city.id)?.name ?? city.name;
-        const [lat, lng] = adjustCoords(city.id, city.coords[0], city.coords[1]);
+      {locations.filter(loc => (loc.category === 'temple' && activeFilters.temple) || (loc.category === 'city' && activeFilters.city)).map((item) => {
+        const title = item.name[lang];
+        // Apply coordinate offset for clarity in dense zones
+        const [lat, lng] = adjustCoords(item.id, item.latitude, item.longitude);
+        const isSelected = selectedLocation?.id === item.id;
+        
         return (
           <Marker
-            key={`city-${city.id}`}
+            key={`poi-${item.id}`}
             position={[lat, lng]}
-            icon={createSacredMarker()}
+            icon={createSacredMarker(isSelected)}
             eventHandlers={{
-              click: () => onItemClick({
-                id: city.id,
-                category: 'city',
-                name: city.name,
-                latitude: lat,
-                longitude: lng,
-                description: "",
-              } as unknown as Location)
+              click: () => onItemClick(item)
             }}
           >
             <Tooltip
@@ -425,7 +440,7 @@ function SacredCitiesLayer({ onItemClick }: { onItemClick: (loc: Location) => vo
               className="sacred-label"
               opacity={0.9}
             >
-              {translatedName}
+              {title}
             </Tooltip>
           </Marker>
         );
@@ -450,21 +465,85 @@ function formatLabel(name: string) {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const COUNTRY_LABELS = [
-  { name: "AFGHANISTAN (GANDHARA)", coords: [33.5, 68.0] as [number, number] },
-  { name: "PAKISTAN", coords: [28.5, 70.0] as [number, number] },
-  { name: "NEPAL", coords: [28.2, 83.9] as [number, number] },
-  { name: "BANGLADESH", coords: [23.7, 90.3] as [number, number] },
-  { name: "BRAHMADESH", coords: [21.5, 96.0] as [number, number] },
-  { name: "SRI LANKA", coords: [7.2, 80.8] as [number, number] }
+  { 
+    name: {
+      en: "Afghanistan (Gandhara)",
+      kn: "ಅಫ್ಘಾನಿಸ್ತಾನ್ (ಗಾಂಧಾರ)",
+      hi: "अफगानिस्तान (गांधार)"
+    }, 
+    coords: [33.5, 68.0] as [number, number] 
+  },
+  { 
+    name: {
+      en: "Pakistan",
+      kn: "ಪಾಕಿಸ್ತಾನ",
+      hi: "पाकिस्तान"
+    }, 
+    coords: [28.5, 70.0] as [number, number] 
+  },
+  { 
+    name: {
+      en: "Nepal",
+      kn: "ನೇಪಾಳ",
+      hi: "नेपाल"
+    }, 
+    coords: [28.2, 83.9] as [number, number] 
+  },
+  { 
+    name: {
+      en: "Bangladesh",
+      kn: "ಬಾಂಗ್ಲಾದೇಶ",
+      hi: "बांग्लादेश"
+    }, 
+    coords: [23.7, 90.3] as [number, number] 
+  },
+  { 
+    name: {
+      en: "Brahmadesh",
+      kn: "ಬ್ರಹ್ಮದೇಶ",
+      hi: "ब्रह्मदेश"
+    }, 
+    coords: [21.5, 96.0] as [number, number] 
+  },
+  { 
+    name: {
+      en: "Sri Lanka",
+      kn: "ಶ್ರೀಲಂಕಾ",
+      hi: "श्रीलंका"
+    }, 
+    coords: [7.2, 80.8] as [number, number] 
+  }
 ];
 
 const OCEAN_LABELS = [
-  { name: "ARABIAN SEA (SINDHU SAGAR)", coords: [16.0, 62.0] as [number, number] },
-  { name: "INDIAN OCEAN (HINDU MAHASAGAR)", coords: [3.2, 79.5] as [number, number] },
-  { name: "BAY OF BENGAL (GANGA SAGAR)", coords: [17.0, 91.5] as [number, number] }
+  { 
+    name: {
+      en: "Arabian Sea (Sindhu Sagar)",
+      kn: "ಅರಬ್ಬಿ ಸಮುದ್ರ (ಸಿಂಧು ಸಾಗರ)",
+      hi: "अरब सागर (सिंधु सागर)"
+    }, 
+    coords: [16.0, 62.0] as [number, number] 
+  },
+  { 
+    name: {
+      en: "Indian Ocean (Hindu Mahasagar)",
+      kn: "ಇಂಡಿಯನ್ ಓಷನ್ (ಹಿಂದೂ ಮಹಾಸಾಗರ)",
+      hi: "इंडियन ओशन (हिंद महासागर)"
+    }, 
+    coords: [3.2, 79.5] as [number, number] 
+  },
+  { 
+    name: {
+      en: "Bay of Bengal (Ganga Sagar)",
+      kn: "ಬಂಗಾಳ ಕೊಲ್ಲಿ (ಗಂಗಾ ಸಾಗರ)",
+      hi: "बंगाल की खाड़ी (गंगा सागर)"
+    }, 
+    coords: [17.0, 91.5] as [number, number] 
+  }
 ];
 
 function StaticLabelsLayer() {
+  const { lang } = useLanguageStore();
   // Static scale typography — centered markers to prevent drifting on zoom closer
   const labelWidth = 200;
   const labelHeight = 60;
@@ -478,7 +557,7 @@ function StaticLabelsLayer() {
           interactive={false}
           icon={L.divIcon({
             className: 'custom-marker',
-            html: `<div class="country-label">${formatLabel(item.name)}</div>`,
+            html: `<div class="country-label">${formatLabel(item.name[lang])}</div>`,
             iconSize: [labelWidth, labelHeight],
             iconAnchor: [labelWidth / 2, labelHeight / 2],
           })}
@@ -491,7 +570,7 @@ function StaticLabelsLayer() {
           interactive={false}
           icon={L.divIcon({
             className: 'custom-marker',
-            html: `<div class="ocean-label">${formatLabel(item.name)}</div>`,
+            html: `<div class="ocean-label">${formatLabel(item.name[lang])}</div>`,
             iconSize: [labelWidth, labelHeight],
             iconAnchor: [labelWidth / 2, labelHeight / 2],
           })}
@@ -541,9 +620,9 @@ function FlyToLocation() {
     if (selectedLocation && selectedLocation.latitude && selectedLocation.longitude) {
       const zoom = getPreciseZoom(selectedLocation.category);
       map.flyTo([selectedLocation.latitude, selectedLocation.longitude], zoom, {
-        duration: 2.5,
-        easeLinearity: 0.35,
-        noMoveStart: true // More precise start
+        duration: 0.6,
+        easeLinearity: 0.25, // ease-out feel
+        noMoveStart: true
       });
     }
   }, [selectedLocation, map]);
@@ -642,10 +721,11 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
       maxBounds={AKHAND_BHARAT_BOUNDS}
       maxBoundsViscosity={MAP_CONFIG.MAX_BOUNDS_VISCOSITY}
       worldCopyJump={MAP_CONFIG.WORLD_COPY_JUMP}
-      zoomControl={true}
+      zoomControl={false}
       scrollWheelZoom={true}
       style={{ width: '100%', height: '100%' }}
     >
+      <ZoomControl position="bottomright" />
       {/* Viewport controller fixes tilePane z-index before other components */}
       <MapViewController />
       <FlyToLocation />
@@ -710,9 +790,9 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
         <MountainLabelsLayer onMountainClick={onMarkerClick} />
       </Pane>
 
-      {/* ── Layer 6: Sacred Cities (highest z-order) ───────── */}
+      {/* ── Layer 6: Dynamic POIs (Temples & Cities) (highest z-order) ───────── */}
       <Pane name="poiPane" style={{ zIndex: 600 }}>
-        <SacredCitiesLayer onItemClick={onMarkerClick} />
+        <POILayer onItemClick={onMarkerClick} locations={locations} />
       </Pane>
 
       {/* ── Final Mask Layer: Hides everything completely outside defined bounds ───────── */}

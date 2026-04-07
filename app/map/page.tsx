@@ -5,12 +5,15 @@ import dynamic from 'next/dynamic';
 import { MapProvider, useMap } from '@/providers/MapContext';
 import { FilterProvider } from '@/providers/FilterContext';
 import { Sidebar } from '@/components/Sidebar/Sidebar';
-import { FilterBar } from '@/components/FilterControls/FilterBar';
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { Search } from '@/components/Search/Search';
+import { FilterBar } from '@/components/FilterControls/FilterBar';
+import { MobileFilters } from '@/components/FilterControls/MobileFilters';
 import { KnowledgePanel } from '@/components/KnowledgePanel/KnowledgePanel';
 import { Location } from '@/types/location';
 import { citiesGeometry } from '@/data/citiesGeometry';
+import { useLanguageStore } from '@/store/languageStore';
+import { UI_TEXT } from '@/data/uiText';
 
 const CulturalMap = dynamic(
   () =>
@@ -35,8 +38,11 @@ const CulturalMap = dynamic(
   }
 );
 
+import { motion } from 'framer-motion';
+
 function MapContent() {
-  const { openSidebar, closeSidebar, setSelectedLocation } = useMap();
+  const { openSidebar, closeSidebar, setSelectedLocation, isFilterOpen, toggleFilterSidebar } = useMap();
+  const { lang } = useLanguageStore();
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,7 +79,7 @@ function MapContent() {
 
   const handleMarkerClick = useCallback(
     (location: Location) => {
-      const isArchival = ['mountain', 'river', 'city'].includes(location.category);
+      const isArchival = ['mountain', 'river', 'city', 'temple'].includes(location.category);
       if (isArchival) {
         closeSidebar();
         setSelectedLocation(location);
@@ -119,7 +125,7 @@ function MapContent() {
       {/* ── Header (Minimal) ───────────────────────── */}
       <header className="header shrink-0 relative z-20">
         <h1 className="title">
-          Akhand Bharat Darshan
+          {UI_TEXT.headerTitle[lang]}
         </h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <Search />
@@ -130,28 +136,85 @@ function MapContent() {
       {/* ── Cultural Intro Strip ───────────────────── */}
       <div className="intro shrink-0 relative z-10">
         <p>
-          Explore the sacred geography of Bharat — rivers, mountains, and ancient cities that shaped civilization.
+          {UI_TEXT.introText[lang]}
         </p>
       </div>
 
       {/* ── Main Layout (Sidebar + Map) ────────────── */}
-      <div className="mainLayout flex-1 w-full relative z-0">
+      <div className="mainLayout flex-1 w-full relative z-0 flex overflow-hidden">
 
         {/* ── Left Sidebar ─────────────────────────── */}
-        <div className="sidebar shrink-0">
-          <h3>Explore</h3>
+        <motion.div 
+          initial={false}
+          animate={{ 
+            width: isFilterOpen ? '260px' : '0px',
+            opacity: isFilterOpen ? 1 : 0,
+            x: isFilterOpen ? 0 : -20
+          }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          onAnimationComplete={() => {
+            // Force Leaflet to recalculate size after sidebar transition
+            window.dispatchEvent(new Event('resize'));
+          }}
+          className="sidebar shrink-0 overflow-hidden"
+          style={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            borderRight: isFilterOpen ? '1px solid var(--color-border)' : 'none'
+          }}
+        >
+          <div className="p-4 w-[260px]">
+            <h3 style={{ textTransform: 'uppercase', fontSize: '11px', letterSpacing: '0.15em', opacity: 0.6, marginBottom: '16px' }}>
+              {lang === 'kn' ? 'ಅನ್ವೇಷಿಸಿ' : lang === 'hi' ? 'खोजें' : 'Explore'}
+            </h3>
 
-          <FilterBar />
-
-          <div className="flex-1"></div>
-
-          <div className="count">
-            {locations.length} Sacred Sites
+            <FilterBar />
           </div>
-        </div>
+        </motion.div>
+
+        {/* ── Sidebar Toggle Button ────────────────── */}
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={toggleFilterSidebar}
+          className="sidebar-toggle-modern"
+          initial={false}
+          animate={{ left: isFilterOpen ? '248px' : '10px' }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            zIndex: 100,
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
+            backgroundColor: '#2A2520',
+            border: '1px solid #3D352D',
+            color: '#FF9933',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+            padding: 0
+          }}
+        >
+          <motion.svg 
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            animate={{ rotate: isFilterOpen ? 0 : 180 }}
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </motion.svg>
+        </motion.button>
 
         {/* ── Map Container Overlay ────────────────── */}
-        <div className="map-container relative">
+        <div className="map-container relative flex-1">
           <div className="map-frame">
             {isLoading ? (
               <div style={{
@@ -162,7 +225,7 @@ function MapContent() {
               }}>
                 <div className="map-loading-spinner" style={{ borderColor: 'rgba(207,174,123,0.3)', borderTopColor: '#CFAE7B' }} />
                 <span style={{ color: '#8B5E34', fontFamily: "'Cinzel', serif", fontSize: '13px', letterSpacing: '0.1em' }}>
-                  Discovering sacred sites…
+                  {UI_TEXT.discoveringSites[lang]}
                 </span>
               </div>
             ) : (
@@ -177,6 +240,9 @@ function MapContent() {
 
       {/* ── Sidebar (overlay) ──────────────────────────────────────────── */}
       <Sidebar />
+
+      {/* ── Mobile Filter Pill ── */}
+      <MobileFilters />
 
       {/* ── Knowledge Panel (Mountain specific archival sheet) ─────────── */}
       <KnowledgePanel onClose={() => {

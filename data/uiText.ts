@@ -1,0 +1,92 @@
+export const UI_TEXT = {
+  headerTitle: {
+    en: "Akhand Bharat Darshan",
+    kn: "ಅಖಂಡ ಭಾರತ ದರ್ಶನ",
+    hi: "अखंड भारत दर्शन"
+  },
+  introText: {
+    en: "Explore the sacred geography of Bharat — rivers, mountains, and ancient cities that shaped civilization.",
+    kn: "ಭಾರತದ ಪವಿತ್ರ ಭೂಗೋಳವನ್ನು ಅನ್ವೇಷಿಸಿ - ನಾಗರಿಕತೆಯನ್ನು ರೂಪಿಸಿದ ನದಿಗಳು, ಪರ್ವತಗಳು ಮತ್ತು ಪ್ರಾಚೀನ ನಗರಗಳು.",
+    hi: "भारत के पवित्र भूगोल का अन्वेषण करें - सभ्यता को आकार देने वाली नदियाँ, पर्वत और प्राचीन शहर।"
+  },
+  searchPlaceholder: {
+    en: "Search cities, rivers, mountains...",
+    kn: "ನಗರಗಳು, ನದಿಗಳು, ಪರ್ವತಗಳನ್ನು ಹುಡುಕಿ...",
+    hi: "शहरों, नदियों, पहाड़ों को खोजें..."
+  },
+  filterAll: {
+    en: "All",
+    kn: "ಎಲ್ಲಾ",
+    hi: "सभी"
+  },
+  filterMountains: {
+    en: "Mountains",
+    kn: "ಪರ್ವತಗಳು",
+    hi: "पर्वत"
+  },
+  filterRivers: {
+    en: "Rivers",
+    kn: "ನದಿಗಳು",
+    hi: "नदियाँ"
+  },
+  filterSacredCities: {
+    en: "Sacred Cities",
+    kn: "ಪವಿತ್ರ ನಗರಗಳು",
+    hi: "पवित्र शहर"
+  },
+  loadingAtlas: {
+    en: "Preparing atlas...",
+    kn: "ನಕ್ಷೆಯನ್ನು ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...",
+    hi: "नक्शा तैयार किया जा रहा है..."
+  },
+  discoveringSites: {
+    en: "Discovering sacred sites...",
+    kn: "ಪವಿತ್ರ ಸ್ಥಳಗಳನ್ನು ಅನ್ವೇಷಿಸಲಾಗುತ್ತಿದೆ...",
+    hi: "पवित्र स्थलों की खोज की जा रही है..."
+  },
+  historicalContext: {
+    en: "Historical Context",
+    kn: "ಐತಿಹಾಸಿಕ ಹಿನ್ನೆಲೆ",
+    hi: "ऐतिहासिक संदर्भ"
+  },
+  spiritualSignificance: {
+    en: "Spiritual Significance",
+    kn: "ಧಾರ್ಮಿಕ ಮಹತ್ವ",
+    hi: "आध्यात्मिक महत्व"
+  },
+  livingTradition: {
+    en: "Living Tradition",
+    kn: "ಸಜೀವ ಸಂಪ್ರದಾಯ",
+    hi: "जीवंत परंपरा"
+  },
+  civilizationCulture: {
+    en: "Civilization & Culture",
+    kn: "ನಾಗರಿಕತೆ ಮತ್ತು ಸಂಸ್ಕೃತಿ",
+    hi: "सभ्यता और संस्कृति"
+  },
+  courseDescription: {
+    en: "Course Description",
+    kn: "ನದಿಯ ಹರಿವು",
+    hi: "नदी का प्रवाह"
+  },
+  region: {
+    en: "Region",
+    kn: "ಪ್ರದೇಶ",
+    hi: "क्षेत्र"
+  },
+  river: {
+    en: "River",
+    kn: "ನದಿ",
+    hi: "नदी"
+  },
+  era: {
+    en: "Era",
+    kn: "ಕಾಲ",
+    hi: "युग"
+  },
+  locationDetail: {
+    en: "Location Details",
+    kn: "ಸ್ಥಳದ ವಿವರಗಳು",
+    hi: "स्थान विवरण"
+  }
+};

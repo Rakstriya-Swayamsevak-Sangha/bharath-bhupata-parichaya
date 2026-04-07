@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { search, SearchResult } from '@/utils/search';
+import { motion, AnimatePresence } from 'framer-motion';
+import { UI_TEXT } from '@/data/uiText';
 import { citiesGeometry } from '@/data/citiesGeometry';
 import { mountainsGeometry } from '@/data/mountainsGeometry';
 import { riversGeometry } from '@/data/riversGeometry';
@@ -76,13 +78,13 @@ export function Search() {
 
     const location: Location = {
       id: item.id,
-      name: item.title.en,
+      name: item.title,
       category: item.type === 'city' ? 'city' : (item.type === 'mountain' ? 'mountain' : 'river'),
       latitude: lat,
       longitude: lng,
       description: '', // Will be loaded by KnowledgePanel
       noAutoOpen: typeof window !== 'undefined' && window.innerWidth < 768
-    };
+    } as unknown as Location;
 
     setSelectedLocation(location);
     setIsOpen(false);
@@ -116,7 +118,7 @@ export function Search() {
             // but standard behavior is better on tap.
           }}
           type="text"
-          placeholder={lang === 'en' ? "Search cities, rivers, mountains..." : (lang === 'kn' ? "ಹುಡುಕಿ..." : "खोजें...")}
+          placeholder={UI_TEXT.searchPlaceholder[lang]}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length >= 2 && setIsOpen(true)}
@@ -125,25 +127,37 @@ export function Search() {
         />
       </div>
 
-      {isOpen && results.length > 0 && (
-        <div className="search-dropdown">
-          {results.map((result, index) => (
-            <div
-              key={result.id}
-              className={`search-result-item ${index === selectedIndex ? 'selected' : ''}`}
-              onClick={() => handleSelect(result)}
-            >
-              <div className="result-info">
-                <span className="result-title">{result.title[lang]}</span>
-                {lang !== 'en' && <span className="result-subtitle">{result.title.en}</span>}
-              </div>
-              <span className={`result-badge badge-${result.type}`}>
-                {result.type}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen && results.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="search-dropdown"
+          >
+            {results.map((result, index) => (
+              <motion.div
+                key={result.id}
+                initial={{ opacity: 0, x: -4 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.15, delay: index * 0.025, ease: "easeOut" }}
+                whileTap={{ scale: 0.98 }}
+                className={`search-result-item ${index === selectedIndex ? 'selected' : ''}`}
+                onClick={() => handleSelect(result)}
+              >
+                <div className="result-info">
+                  <span className="result-title">{result.title[lang]}</span>
+                  {lang !== 'en' && <span className="result-subtitle">{result.title.en}</span>}
+                </div>
+                <span className={`result-badge badge-${result.type}`}>
+                  {result.type === 'mountain' ? UI_TEXT.filterMountains[lang] : (result.type === 'river' ? UI_TEXT.filterRivers[lang] : UI_TEXT.filterSacredCities[lang])}
+                </span>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

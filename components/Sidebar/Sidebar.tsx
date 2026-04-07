@@ -2,7 +2,9 @@
 
 import React, { useEffect } from 'react';
 import { useMap } from '@/providers/MapContext';
+import { useLanguageStore } from '@/store/languageStore';
 import { CloseButton } from '@/components/ui/CloseButton';
+import { UI_TEXT } from '@/data/uiText';
 import { Badge } from '@/components/ui/Badge';
 import { Location } from '@/types/location';
 
@@ -49,14 +51,17 @@ interface LocationCardProps {
 }
 
 function LocationCard({ location }: LocationCardProps) {
+  const { lang } = useLanguageStore();
+  const name = (lang === 'hi' && location.nameHindi) ? location.nameHindi : location.name;
+  
   return (
     <div className="animate-fade-in">
       <div className="flex items-start justify-between gap-4 mb-4">
         <div>
           <h2 className="font-cinzel text-2xl font-semibold text-primary mb-1">
-            {location.name}
+            {name}
           </h2>
-          {location.nameHindi && (
+          {(lang !== 'hi' && location.nameHindi) && (
             <p className="text-accent text-lg" style={{ fontFamily: "'Noto Serif Devanagari', serif" }}>
               {location.nameHindi}
             </p>
@@ -113,6 +118,7 @@ function LocationCard({ location }: LocationCardProps) {
 
 export function Sidebar() {
   const { selectedLocation, isSidebarOpen, closeSidebar } = useMap();
+  const { lang } = useLanguageStore();
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -156,7 +162,7 @@ export function Sidebar() {
             className="font-cinzel font-medium text-primary"
             style={{ fontSize: '13px', letterSpacing: '0.1em', textTransform: 'uppercase' }}
           >
-            स्थल विवरण
+            {UI_TEXT.locationDetail[lang]}
           </h1>
           <CloseButton onClick={closeSidebar} />
         </div>
