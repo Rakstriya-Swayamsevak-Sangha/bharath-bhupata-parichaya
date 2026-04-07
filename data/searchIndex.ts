@@ -21,8 +21,8 @@ const cities: SearchItem[] = Object.values(cityKnowledge).map((city) => ({
   keywords: [
     city.id,
     ...city.title.en.toLowerCase().split(" "),
-    ...city.tagline.en.toLowerCase().split(" "),
-    ...city.meta.en.toLowerCase().split(" "),
+    ...city.identity.era.en.toLowerCase().split(" "),
+    ...city.identity.river.en.toLowerCase().split(" "),
     ...city.identity.region.en.toLowerCase().split(" "),
     ...(city.id === "ayodhya" ? ["ram janmabhoomi", "saryu", "rama", "birthplace"] : []),
     ...(city.id === "takshashila" ? ["university", "learning", "gandhara", "taxila"] : []),
@@ -69,7 +69,6 @@ const rivers: SearchItem[] = Object.values(riverKnowledge).map((r) => ({
   keywords: [
     r.id,
     ...r.title.en.toLowerCase().split(" "),
-    ...r.subtitle.en.toLowerCase().split(" "),
     ...(r.id === "sindhu" ? ["indus", "origin", "civilization", "north", "sapta sindhu"] : []),
     ...(r.id === "ganga" ? ["ganges", "holy", "purity", "mother", "shiva", "bhagirathi"] : []),
     ...(r.id === "saraswati" ? ["lost", "vedic", "invisible", "knowledge", "ghaggar"] : []),

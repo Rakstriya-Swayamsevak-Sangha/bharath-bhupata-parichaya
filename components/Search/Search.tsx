@@ -81,6 +81,7 @@ export function Search() {
       latitude: lat,
       longitude: lng,
       description: '', // Will be loaded by KnowledgePanel
+      noAutoOpen: typeof window !== 'undefined' && window.innerWidth < 768
     };
 
     setSelectedLocation(location);
@@ -110,6 +111,10 @@ export function Search() {
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
         <input
+          ref={(input) => {
+            // Auto focus on mobile when search is mounted if needed, 
+            // but standard behavior is better on tap.
+          }}
           type="text"
           placeholder={lang === 'en' ? "Search cities, rivers, mountains..." : (lang === 'kn' ? "ಹುಡುಕಿ..." : "खोजें...")}
           value={query}

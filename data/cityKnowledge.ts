@@ -5,16 +5,6 @@ export interface CityKnowledge {
     kn: string;
     hi: string;
   };
-  tagline: {
-    en: string;
-    kn: string;
-    hi: string;
-  };
-  meta: {
-    en: string;
-    kn: string;
-    hi: string;
-  };
   identity: {
     region: {
       en: string;
@@ -58,18 +48,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       en: "Ayodhya",
       kn: "ಅಯೋಧ್ಯಾ",
       hi: "अयोध्या"
-    },
-
-    tagline: {
-      en: "Birthplace of Lord Rama",
-      kn: "ಶ್ರೀರಾಮನ ಜನ್ಮಸ್ಥಳ",
-      hi: "भगवान राम की जन्मभूमि"
-    },
-
-    meta: {
-      en: "Ancient Sacred City",
-      kn: "ಪ್ರಾಚೀನ ಪವಿತ್ರ ನಗರ",
-      hi: "प्राचीन पवित्र शहर"
     },
 
     identity: {
@@ -126,18 +104,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: "तक्षशिला"
     },
   
-    tagline: {
-      en: "Ancient Seat of Learning",
-      kn: "ಪ್ರಾಚೀನ ವಿದ್ಯಾ ಕೇಂದ್ರ",
-      hi: "प्राचीन शिक्षा केंद्र"
-    },
-  
-    meta: {
-      en: "Historical Site (Archaeological)",
-      kn: "ಐತಿಹಾಸಿಕ ಪುರಾತತ್ವ ಸ್ಥಳ",
-      hi: "ऐतिहासिक पुरातात्विक स्थल"
-    },
-  
     identity: {
       region: {
         en: "Gandhara (Modern Pakistan)",
@@ -190,18 +156,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       en: "Amritsar",
       kn: "ಅಮೃತಸರ",
       hi: "अमृतसर"
-    },
-  
-    tagline: {
-      en: "Spiritual Heart of Sikhism",
-      kn: "ಸಿಖ್ ಧರ್ಮದ ಆಧ್ಯಾತ್ಮಿಕ ಕೇಂದ್ರ",
-      hi: "सिख धर्म का आध्यात्मिक केंद्र"
-    },
-  
-    meta: {
-      en: "Active Pilgrimage City",
-      kn: "ಸಕ್ರಿಯ ತೀರ್ಥಕ್ಷೇತ್ರ",
-      hi: "सक्रिय तीर्थ स्थल"
     },
   
     identity: {
@@ -258,18 +212,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: "मथुरा"
     },
   
-    tagline: {
-      en: "Birthplace of Lord Krishna",
-      kn: "ಶ್ರೀಕೃಷ್ಣನ ಜನ್ಮಸ್ಥಳ",
-      hi: "भगवान कृष्ण की जन्मभूमि"
-    },
-  
-    meta: {
-      en: "Active Devotional City",
-      kn: "ಸಕ್ರಿಯ ಭಕ್ತಿಯ ಕೇಂದ್ರ",
-      hi: "सक्रिय भक्ति केंद्र"
-    },
-  
     identity: {
       region: {
         en: "Uttar Pradesh",
@@ -322,18 +264,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       en: "Indraprastha",
       kn: "ಇಂದ್ರಪ್ರಸ್ಥ",
       hi: "इंद्रप्रस्थ"
-    },
-  
-    tagline: {
-      en: "Capital of the Pandavas",
-      kn: "ಪಾಂಡವರ ರಾಜಧಾನಿ",
-      hi: "पांडवों की राजधानी"
-    },
-  
-    meta: {
-      en: "Epic Historical Capital",
-      kn: "ಐತಿಹಾಸಿಕ ಮಹಾಕಾವ್ಯ ನಗರ",
-      hi: "महाकाव्य ऐतिहासिक नगर"
     },
   
     identity: {
@@ -390,18 +320,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: "प्रयाग"
     },
   
-    tagline: {
-      en: "Sacred Confluence of Rivers",
-      kn: "ಪವಿತ್ರ ನದಿ ಸಂಗಮ",
-      hi: "पवित्र संगम स्थल"
-    },
-  
-    meta: {
-      en: "Sacred Confluence (Triveni Sangam)",
-      kn: "ತ್ರಿವೇಣಿ ಸಂಗಮ",
-      hi: "त्रिवेणी संगम"
-    },
-  
     identity: {
       region: {
         en: "Uttar Pradesh",
@@ -454,18 +372,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       en: "Vaishali",
       kn: "ವೈಶಾಲಿ",
       hi: "वैशाली"
-    },
-  
-    tagline: {
-      en: "Cradle of Early Republic",
-      kn: "ಪ್ರಾಚೀನ ಗಣರಾಜ್ಯದ ಕೇಂದ್ರ",
-      hi: "प्राचीन गणराज्य का केंद्र"
-    },
-  
-    meta: {
-      en: "Ancient Republic & Spiritual Center",
-      kn: "ಪ್ರಾಚೀನ ಗಣರಾಜ್ಯ ಮತ್ತು ಧಾರ್ಮಿಕ ಕೇಂದ್ರ",
-      hi: "प्राचीन गणराज्य और आध्यात्मिक केंद्र"
     },
   
     identity: {
@@ -522,18 +428,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: "पाटलिपुत्र"
     },
   
-    tagline: {
-      en: "Imperial Capital of Magadha",
-      kn: "ಮಗಧ ಸಾಮ್ರಾಜ್ಯದ ರಾಜಧಾನಿ",
-      hi: "मगध साम्राज्य की राजधानी"
-    },
-  
-    meta: {
-      en: "Imperial Capital of Ancient Bharat",
-      kn: "ಪ್ರಾಚೀನ ಭಾರತದ ಸಾಮ್ರಾಜ್ಯ ರಾಜಧಾನಿ",
-      hi: "प्राचीन भारत की साम्राज्य राजधानी"
-    },
-  
     identity: {
       region: {
         en: "Bihar",
@@ -586,18 +480,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       en: "Gaya",
       kn: "ಗಯಾ",
       hi: "गया"
-    },
-  
-    tagline: {
-      en: "Path to Liberation",
-      kn: "ಮೋಕ್ಷದ ಮಾರ್ಗ",
-      hi: "मोक्ष का मार्ग"
-    },
-  
-    meta: {
-      en: "Sacred Site of Liberation (Moksha)",
-      kn: "ಮೋಕ್ಷದ ಪವಿತ್ರ ಸ್ಥಳ",
-      hi: "मोक्ष का पवित्र स्थल"
     },
   
     identity: {
@@ -654,18 +536,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: "द्वारका"
     },
   
-    tagline: {
-      en: "Kingdom of Lord Krishna",
-      kn: "ಶ್ರೀಕೃಷ್ಣನ ರಾಜ್ಯ",
-      hi: "भगवान कृष्ण का राज्य"
-    },
-  
-    meta: {
-      en: "Mythic Coastal Kingdom",
-      kn: "ಪೌರಾಣಿಕ ಸಮುದ್ರ ತೀರದ ರಾಜ್ಯ",
-      hi: "पौराणिक समुद्री राज्य"
-    },
-  
     identity: {
       region: {
         en: "Gujarat",
@@ -718,18 +588,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       en: "Somnath",
       kn: "ಸೋಮನಾಥ",
       hi: "सोमनाथ"
-    },
-  
-    tagline: {
-      en: "First Jyotirlinga of Shiva",
-      kn: "ಶಿವನ ಮೊದಲ ಜ್ಯೋತಿರ್ಲಿಂಗ",
-      hi: "शिव का प्रथम ज्योतिर्लिंग"
-    },
-  
-    meta: {
-      en: "Eternal Jyotirlinga Shrine",
-      kn: "ಶಾಶ್ವತ ಜ್ಯೋತಿರ್ಲಿಂಗ ಕ್ಷೇತ್ರ",
-      hi: "शाश्वत ज्योतिर्लिंग स्थल"
     },
   
     identity: {
@@ -786,18 +644,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: "अवन्तिका"
     },
   
-    tagline: {
-      en: "City of Mahakal",
-      kn: "ಮಹಾಕಾಳನ ನಗರ",
-      hi: "महाकाल की नगरी"
-    },
-  
-    meta: {
-      en: "Sapta Puri (City of Liberation)",
-      kn: "ಸಪ್ತಪುರಿಗಳಲ್ಲಿ ಒಂದು",
-      hi: "सप्तपुरी में एक"
-    },
-  
     identity: {
       region: {
         en: "Madhya Pradesh",
@@ -850,18 +696,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       en: "Nagpur",
       kn: "ನಾಗಪುರ",
       hi: "नागपुर"
-    },
-  
-    tagline: {
-      en: "Heart of Bharat",
-      kn: "ಭಾರತದ ಹೃದಯ",
-      hi: "भारत का हृदय"
-    },
-  
-    meta: {
-      en: "Geographical Center of Bharat",
-      kn: "ಭಾರತದ ಭೌಗೋಳಿಕ ಕೇಂದ್ರ",
-      hi: "भारत का भौगोलिक केंद्र"
     },
   
     identity: {
@@ -918,18 +752,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: "कांची"
     },
   
-    tagline: {
-      en: "City of Thousand Temples",
-      kn: "ಸಾವಿರ ದೇವಾಲಯಗಳ ನಗರ",
-      hi: "हजार मंदिरों का शहर"
-    },
-  
-    meta: {
-      en: "Ancient Temple & Knowledge Center",
-      kn: "ಪ್ರಾಚೀನ ದೇವಾಲಯ ಮತ್ತು ವಿದ್ಯಾ ಕೇಂದ್ರ",
-      hi: "प्राचीन मंदिर और शिक्षा केंद्र"
-    },
-  
     identity: {
       region: {
         en: "Tamil Nadu",
@@ -984,18 +806,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: "पुरी"
     },
   
-    tagline: {
-      en: "Abode of Lord Jagannath",
-      kn: "ಜಗನ್ನಾಥನ ಧಾಮ",
-      hi: "जगन्नाथ का धाम"
-    },
-  
-    meta: {
-      en: "Char Dham Pilgrimage Site",
-      kn: "ಚಾರ ಧಾಮ ತೀರ್ಥಕ್ಷೇತ್ರ",
-      hi: "चार धाम तीर्थ स्थल"
-    },
-  
     identity: {
       region: {
         en: "Odisha",
@@ -1048,18 +858,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       en: "Vijayanagar",
       kn: "ವಿಜಯನಗರ",
       hi: "विजयनगर"
-    },
-  
-    tagline: {
-      en: "Empire of Southern Glory",
-      kn: "ದಕ್ಷಿಣದ ಮಹಾಸಾಮ್ರಾಜ್ಯ",
-      hi: "दक्षिण का महान साम्राज्य"
-    },
-  
-    meta: {
-      en: "Imperial Cultural Capital",
-      kn: "ಸಾಮ್ರಾಜ್ಯ ಸಾಂಸ್ಕೃತಿಕ ಕೇಂದ್ರ",
-      hi: "साम्राज्य सांस्कृतिक राजधानी"
     },
   
     identity: {

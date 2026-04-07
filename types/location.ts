@@ -24,6 +24,9 @@ export interface Location {
 
   /** Mountain range direct coords — array of [lat, lng] points for proper real-world ranges */
   coords?: [number, number][];
+
+  /** Flag to suppress automatic Knowledge Panel opening (e.g. on search for mobile) */
+  noAutoOpen?: boolean;
 }
 
 export type FilterState = {

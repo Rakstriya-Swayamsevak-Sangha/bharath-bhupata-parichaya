@@ -60,7 +60,6 @@ body {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .leaflet-container {
-  /* Warm neutral base — lets the tile basemap show through */
   background: #d4cdc0 !important;
   font-family: 'Noto Serif Devanagari', 'Cinzel', serif !important;
   width: 100% !important;
@@ -70,8 +69,6 @@ body {
   overflow: hidden !important;
 }
 
-/* ─── Step 1: Subtle warmth on tile pane — preserve geographic context ──── */
-/* Gentle sepia tint that warms the basemap without hiding borders/labels. */
 .leaflet-tile-pane {
   will-change: transform;
 }
@@ -80,18 +77,10 @@ body {
   filter: sepia(0.6) contrast(0.95) brightness(1.02);
 }
 
-/* ─── Tile blending — softened for readability ─────────────────────────── */
-/* Slight opacity reduction keeps tile labels subordinate to our
-   cultural markers while preserving country borders. */
 .leaflet-tile-pane img {
   opacity: 0.92;
 }
 
-
-
-/* ─── Parchment texture layer — reduced to subtle hint ─────────────────── */
-/* Opacity lowered from 0.3 → 0.15 so the basemap (with borders) stays
-   visually dominant. Blend mode changed to soft-light for less contrast. */
 .parchment-texture-layer {
   position: absolute;
   inset: 0;
@@ -107,14 +96,12 @@ body {
    MARKER / LAYER STYLING
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Base reset for all custom markers */
 .custom-marker {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
 }
 
-/* ─── Sacred Cities Markers ─────────────────────────────────────────────── */
 .marker-wrapper {
   position: relative;
   width: 28px;
@@ -147,14 +134,10 @@ body {
   border-radius: 50%;
   background: #8B5E34;
   border: 1px solid #CFAE7B;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.2),
-    inset 0 0 3px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 0 3px rgba(255, 255, 255, 0.15);
 }
 
 .marker-symbol {
@@ -164,39 +147,31 @@ body {
   line-height: 1;
 }
 
-/* ─── Sacred Cities Tooltip / Label ─────────────────────────────────────── */
 .sacred-label {
   font-family: "Cinzel", "Noto Serif Devanagari", serif !important;
   font-size: 11px !important;
   font-weight: 600 !important;
   color: #8A3324 !important;
-  /* Differentiated rusty/red copper tone */
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6) !important;
-
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
-
   letter-spacing: 1px !important;
   text-transform: uppercase !important;
   white-space: nowrap !important;
   pointer-events: none !important;
 }
 
-/* Hide leaflet tooltip pointer triangle */
 .leaflet-tooltip.sacred-label::before {
   display: none !important;
 }
 
-/* ─── Mountain peak markers — Terrain system ────────────────────────────── */
-/* Peak icons reduced to subtle suggestions, not primary visual elements */
 .mountain-peak {
   opacity: 0.2 !important;
   transform: scale(0.6) !important;
 }
 
-/* ─── Mountain range label — earthy serif typography ─────────────────────── */
 .mountain-label {
   font-family: "Cinzel", "Noto Serif Devanagari", serif;
   font-weight: 600;
@@ -219,7 +194,6 @@ body {
   transform: scale(1.05);
 }
 
-/* ─── Universal Label Engine — Hierarchical 2-Line Structure ────────────── */
 .label-main {
   font-family: "Cinzel", serif;
   font-size: 13px;
@@ -237,12 +211,8 @@ body {
   margin-top: 2px;
 }
 
-.label-main,
-.label-sub {
-  text-shadow:
-    0 0 3px rgba(255, 248, 220, 1),
-    0 0 6px rgba(255, 248, 220, 0.8),
-    0 1px 1px rgba(0, 0, 0, 0.1);
+.label-main, .label-sub {
+  text-shadow: 0 0 3px rgba(255, 248, 220, 1), 0 0 6px rgba(255, 248, 220, 0.8), 0 1px 1px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
 }
 
@@ -250,40 +220,16 @@ body {
   overflow: visible !important;
 }
 
-/* Lock scale — no zoom scaling ever */
-.leaflet-marker-icon .label {
-  transform: scale(1) !important;
-}
-
-.leaflet-zoom-animated {
-  will-change: transform;
-}
-
-/* Kill zoom fade inheritance */
-.leaflet-pane .label {
-  opacity: 1 !important;
-}
-
-/* Countries — STRONG weight */
-.country-label {
+.country-label, .ocean-label {
   z-index: 200;
   width: 100%;
   text-align: center;
 }
 
-/* Oceans — LARGER spacing */
-.ocean-label {
-  z-index: 180;
-  width: 100%;
-  text-align: center;
-}
-
-/* Sacred cities markers stay above labels */
 .leaflet-marker-icon {
   z-index: 400 !important;
 }
 
-/* ─── River labels — high contrast with cultural typography ─────────────── */
 .river-label {
   font-family: 'Cinzel', serif;
   font-size: 11px;
@@ -294,9 +240,7 @@ body {
   text-transform: uppercase;
   text-align: center;
   white-space: nowrap;
-  text-shadow:
-    0 1px 2px rgba(255, 255, 255, 0.8),
-    0 0 4px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 4px rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: all 0.2s ease;
   pointer-events: auto;
@@ -304,218 +248,43 @@ body {
 
 .river-label:hover {
   color: #1A3570;
-  text-shadow:
-    0 1px 3px rgba(255, 255, 255, 0.9),
-    0 0 6px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9), 0 0 6px rgba(255, 255, 255, 0.5);
 }
 
 .river-label--selected {
   color: #1540A0;
   font-weight: 700;
   font-size: 12px;
-  text-shadow:
-    0 1px 3px rgba(255, 255, 255, 0.9),
-    0 0 8px rgba(30, 95, 168, 0.3);
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9), 0 0 8px rgba(30, 95, 168, 0.3);
 }
 
-/* ─── Leaflet SVG polyline hand-drawn treatment ─────────────────────────── */
-.leaflet-interactive {
-  cursor: pointer;
-}
-
-/* Polyline hover glow */
-.leaflet-overlay-pane svg path:hover {
-  stroke-opacity: 1 !important;
-  filter: drop-shadow(0 0 4px rgba(111, 168, 220, 0.5));
-}
-
-/* ─── Popup — manuscript card styling ───────────────────────────────────── */
 .leaflet-popup-content-wrapper {
   background: var(--color-surface) !important;
   color: var(--color-text-primary) !important;
   border-radius: 4px !important;
   border: 1px solid var(--color-border) !important;
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
 }
 
 .leaflet-popup-tip {
   background: var(--color-surface) !important;
   border: 1px solid var(--color-border) !important;
-  border-top: none !important;
-  border-left: none !important;
 }
 
-.leaflet-popup-content {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.leaflet-popup-close-button {
-  color: var(--color-text-secondary) !important;
-  font-size: 16px !important;
-  padding: 4px 6px 0 0 !important;
-}
-
-.leaflet-popup-close-button:hover {
-  color: var(--color-primary) !important;
-}
-
-/* Popup inner content */
-.popup-inner {
-  padding: 14px 16px;
-  min-width: 200px;
-}
-
-.popup-inner h3 {
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: 2px;
-}
-
-.popup-inner p {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  margin-bottom: 10px;
-}
-
-.popup-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 5px 14px;
-  border-radius: 2px;
-  background: rgba(255, 153, 51, 0.12);
-  color: var(--color-primary);
-  border: 1px solid rgba(255, 153, 51, 0.3);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.popup-btn:hover {
-  background: rgba(255, 153, 51, 0.22);
-  border-color: rgba(255, 153, 51, 0.5);
-}
-
-/* ─── Zoom controls — earthy manuscript style ───────────────────────────── */
 .leaflet-control-zoom {
   border: 1px solid var(--color-border) !important;
-  border-radius: 3px !important;
-  overflow: hidden !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
 .leaflet-control-zoom a {
   background: var(--color-surface) !important;
   color: var(--color-accent) !important;
-  border: none !important;
-  border-bottom: 1px solid var(--color-border) !important;
-  width: 30px !important;
-  height: 30px !important;
-  line-height: 30px !important;
-  font-size: 15px !important;
-  transition: all 0.15s ease !important;
-}
-
-.leaflet-control-zoom a:last-child {
-  border-bottom: none !important;
-}
-
-.leaflet-control-zoom a:hover {
-  background: var(--color-surface-hover) !important;
-  color: var(--color-primary) !important;
-}
-
-/* ─── Attribution — subtle, blended ─────────────────────────────────────── */
-.leaflet-control-attribution {
-  background: rgba(28, 26, 23, 0.6) !important;
-  color: var(--color-text-secondary) !important;
-  font-size: 10px !important;
-  padding: 2px 6px !important;
-}
-
-.leaflet-control-attribution a {
-  color: var(--color-accent) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ANIMATIONS
+   PREMIUM ANCIENT UI COMPONENTS
    ═══════════════════════════════════════════════════════════════════════════ */
 
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulseGlow {
-
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(139, 69, 19, 0.25);
-  }
-
-  50% {
-    box-shadow: 0 0 8px 3px rgba(139, 69, 19, 0.12);
-  }
-}
-
-.animate-slide-in {
-  animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-/* ─── Loading spinner ───────────────────────────────────────────────────── */
-.map-loading-spinner {
-  width: 28px;
-  height: 28px;
-  border: 2px solid var(--color-border);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {}
-
-/* ─── Terrain Polygons (Soft Edges) ─────────────────────────────────────── */
-.terrain-polygon-blur {
-  filter: blur(4px);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   PREMIUM ANCIENT UI COMPONENTS (HIGH-CONVERSION)
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ── Header (Minimal) ── */
 .header {
   height: 60px;
   display: flex;
@@ -535,7 +304,6 @@ body {
   text-transform: uppercase;
 }
 
-/* ── Cultural Intro Strip ── */
 .intro {
   text-align: center;
   padding: 14px 40px;
@@ -544,17 +312,8 @@ body {
   color: rgba(214, 179, 122, 0.65);
   border-bottom: 1px solid rgba(207, 174, 123, 0.1);
   background: #1C1A17;
-  /* match container bg */
 }
 
-/* ── Layout Wrapper ── */
-.mainLayout {
-  display: flex;
-  height: calc(100vh - 110px);
-  /* Approx remaining after header + intro */
-}
-
-/* ── Left Sidebar ── */
 .sidebar {
   width: 220px;
   padding: 20px;
@@ -573,7 +332,6 @@ body {
   text-transform: uppercase;
 }
 
-/* ── Sidebar Filters ── */
 .filter {
   display: block;
   width: 100%;
@@ -581,14 +339,13 @@ body {
   margin-bottom: 8px;
   text-align: left;
   border-radius: 6px;
-  border: 1px solid transparent;
   background: transparent;
   font-family: "Cinzel", serif;
   font-size: 12px;
   color: rgba(207, 174, 123, 0.7);
-  transition: all 0.2s ease;
   cursor: pointer;
   text-transform: uppercase;
+  transition: all 0.2s ease;
 }
 
 .filter.active {
@@ -597,87 +354,20 @@ body {
   color: #E6C48D;
 }
 
-.filter:hover {
-  background: rgba(207, 174, 123, 0.08);
-}
-
-/* ── Sacred Sites Count ── */
-.count {
-  margin-top: 20px;
-  font-size: 11px;
-  color: rgba(207, 174, 123, 0.5);
-  font-family: "Cinzel", serif;
-  opacity: 0.8;
-}
-
-/* ── Map Container Overlay ── */
 .map-container {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
   background: #1C1A17;
+  padding: 20px;
 }
 
 .map-frame {
-  background:
-    linear-gradient(rgba(120, 85, 40, 0.08),
-      rgba(60, 40, 20, 0.12)),
-    #efe8d8;
-  padding: 12px;
-  box-shadow:
-    inset 0 0 30px rgba(0, 0, 0, 0.15),
-    0 10px 40px rgba(0, 0, 0, 0.4);
-  filter: contrast(0.96) brightness(0.98);
+  flex: 1;
+  background: #efe8d8;
   border-radius: 6px;
-  width: 100%;
-  height: 100%;
   position: relative;
   overflow: hidden;
-}
-
-.map-frame::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background-image:
-    url('/textures/paper.png'),
-    url('/textures/noise.png');
-
-  background-size:
-    cover,
-    200px;
-
-  background-repeat: no-repeat, repeat;
-
-  opacity: 0.15;
-  pointer-events: none;
-  z-index: 9999;
-}
-
-.map-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background: radial-gradient(circle at center,
-      transparent 60%,
-      rgba(0, 0, 0, 0.18) 100%);
-
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   LANGUAGE SWITCHER
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.lang-switch {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .lang-switch button {
@@ -686,16 +376,9 @@ body {
   color: #d4af37;
   padding: 6px 10px;
   font-size: 11px;
-  letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.2s ease;
   font-family: 'Cinzel', serif;
   text-transform: uppercase;
-}
-
-.lang-switch button:hover {
-  background: rgba(212, 175, 55, 0.1);
-  border-color: rgba(212, 175, 55, 0.6);
 }
 
 .lang-switch .active {
@@ -704,7 +387,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   KNOWLEDGE PANEL — Museum Archival Sheet
+   KNOWLEDGE PANEL — Base Component
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .kp-backdrop {
@@ -712,217 +395,22 @@ body {
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   z-index: 900;
-  animation: fadeInBackdrop 0.3s ease-out forwards;
-}
-
-@keyframes fadeInBackdrop {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 .kp-panel {
   position: fixed;
-  top: 0;
-  right: 0;
-  width: 380px;
-  height: 100vh;
   z-index: 1000;
   overflow-y: auto;
-  overflow-x: hidden;
-
-  /* Archival layered background — CRITICAL DESIGN */
-  background:
-    linear-gradient(to bottom, rgba(28, 22, 18, 0.98), rgba(18, 14, 11, 0.99));
-  
-  /* Shadow and Side Border */
+  background: linear-gradient(to bottom, rgba(28, 22, 18, 0.98), rgba(18, 14, 11, 0.99));
   box-shadow: -8px 0 30px rgba(0, 0, 0, 0.6);
-  border-left: 1px solid rgba(212, 175, 55, 0.25);
-
-  /* Animation */
-  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1), opacity 320ms ease;
+  border-left: 2px solid rgba(212, 175, 55, 0.3);
 }
 
-.kp-panel::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url('/textures/paper.png') repeat;
-  background-size: 512px;
-  opacity: 0.15;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  z-index: 1;
-}
+.river-theme { border-left-color: rgba(30, 95, 168, 0.6) !important; }
+.city-theme { border-left-color: #D6B37A !important; }
+.mountain-theme { border-left-color: rgba(139, 69, 19, 0.6) !important; }
 
-.kp-panel.hidden {
-  transform: translateX(100%);
-}
-
-.kp-panel.visible {
-  transform: translateX(0);
-}
-
-/* ─── Scrollbar ──────────────────────────────────────────── */
-.kp-panel::-webkit-scrollbar {
-  width: 4px;
-}
-
-.kp-panel::-webkit-scrollbar-track {
-  background: rgba(28, 22, 18, 0.5);
-}
-
-.kp-panel::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.2);
-  border-radius: 2px;
-}
-
-/* ─── Content Container ──────────────────────────────────── */
-.kp-content {
-  position: relative;
-  z-index: 2; /* above texture */
-  padding: 50px 30px 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-/* ─── Close Button ──────────────────────────────────────── */
-.kp-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  color: #d4af37;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 10; /* High z-index to be clickable above textures */
-}
-
-/* ─── Themes ─────────────────────────────────────────────── */
-.mountain-theme {
-  border-left-color: rgba(139, 69, 19, 0.4);
-}
-
-.river-theme {
-  border-left-color: rgba(30, 95, 168, 0.4);
-}
-
-.city-theme {
-  background: linear-gradient(to bottom, #251f18, #1a1612) !important;
-  border-left-color: #D6B37A !important;
-}
-
-.city-theme .kp-title {
-  color: #D6B37A !important;
-}
-
-/* ─── Sacred City Specifics ─────────────────────────────── */
-.kp-city-identity {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: -8px;
-  margin-bottom: 4px;
-}
-
-.kp-tagline {
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  color: #A89882;
-  letter-spacing: 0.15em;
-  opacity: 0.8;
-  text-transform: uppercase;
-  margin: 0;
-}
-
-.kp-city-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  color: rgba(214, 182, 122, 0.6);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.kp-city-status::before {
-  content: '';
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #D6B37A;
-  box-shadow: 0 0 6px rgba(214, 182, 122, 0.5);
-}
-
-.kp-hero-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.city-hero {
-  height: 200px !important;
-}
-
-.city-hero .kp-hero-img {
-  filter: saturate(0.7) contrast(1.1);
-}
-
-.kp-identity-strip {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(214, 182, 122, 0.15);
-  margin-bottom: 4px;
-}
-
-.identity-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.identity-label {
-  font-size: 9px;
-  font-family: 'Cinzel', serif;
-  color: rgba(214, 182, 122, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.identity-value {
-  font-size: 11px;
-  color: #F0E6D3;
-  font-weight: 500;
-}
-
-.kp-spiritual .kp-divider {
-  margin-bottom: 20px;
-}
-
-.kp-description {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #D1C5B0;
-  text-align: justify;
-}
-
-.kp-close:hover {
-  background: rgba(212, 175, 55, 0.1);
-  border-color: rgba(212, 175, 55, 0.6);
-  transform: rotate(90deg);
-}
-
-/* ─── Language Switcher (Internal) ───────────────────────── */
 .kp-lang-switcher {
   position: absolute;
   top: 18px;
@@ -945,119 +433,72 @@ body {
   text-transform: uppercase;
 }
 
-.kp-lang-btn:hover {
-  color: rgba(212, 175, 55, 0.8);
-}
-
 .kp-lang-btn.active {
   color: #d4af37;
   text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
 }
 
-/* ─── Header Section ─────────────────────────────────────── */
-.kp-header {
+.kp-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('/textures/paper.png') repeat;
+  background-size: 512px;
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.kp-content {
+  position: relative;
+  z-index: 2;
+  padding: 50px 30px 40px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  text-align: center;
+  gap: 28px;
+}
+
+.kp-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
 }
 
 .kp-title {
   font-family: 'Cinzel', serif;
   font-size: 24px;
-  font-weight: 500;
   letter-spacing: 4px;
   color: #d4af37;
   text-transform: uppercase;
   margin: 0;
-  line-height: 1.1;
+  text-align: center;
 }
 
-.kp-subtitle {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: rgba(212, 175, 55, 0.6);
-  margin: 0;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
+.kp-description {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(240, 230, 211, 0.85);
 }
 
-.kp-meta-badge {
-  display: inline-block;
-  align-self: center;
-  margin: 4px 0;
-  padding: 2px 10px;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 12px;
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: #d4af37;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-.kp-relation {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  color: #92a8d1; /* Soft blue for tributaries/relations */
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin: 4px 0;
-  opacity: 0.9;
-}
-
-.kp-type-tag {
-  display: inline-block;
-  margin: 4px 4px 4px 0;
-  padding: 2px 8px;
-  background: rgba(120, 144, 156, 0.1);
-  border: 1px dashed rgba(120, 144, 156, 0.3);
-  border-radius: 4px;
-  font-family: 'Inter', sans-serif;
-  font-size: 8.5px;
-  letter-spacing: 0.05em;
-  color: #78909c;
-  text-transform: uppercase;
-}
-
-.kp-scale-tag {
-  display: inline-block;
-  margin: 4px 4px 4px 0;
-  padding: 2px 8px;
-  background: rgba(43, 175, 99, 0.08); /* Soft emerald/green tint for large systems */
-  border: 1px solid rgba(43, 175, 99, 0.15);
-  border-radius: 4px;
-  font-family: 'Inter', sans-serif;
-  font-size: 8.5px;
-  letter-spacing: 0.05em;
-  color: #2baf63;
-  text-transform: uppercase;
-}
-
-.kp-importance-tag {
-  display: inline-block;
-  margin: 4px 4px 4px 0;
-  padding: 2px 8px;
-  background: rgba(63, 81, 181, 0.08); /* Soft indigo for cultural importance */
-  border: 1px solid rgba(63, 81, 181, 0.15);
-  border-radius: 4px;
-  font-family: 'Inter', sans-serif;
-  font-size: 8.5px;
-  letter-spacing: 0.05em;
-  color: #3f51b5;
-  text-transform: uppercase;
-}
-
-/* ─── Hero Image ────────────────────────────────────────── */
 .kp-hero {
   position: relative;
   width: 100%;
   height: 200px;
   border-radius: 4px;
   overflow: hidden;
-  flex-shrink: 0;
   border: 1px solid rgba(212, 175, 55, 0.15);
 }
 
@@ -1065,234 +506,173 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: contrast(0.9) brightness(0.95) saturate(0.85); /* As requested */
-  display: block;
+  filter: contrast(0.9) brightness(0.95);
 }
 
-.kp-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 60%,
-    rgba(18, 14, 11, 0.4) 100%
-  );
-  pointer-events: none;
-}
-
-/* ─── Facts Block ───────────────────────────────────────── */
 .kp-facts {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 18px 0;
   border-top: 1px solid rgba(212, 175, 55, 0.1);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  padding-top: 18px;
 }
 
 .kp-fact-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
 }
 
 .kp-fact-label {
   font-family: 'Cinzel', serif;
   font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
   color: rgba(212, 175, 55, 0.5);
-  flex-shrink: 0;
-  margin-top: 2px;
+  text-transform: uppercase;
 }
 
 .kp-fact-value {
-  font-family: 'Noto Serif', 'Noto Serif Devanagari', serif;
   font-size: 13px;
   color: rgba(212, 175, 55, 0.85);
-  font-weight: 500;
-  text-align: right;
-  line-height: 1.4;
-}
-
-/* ─── Sections ──────────────────────────────────────────── */
-.kp-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.kp-divider {
-  width: 60px;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    rgba(212, 175, 55, 0.5),
-    rgba(212, 175, 55, 0.1)
-  );
-  margin-bottom: 4px;
-}
-
-.kp-section-label {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: rgba(212, 175, 55, 0.7);
-  margin: 0;
-}
-
-.kp-description {
-  font-family: 'Noto Serif', 'Noto Serif Devanagari', serif;
-  font-size: 15px;
-  line-height: 1.65;
-  color: rgba(240, 230, 211, 0.85);
-  margin: 0;
 }
 
 .kp-cultural-text {
   font-family: 'Noto Serif Devanagari', serif;
-  font-size: 13px;
-  line-height: 1.75;
-  color: rgba(240, 230, 211, 0.75);
-  margin: 0;
-  font-style: italic;
-}
-
-/* ─── Cultural Section (deeper emphasis) ────────────────── */
-.kp-cultural {
-  padding-top: 8px;
-}
-
-.kp-cultural .kp-section-label {
-  color: #d4af37;
-  opacity: 0.9;
-  letter-spacing: 2.5px;
-  margin-bottom: 6px;
-}
-
-.kp-cultural-text {
-  font-family: 'Noto Serif', 'Noto Serif Devanagari', serif;
   font-size: 14px;
   line-height: 1.7;
   color: rgba(240, 230, 211, 0.88);
-  margin: 0;
   background: rgba(212, 175, 55, 0.04);
   padding: 16px;
   border-radius: 4px;
   border-left: 2px solid rgba(212, 175, 55, 0.2);
 }
 
-/* ─── River Specific Styles ──────────────────────────────── */
-.kp-panel.river-theme .kp-hero {
-  height: 180px;
-}
-
-.kp-flow-strip {
-  position: relative;
-  padding: 10px 0 20px;
-  margin: -10px 0;
-  display: flex;
-  justify-content: center;
-}
-
-.flow-line {
-  position: absolute;
-  top: 13px;
-  left: 30px;
-  right: 30px;
+.kp-divider {
+  width: 60px;
   height: 1px;
-  background: linear-gradient(to right, 
-    rgba(100, 120, 140, 0), 
-    rgba(100, 120, 140, 0.4) 15%, 
-    rgba(100, 120, 140, 0.4) 85%, 
-    rgba(100, 120, 140, 0)
-  );
-  z-index: 1;
+  background: linear-gradient(to right, rgba(212, 175, 55, 0.5), rgba(212, 175, 55, 0.1));
+  margin-bottom: 20px;
 }
-
-.flow-nodes {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 0 10px;
-  z-index: 2;
-}
-
-.flow-node-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.flow-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #78909c;
-  border: 1px solid rgba(135, 206, 235, 0.2);
-  box-shadow: 0 0 6px rgba(120, 144, 156, 0.3);
-}
-
-.flow-label {
-  font-family: 'Cinzel', serif;
-  font-size: 8px;
-  letter-spacing: 0.5px;
-  color: rgba(120, 144, 156, 0.7);
-  text-transform: uppercase;
-  white-space: nowrap;
-  text-align: center;
-}
-
-.flow-arrow {
-  color: rgba(120, 144, 156, 0.3);
-  font-size: 10px;
-  margin-top: -14px;
-}
-
-.river-label--selected {
-  color: #2980C8 !important;
-  text-shadow: 0 0 12px rgba(41, 128, 200, 0.5);
-  font-weight: 600;
-  transform: translateY(-2px);
-}
-
-/* Subtle animation for flow strip */
-.kp-flow-strip .flow-dot {
-  animation: flowPulse 4s infinite ease-in-out;
-}
-
-@keyframes flowPulse {
-  0%, 100% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 10px rgba(120, 144, 156, 0.5); }
-}
-
-/* Staggered animation for progress feel */
-.flow-node-container:nth-of-type(1) .flow-dot { animation-delay: 0s; }
-.flow-node-container:nth-of-type(3) .flow-dot { animation-delay: 1s; }
-.flow-node-container:nth-of-type(5) .flow-dot { animation-delay: 2s; }
-.flow-node-container:nth-of-type(7) .flow-dot { animation-delay: 3s; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   RESPONSIVE — Mobile
+   RESPONSIVE STRATEGY
    ═══════════════════════════════════════════════════════════════════════════ */
 
-@media (max-width: 640px) {
+.mainLayout {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 110px);
+  width: 100%;
+}
+
+/* ─── DESKTOP (> 1024px) ─── */
+@media (min-width: 1025px) {
   .kp-panel {
-    width: 100vw;
+    top: 0;
+    right: 0;
+    width: 380px;
+    height: 100vh;
+    border-left: 1px solid rgba(212, 175, 55, 0.25);
+    transform: translateX(100%);
   }
+  .kp-panel.visible {
+    transform: translateX(0);
+  }
+}
 
+/* ─── TABLET (768px - 1024px) ─── */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .sidebar {
+    display: none !important;
+  }
+  .intro {
+    display: none !important;
+  }
+  .mainLayout {
+    height: calc(100vh - 60px);
+  }
+  .map-container {
+    padding: 0 !important;
+  }
+  .map-frame {
+    border-radius: 0 !important;
+  }
+  .kp-panel {
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 500px;
+    height: 80vh;
+    transform: translate(-50%, -45%) scale(0.95);
+    opacity: 0;
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+  }
+  .kp-panel.visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ─── MOBILE (< 768px) ─── */
+@media (max-width: 767px) {
+  .sidebar, .intro, .header .title {
+    display: none !important;
+  }
+  .mainLayout {
+    height: calc(100vh - 60px);
+  }
+  .map-container {
+    padding: 0 !important;
+  }
+  .map-frame {
+    border-radius: 0 !important;
+  }
+  .header {
+    padding: 0 16px;
+  }
+  .search-system {
+    width: 100% !important;
+    flex: 1;
+  }
+  .kp-panel {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 85vh !important;
+    border-radius: 24px 24px 0 0 !important;
+    transform: translateY(100%);
+  }
+  .kp-panel.visible {
+    transform: translateY(0);
+  }
   .kp-content {
-    padding: 56px 20px 32px;
+    padding: 20px 20px 40px !important;
   }
-
-  .kp-title {
-    font-size: 18px;
+  .kp-drag-handle {
+    display: block !important;
+    width: 40px;
+    height: 4px;
+    background: rgba(212, 175, 55, 0.3);
+    border-radius: 2px;
+    margin: 12px auto 0;
+    z-index: 1001;
+  }
+  .search-dropdown {
+    position: fixed !important;
+    top: 60px !important;
+    left: 0 !important;
+    width: 100vw !important;
+    border-radius: 0 !important;
+  }
+  
+  .leaflet-control-zoom {
+    display: none !important;
+  }
+  
+  .leaflet-control-attribution {
+    font-size: 8px !important;
+    opacity: 0.5;
   }
 }
 
@@ -1310,17 +690,10 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  background: #fdfaf3; /* Parchment white */
+  background: #fdfaf3;
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 4px;
   padding: 0 12px;
-  transition: all 0.2s ease;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.search-input-wrapper:focus-within {
-  border-color: #c5a363;
-  box-shadow: 0 0 0 3px rgba(197, 163, 99, 0.15);
 }
 
 .search-icon {
@@ -1332,17 +705,12 @@ body {
 .search-input-wrapper input {
   width: 100%;
   height: 38px;
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  font-family: 'Source Sans 3', sans-serif !important;
-  font-size: 14px !important;
-  color: #4a3722 !important;
-}
-
-.search-input-wrapper input::placeholder {
-  color: #a89882;
-  font-style: italic;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  color: #4a3722;
 }
 
 .search-dropdown {
@@ -1356,17 +724,7 @@ body {
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
   max-height: 400px;
   overflow-y: auto;
-  animation: fadeIn 0.2s ease-out;
   z-index: 1000;
-}
-
-.search-dropdown::-webkit-scrollbar {
-  width: 4px;
-}
-
-.search-dropdown::-webkit-scrollbar-thumb {
-  background: #d4c4a8;
-  border-radius: 2px;
 }
 
 .search-result-item {
@@ -1376,59 +734,141 @@ body {
   justify-content: space-between;
   cursor: pointer;
   border-bottom: 1px solid rgba(212, 196, 168, 0.3);
-  transition: background 0.15s ease;
-}
-
-.search-result-item:last-child {
-  border-bottom: none;
-}
-
-.search-result-item:hover,
-.search-result-item.selected {
-  background: #f5f0e1;
-}
-
-.result-info {
-  display: flex;
-  flex-direction: column;
 }
 
 .result-title {
   font-family: 'Cinzel', serif !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  color: #4a3722 !important;
-  margin: 0 !important;
-}
-
-.result-subtitle {
-  font-family: 'Source Sans 3', sans-serif !important;
-  font-size: 11px !important;
-  color: #a89882 !important;
-  margin-top: 1px !important;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a3722;
 }
 
 .result-badge {
-  font-family: 'Cinzel', serif !important;
-  font-size: 9px !important;
-  font-weight: 700 !important;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
   padding: 3px 8px;
   border-radius: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.badge-mountain {
-  background: #e8dbcc;
-  color: #7a6445;
+.badge-mountain { background: #e8dbcc; color: #7a6445; }
+.badge-river { background: #e0eef8; color: #4a7eb8; }
+.badge-city { background: #f2e6d9; color: #8b5e34; }
+
+/* ─── Typography clamp ─── */
+.kp-title { font-size: clamp(20px, 5vw, 24px) !important; }
+.kp-description { font-size: clamp(14px, 3vw, 15px) !important; }
+/* --- Sidebar (secondary overlay) fixed for mobile --- */
+@media (max-width: 767px) {
+  aside[role='dialog'] {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 85vh !important;
+    border-radius: 24px 24px 0 0 !important;
+    transform: translateY(0) !important;
+    animation: slideInBottom 0.3s ease-out;
+  }
 }
 
-.badge-river {
-  background: #e0eef8;
-  color: #4a7eb8;
+@keyframes slideInBottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
-.badge-city {
-  background: #f2e6d9;
-  color: #8b5e34;
-}
+/* --- River Flow Cards --- */
+.kp-flow-cards {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar for cleaner look */
+  -ms-overflow-style: none;
+  flex-wrap: wrap; /* Enabled wrapping so Bay of Bengal takes next line in narrow views */
+}
+
+.kp-flow-cards::-webkit-scrollbar {
+  display: none;
+}
+
+.flow-card {
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: #D6B37A;
+  white-space: nowrap;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.flow-card:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.4);
+  transform: translateY(-1px);
+}
+
+/* --- Tag Container for Header Metadata --- */
+.kp-tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.kp-relation, .kp-subtitle {
+  width: 100%; /* force to own line if they are long */
+  text-align: center;
+}
+
+
+/* --- Identity Highlights Strip for Sacred Cities --- */
+.kp-identity-strip {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(22, 20, 18, 0.6);
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 12px 10px;
+  margin: 10px 0 15px 0;
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+}
+
+.identity-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  gap: 4px;
+}
+
+.identity-item:not(:last-child) {
+  border-right: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.identity-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: #A89882;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+}
+
+.identity-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  color: #CFAE7B;
+  font-weight: 500;
+  text-align: center;
+}
