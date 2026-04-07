@@ -124,12 +124,14 @@ function MapContent() {
     >
       {/* ── Header (Minimal) ───────────────────────── */}
       <header className="header shrink-0 relative z-20">
-        <h1 className="title">
-          {UI_TEXT.headerTitle[lang]}
-        </h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Search />
-          <LanguageSwitcher />
+        <div className="header-container">
+          <h1 className="title">
+            {UI_TEXT.headerTitle[lang]}
+          </h1>
+          <div className="header-actions">
+            <Search />
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
 
@@ -176,7 +178,7 @@ function MapContent() {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={toggleFilterSidebar}
-          className="sidebar-toggle-modern"
+          className="sidebar-toggle-modern hide-on-mobile"
           initial={false}
           animate={{ left: isFilterOpen ? '248px' : '10px' }}
           transition={{ duration: 0.25, ease: "easeOut" }}

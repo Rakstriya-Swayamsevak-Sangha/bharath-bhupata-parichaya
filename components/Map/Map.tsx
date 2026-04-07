@@ -14,17 +14,14 @@ import {
   Pane,
   useMap as useLeafletMap,
   ZoomControl,
+  Rectangle,
 } from 'react-leaflet';
 import L from 'leaflet';
 import { useMap } from '@/providers/MapContext';
 import { useFilter } from '@/providers/FilterContext';
 import { useLanguageStore } from '@/store/languageStore';
-import { getContent } from '@/lib/i18n';
 import { mountainsGeometry } from '@/data/mountainsGeometry';
 import { riversGeometry } from '@/data/riversGeometry';
-import { mountainKnowledge } from '@/data/mountainKnowledge';
-import { riverKnowledge } from '@/data/riverKnowledge';
-import { citiesGeometry } from '@/data/citiesGeometry';
 import { Location, Category } from '@/types/location';
 import { UI_TEXT } from '@/data/uiText';
 import {
@@ -189,7 +186,6 @@ function MountainLinesLayer() {
 // ─── Interaction & Labelling ─────────────────────────────────────────────────
 function MountainLabelsLayer({ onMountainClick }: { onMountainClick: (loc: Location) => void }) {
   const { lang } = useLanguageStore();
-  const content = getContent(lang);
   const { activeFilters } = useFilter();
 
   if (!activeFilters.mountain) return null;
@@ -199,7 +195,7 @@ function MountainLabelsLayer({ onMountainClick }: { onMountainClick: (loc: Locat
       {mountainsGeometry.map((mt) => {
         const coords = mt.path;
         const centerIdx = Math.floor(coords.length / 2);
-        const label = content.mountains[mt.id as keyof typeof content.mountains] ?? mt.id;
+        const label = mt.title[lang] || mt.id;
 
         let angle = 0;
         if (coords.length >= 2) {
@@ -277,7 +273,6 @@ const createRiverLabelIcon = (name: string, isSelected = false) =>
 
 function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void }) {
   const { lang } = useLanguageStore();
-  const content = getContent(lang);
   const { activeFilters } = useFilter();
   const { selectedLocation } = useMap();
 
@@ -308,7 +303,7 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
         const path = river.path;
         const labelIdx = Math.floor(path.length * 0.4);
         const labelPoint = path[labelIdx];
-        const label = content.rivers[river.id as keyof typeof content.rivers] ?? river.id;
+        const label = river.title[lang] || river.id;
 
         // 🎯 Dynamic Visual Hierarchy
         let scale = 1.0;
@@ -424,7 +419,7 @@ function POILayer({ onItemClick, locations }: { onItemClick: (loc: Location) => 
         // Apply coordinate offset for clarity in dense zones
         const [lat, lng] = adjustCoords(item.id, item.latitude, item.longitude);
         const isSelected = selectedLocation?.id === item.id;
-        
+
         return (
           <Marker
             key={`poi-${item.id}`}
@@ -466,80 +461,80 @@ function formatLabel(name: string) {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const COUNTRY_LABELS = [
-  { 
+  {
     name: {
       en: "Afghanistan (Gandhara)",
       kn: "ಅಫ್ಘಾನಿಸ್ತಾನ್ (ಗಾಂಧಾರ)",
       hi: "अफगानिस्तान (गांधार)"
-    }, 
-    coords: [33.5, 68.0] as [number, number] 
+    },
+    coords: [33.5, 68.0] as [number, number]
   },
-  { 
+  {
     name: {
       en: "Pakistan",
       kn: "ಪಾಕಿಸ್ತಾನ",
       hi: "पाकिस्तान"
-    }, 
-    coords: [28.5, 70.0] as [number, number] 
+    },
+    coords: [28.5, 70.0] as [number, number]
   },
-  { 
+  {
     name: {
       en: "Nepal",
       kn: "ನೇಪಾಳ",
       hi: "नेपाल"
-    }, 
-    coords: [28.2, 83.9] as [number, number] 
+    },
+    coords: [28.2, 83.9] as [number, number]
   },
-  { 
+  {
     name: {
       en: "Bangladesh",
       kn: "ಬಾಂಗ್ಲಾದೇಶ",
       hi: "बांग्लादेश"
-    }, 
-    coords: [23.7, 90.3] as [number, number] 
+    },
+    coords: [23.7, 90.3] as [number, number]
   },
-  { 
+  {
     name: {
       en: "Brahmadesh",
       kn: "ಬ್ರಹ್ಮದೇಶ",
       hi: "ब्रह्मदेश"
-    }, 
-    coords: [21.5, 96.0] as [number, number] 
+    },
+    coords: [21.5, 96.0] as [number, number]
   },
-  { 
+  {
     name: {
       en: "Sri Lanka",
       kn: "ಶ್ರೀಲಂಕಾ",
       hi: "श्रीलंका"
-    }, 
-    coords: [7.2, 80.8] as [number, number] 
+    },
+    coords: [7.2, 80.8] as [number, number]
   }
 ];
 
 const OCEAN_LABELS = [
-  { 
+  {
     name: {
       en: "Arabian Sea (Sindhu Sagar)",
       kn: "ಅರಬ್ಬಿ ಸಮುದ್ರ (ಸಿಂಧು ಸಾಗರ)",
       hi: "अरब सागर (सिंधु सागर)"
-    }, 
-    coords: [16.0, 62.0] as [number, number] 
+    },
+    coords: [16.0, 62.0] as [number, number]
   },
-  { 
+  {
     name: {
       en: "Indian Ocean (Hindu Mahasagar)",
       kn: "ಇಂಡಿಯನ್ ಓಷನ್ (ಹಿಂದೂ ಮಹಾಸಾಗರ)",
       hi: "इंडियन ओशन (हिंद महासागर)"
-    }, 
-    coords: [3.2, 79.5] as [number, number] 
+    },
+    coords: [3.2, 79.5] as [number, number]
   },
-  { 
+  {
     name: {
       en: "Bay of Bengal (Ganga Sagar)",
       kn: "ಬಂಗಾಳ ಕೊಲ್ಲಿ (ಗಂಗಾ ಸಾಗರ)",
       hi: "बंगाल की खाड़ी (गंगा सागर)"
-    }, 
-    coords: [17.0, 91.5] as [number, number] 
+    },
+    coords: [17.0, 91.5] as [number, number]
   }
 ];
 
@@ -732,13 +727,31 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
       <MapViewController />
       <FlyToLocation />
 
-      {/* ── Layer 1: Base tiles — CartoDB light_nolabels ──────── */}
-      <TileLayer
-        attribution={MAP_CONFIG.TILE_ATTRIBUTION}
-        url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-        noWrap={MAP_CONFIG.TILE_NO_WRAP}
-        bounds={AKHAND_BHARAT_BOUNDS}
-      />
+      {/* ── Layer 1: Local Offline Base (No Network Tiles) ── */}
+      <Pane name="basePane" style={{ zIndex: 100 }}>
+        {/* Ocean Background */}
+        <Rectangle
+          bounds={[[-90, -180], [90, 180]]}
+          pathOptions={{
+            color: 'transparent',
+            fillColor: '#1a2b3c', // Deep oceanic blue
+            fillOpacity: 1
+          }}
+          interactive={false}
+        />
+        {/* Landmass Fill */}
+        {bordersData && (
+          <GeoJSON
+            data={bordersData}
+            style={{
+              color: 'transparent',
+              fillColor: '#E8D5B5', // Parchment land color
+              fillOpacity: 1
+            }}
+            interactive={false}
+          />
+        )}
+      </Pane>
 
       {/* Parchment texture */}
       <ParchmentOverlay />

@@ -117,6 +117,8 @@ export function Search() {
             // Auto focus on mobile when search is mounted if needed, 
             // but standard behavior is better on tap.
           }}
+          id="cultural-search"
+          name="cultural-search"
           type="text"
           placeholder={UI_TEXT.searchPlaceholder[lang]}
           value={query}

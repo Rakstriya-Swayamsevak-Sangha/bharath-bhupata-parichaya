@@ -1,21 +1,26 @@
 {
   "name": "Akhand Bharat Darshana",
-  "short_name": "भारत दर्शन",
-  "description": "Interactive cultural map of the Indian subcontinent",
+  "short_name": "Bharat Darshana",
+  "description": "Interactive cultural and civilizational map of the Indian subcontinent.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#E07A3C",
+  "background_color": "#1C1A17",
+  "theme_color": "#FF9933",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "categories": ["education", "navigation", "culture"],
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

@@ -16,10 +16,21 @@ interface KnowledgePanelProps {
 export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   const { selectedLocation } = useMap();
   const { lang, setLang } = useLanguageStore();
-  const shouldReduceMotion = useReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
+  const [deviceMode, setDeviceMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [sheetMode, setSheetMode] = useState<'collapsed' | 'half' | 'full'>('full');
   const [localLocation, setLocalLocation] = useState(selectedLocation);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1025) setDeviceMode('desktop');
+      else if (window.innerWidth >= 768) setDeviceMode('tablet');
+      else setDeviceMode('mobile');
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const factLabels: Record<string, Record<string, string>> = {
     en: {
@@ -62,24 +73,22 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
 
   useEffect(() => {
     if (selectedLocation?.category === 'mountain' || selectedLocation?.category === 'river' || selectedLocation?.category === 'city') {
-      const isMobile = window.innerWidth < 768;
       setLocalLocation(selectedLocation);
 
-      if (selectedLocation.noAutoOpen && isMobile) {
-        setIsVisible(false);
-        return;
+      if (deviceMode === 'mobile') {
+        setSheetMode('half');
+      } else {
+        setSheetMode('full');
       }
 
-      setSheetMode('half'); // Start at half on mobile for peek view
       const timer = setTimeout(() => setIsVisible(true), 10);
       return () => clearTimeout(timer);
     } else {
       setIsVisible(false);
     }
-  }, [selectedLocation]);
+  }, [selectedLocation, deviceMode]);
 
   if (!localLocation) return null;
-  if (localLocation.category !== 'mountain' && localLocation.category !== 'river' && localLocation.category !== 'city') return null;
 
   const isRiver = localLocation.category === 'river';
   const isCity = localLocation.category === 'city';
@@ -89,7 +98,6 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   else if (isCity) knowledge = cityKnowledge[localLocation.id];
   else if (localLocation.category === 'mountain') knowledge = mountainKnowledge[localLocation.id];
   
-  // Dynamic fallback for items not in static database (like temples.json)
   if (!knowledge) {
     knowledge = {
       ...localLocation,
@@ -99,8 +107,6 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
       cultural: { en: localLocation.historicalSignificance || "", kn: localLocation.historicalSignificance || "", hi: localLocation.historicalSignificance || "" }
     };
   }
-
-  if (!knowledge) return null;
 
   const title = knowledge.title?.[lang] || knowledge.title?.en || (localLocation?.name ? localLocation.name[lang] : '');
   const subtitle = knowledge.subtitle?.[lang] || knowledge.subtitle?.en || '';
@@ -113,38 +119,60 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   
   const handleClose = () => {
     setIsVisible(false);
-    // Framer motion will handle unmounting if we use AnimatePresence, 
-    // but for now keeping existing structure to avoid re-writing app/map/page logic.
-    // Sync with Framer duration: 0.2s
     const delay = 200;
-    
     setTimeout(() => {
       onClose();
       setTimeout(() => setLocalLocation(null), 50);
     }, delay);
   };
 
+  // Mobile Bottom Sheet Snap Logic (Interaction Audit Fix)
+  const handleDragEnd = (event: any, info: any) => {
+    if (deviceMode !== 'mobile') return;
+    const velocity = info.velocity.y;
+    const offset = info.offset.y;
+
+    // Upward drag
+    if (velocity < -500 || offset < -100) {
+      if (sheetMode === 'collapsed') setSheetMode('half');
+      else if (sheetMode === 'half') setSheetMode('full');
+    } 
+    // Downward drag
+    else if (velocity > 500 || offset > 100) {
+      if (sheetMode === 'full') setSheetMode('half');
+      else if (sheetMode === 'half') setSheetMode('collapsed');
+      else handleClose();
+    }
+  };
+
   return (
     <>
-      <div className={`kp-backdrop ${isVisible ? 'opacity-100' : 'opacity-0'}`} onClick={handleClose} />
+      <AnimatePresence>
+        {(deviceMode !== 'desktop' && isVisible) && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="kp-backdrop" 
+            onClick={handleClose} 
+          />
+        )}
+      </AnimatePresence>
 
-      <aside
-        className={`kp-panel ${isVisible ? 'visible' : 'hidden'} ${isRiver ? 'river-theme' : isCity ? 'city-theme' : 'mountain-theme'} kp-panel--${sheetMode}`}
+      <motion.aside
+        drag={deviceMode === 'mobile' ? "y" : false}
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={0.05}
+        onDragEnd={handleDragEnd}
+        className={`kp-panel ${isVisible ? 'visible' : ''} ${isRiver ? 'river-theme' : isCity ? 'city-theme' : 'mountain-theme'} kp-panel--${sheetMode} device-${deviceMode}`}
         onClick={() => {
-          // Cycle modes on click for the header area on mobile
-          if (window.innerWidth < 768) {
-            if (sheetMode === 'collapsed') setSheetMode('half');
-            else if (sheetMode === 'half') setSheetMode('full');
+          if (deviceMode === 'mobile' && sheetMode === 'collapsed') {
+            setSheetMode('half');
           }
         }}
       >
-        <div
-          className="kp-drag-handle"
-          onClick={(e) => {
-            e.stopPropagation();
-            setSheetMode(prev => prev === 'full' ? 'half' : (prev === 'half' ? 'collapsed' : 'half'));
-          }}
-        />
+        {deviceMode === 'mobile' && <div className="kp-drag-handle" />}
+        
         <div className="kp-lang-switcher">
           {(['en', 'kn', 'hi'] as const).map((l) => (
             <button
@@ -159,6 +187,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
             </button>
           ))}
         </div>
+        
         <button
           className="kp-close"
           onClick={(e) => {
@@ -225,88 +254,88 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
             </div>
           )}
 
-              {!isCity && (
-                <>
-                  {isRiver && 'flow' in knowledge && (
-                    <div className="kp-flow-cards">
-                      {knowledge.flow[lang].split(' → ').map((node: string, i: number) => (
-                        <div key={i} className="flow-card">
-                          {node}
-                        </div>
-                      ))}
+          {!isCity && (
+            <>
+              {isRiver && 'flow' in knowledge && (
+                <div className="kp-flow-cards">
+                  {knowledge.flow[lang].split(' → ').map((node: string, i: number) => (
+                    <div key={i} className="flow-card">
+                      {node}
                     </div>
-                  )}
-
-                  <div className="kp-hero">
-                    <img
-                      src={knowledge.image || `/place-images/${localLocation.category}s/${localLocation.id}.jpg`}
-                      alt={String(title)}
-                      className="kp-hero-img"
-                    />
-                    <div className="kp-hero-overlay" />
-                  </div>
-
-                  <div className="kp-facts">
-                    {Object.entries(knowledge.facts as Record<string, string>).map(([key, value]) => (
-                      <div key={key} className="kp-fact-row" style={{ flexWrap: 'wrap', height: 'auto', minHeight: '32px' }}>
-                        <span className="kp-fact-label" style={{ flex: '0 0 100px' }}>
-                          {labels[key as keyof typeof labels] || key}
-                        </span>
-                        <span className="kp-fact-value" style={{ flex: '1', textAlign: 'right', whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                          {value}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              <div className="kp-section">
-                <h3 className="kp-section-label">
-                  {isCity
-                    ? UI_TEXT.historicalContext[lang]
-                    : (isRiver
-                      ? UI_TEXT.courseDescription[lang]
-                      : UI_TEXT.mountainDescription[lang]
-                    )
-                  }
-                </h3>
-                <p className="kp-description">{String(description)}</p>
-              </div>
-
-              {isCity && (
-                <>
-                  <div className="kp-section kp-spiritual">
-                    <div className="kp-divider" />
-                    <h3 className="kp-section-label">
-                      {UI_TEXT.spiritualSignificance[lang]}
-                    </h3>
-                    <p className="kp-description">{String(spiritual)}</p>
-                  </div>
-
-                  <div className="kp-section kp-living">
-                    <h3 className="kp-section-label">
-                      {UI_TEXT.livingTradition[lang]}
-                    </h3>
-                    <p className="kp-description">{String(living)}</p>
-                  </div>
-                </>
-              )}
-
-              {!isCity && (
-                <div className="kp-section kp-cultural">
-                  <div className="kp-divider" />
-                  <h3 className="kp-section-label">
-                    {isRiver
-                      ? UI_TEXT.civilizationCulture[lang]
-                      : UI_TEXT.mountainCultural[lang]
-                    }
-                  </h3>
-                  <p className="kp-cultural-text">{String(cultural)}</p>
+                  ))}
                 </div>
               )}
+
+              <div className="kp-hero">
+                <img
+                  src={knowledge.image || `/place-images/${localLocation.category}s/${localLocation.id}.jpg`}
+                  alt={String(title)}
+                  className="kp-hero-img"
+                />
+                <div className="kp-hero-overlay" />
+              </div>
+
+              <div className="kp-facts">
+                {Object.entries(knowledge.facts as Record<string, string>).map(([key, value]) => (
+                  <div key={key} className="kp-fact-row" style={{ flexWrap: 'wrap', height: 'auto', minHeight: '32px', alignItems: 'flex-start' }}>
+                    <span className="kp-fact-label" style={{ flex: '0 0 100px', paddingTop: '4px' }}>
+                      {labels[key as keyof typeof labels] || key}
+                    </span>
+                    <span className="kp-fact-value" style={{ flex: '1', textAlign: 'right', whiteSpace: 'normal', wordBreak: 'break-word', paddingTop: '4px' }}>
+                      {value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          <div className="kp-section">
+            <h3 className="kp-section-label">
+              {isCity
+                ? UI_TEXT.historicalContext[lang]
+                : (isRiver
+                  ? UI_TEXT.courseDescription[lang]
+                  : UI_TEXT.mountainDescription[lang]
+                )
+              }
+            </h3>
+            <p className="kp-description">{String(description)}</p>
+          </div>
+
+          {isCity && (
+            <>
+              <div className="kp-section kp-spiritual">
+                <div className="kp-divider" />
+                <h3 className="kp-section-label">
+                  {UI_TEXT.spiritualSignificance[lang]}
+                </h3>
+                <p className="kp-description">{String(spiritual)}</p>
+              </div>
+
+              <div className="kp-section kp-living">
+                <h3 className="kp-section-label">
+                  {UI_TEXT.livingTradition[lang]}
+                </h3>
+                <p className="kp-description">{String(living)}</p>
+              </div>
+            </>
+          )}
+
+          {!isCity && (
+            <div className="kp-section kp-cultural">
+              <div className="kp-divider" />
+              <h3 className="kp-section-label">
+                {isRiver
+                  ? UI_TEXT.civilizationCulture[lang]
+                  : UI_TEXT.mountainCultural[lang]
+                }
+              </h3>
+              <p className="kp-cultural-text">{String(cultural)}</p>
             </div>
-      </aside>
+          )}
+        </div>
+      </motion.aside>
     </>
   );
 }
