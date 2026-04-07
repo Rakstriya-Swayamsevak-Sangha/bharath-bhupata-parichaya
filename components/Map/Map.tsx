@@ -734,7 +734,7 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
           bounds={[[-90, -180], [90, 180]]}
           pathOptions={{
             color: 'transparent',
-            fillColor: '#1a2b3c', // Deep oceanic blue
+            fillColor: '#3b5a78', // Medium archival blue
             fillOpacity: 1
           }}
           interactive={false}

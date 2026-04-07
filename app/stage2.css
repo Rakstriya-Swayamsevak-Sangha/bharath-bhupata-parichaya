@@ -174,7 +174,7 @@ body {
 .ocean-label .label-main {
   font-family: 'Cinzel', serif !important;
   color: #000000 !important;
-  text-shadow: none !important;
+  text-shadow: 0 0 4px rgba(255, 248, 220, 1), 0 0 10px rgba(255, 248, 220, 0.4) !important;
   letter-spacing: 0.15em !important;
   text-transform: uppercase !important;
   white-space: nowrap !important;
@@ -183,8 +183,8 @@ body {
 .country-label .label-sub,
 .ocean-label .label-sub {
   font-size: 0.65em !important;
-  color: var(--color-text-secondary) !important;
-  opacity: 0.8 !important;
+  color: #1a1a1a !important; /* Darker sub-label for readability on blue sea */
+  opacity: 0.9 !important;
   font-style: italic !important;
   margin-top: 2px !important;
 }

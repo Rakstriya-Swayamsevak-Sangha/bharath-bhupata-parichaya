@@ -1,25 +1,28 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { MapProvider, useMap } from '@/providers/MapContext';
 import { FilterProvider } from '@/providers/FilterContext';
-import { Sidebar } from '@/components/Sidebar/Sidebar';
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
-import { Search } from '@/components/Search/Search';
-import { FilterBar } from '@/components/FilterControls/FilterBar';
-import { MobileFilters } from '@/components/FilterControls/MobileFilters';
-import { KnowledgePanel } from '@/components/KnowledgePanel/KnowledgePanel';
 import { Location } from '@/types/location';
 import { citiesGeometry } from '@/data/citiesGeometry';
 import { useLanguageStore } from '@/store/languageStore';
 import { UI_TEXT } from '@/data/uiText';
 
-const CulturalMap = dynamic(
+// Dynamic Imports for Bundle Optimization
+const Search = dynamic(() => import('@/components/Search/Search').then(mod => mod.Search), { ssr: false });
+const Sidebar = dynamic(() => import('@/components/Sidebar/Sidebar').then(mod => mod.Sidebar), { ssr: false });
+const FilterBar = dynamic(() => import('@/components/FilterControls/FilterBar').then(mod => mod.FilterBar), { ssr: false });
+const MobileFilters = dynamic(() => import('@/components/FilterControls/MobileFilters').then(mod => mod.MobileFilters), { ssr: false });
+const KnowledgePanel = dynamic(() => import('@/components/KnowledgePanel/KnowledgePanel').then(mod => mod.KnowledgePanel), { ssr: false });
+
+const CulturalMap = dynamic<{
+  onMarkerClick: (location: Location) => void;
+  locations: Location[];
+}>(
   () =>
-    import('@/components/Map/Map').then((mod) => ({
-      default: mod.CulturalMap,
-    })),
+    import('@/components/Map/Map').then((mod) => mod.CulturalMap),
   {
     ssr: false,
     loading: () => (

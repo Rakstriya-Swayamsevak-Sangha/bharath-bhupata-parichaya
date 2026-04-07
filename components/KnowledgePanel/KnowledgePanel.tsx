@@ -3,10 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { mountainKnowledge } from '@/data/mountainKnowledge';
-import { riverKnowledge } from '@/data/riverKnowledge';
-import { cityKnowledge } from '@/data/cityKnowledge';
+import { motion, AnimatePresence } from 'framer-motion';
 import { UI_TEXT } from '@/data/uiText';
 
 interface KnowledgePanelProps {
@@ -20,6 +17,8 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   const [deviceMode, setDeviceMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [sheetMode, setSheetMode] = useState<'collapsed' | 'half' | 'full'>('full');
   const [localLocation, setLocalLocation] = useState(selectedLocation);
+  const [knowledge, setKnowledge] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -73,40 +72,62 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
 
   useEffect(() => {
     if (selectedLocation?.category === 'mountain' || selectedLocation?.category === 'river' || selectedLocation?.category === 'city') {
+      const category = selectedLocation.category;
+      const id = selectedLocation.id;
+      
+      setLoading(true);
       setLocalLocation(selectedLocation);
 
-      if (deviceMode === 'mobile') {
-        setSheetMode('half');
-      } else {
-        setSheetMode('full');
-      }
+      // Lazy load knowledge data
+      const loadKnowledge = async () => {
+        try {
+          let data;
+          if (category === 'mountain') {
+            const mod = await import('@/data/mountainKnowledge');
+            data = mod.mountainKnowledge[id];
+          } else if (category === 'river') {
+            const mod = await import('@/data/riverKnowledge');
+            data = mod.riverKnowledge[id];
+          } else if (category === 'city') {
+            const mod = await import('@/data/cityKnowledge');
+            data = mod.cityKnowledge[id];
+          }
 
-      const timer = setTimeout(() => setIsVisible(true), 10);
-      return () => clearTimeout(timer);
+          if (data) {
+            setKnowledge(data);
+          } else {
+            // Fallback for missing items
+            setKnowledge({
+              ...selectedLocation,
+              title: selectedLocation.name,
+              description: { en: selectedLocation.description, kn: selectedLocation.description, hi: selectedLocation.description },
+              facts: (selectedLocation as any).metadata || {},
+              cultural: { en: (selectedLocation as any).historicalSignificance || "", kn: (selectedLocation as any).historicalSignificance || "", hi: (selectedLocation as any).historicalSignificance || "" }
+            });
+          }
+        } catch (err) {
+          console.error('Failed to load knowledge data:', err);
+        } finally {
+          setLoading(false);
+          if (deviceMode === 'mobile') {
+            setSheetMode('half');
+          } else {
+            setSheetMode('full');
+          }
+          setIsVisible(true);
+        }
+      };
+
+      loadKnowledge();
     } else {
       setIsVisible(false);
     }
   }, [selectedLocation, deviceMode]);
 
-  if (!localLocation) return null;
+  if (!localLocation || !knowledge) return null;
 
   const isRiver = localLocation.category === 'river';
   const isCity = localLocation.category === 'city';
-
-  let knowledge: any = null;
-  if (isRiver) knowledge = riverKnowledge[localLocation.id];
-  else if (isCity) knowledge = cityKnowledge[localLocation.id];
-  else if (localLocation.category === 'mountain') knowledge = mountainKnowledge[localLocation.id];
-  
-  if (!knowledge) {
-    knowledge = {
-      ...localLocation,
-      title: localLocation.name,
-      description: { en: localLocation.description, kn: localLocation.description, hi: localLocation.description },
-      facts: localLocation.metadata || {},
-      cultural: { en: localLocation.historicalSignificance || "", kn: localLocation.historicalSignificance || "", hi: localLocation.historicalSignificance || "" }
-    };
-  }
 
   const title = knowledge.title?.[lang] || knowledge.title?.en || (localLocation?.name ? localLocation.name[lang] : '');
   const subtitle = knowledge.subtitle?.[lang] || knowledge.subtitle?.en || '';

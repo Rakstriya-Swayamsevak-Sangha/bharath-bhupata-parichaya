@@ -20,10 +20,7 @@ export const MAP_CONFIG = {
   // World continuity disabled — single region view
   WORLD_COPY_JUMP: false,
 
-  // Tile layer — CartoDB Positron (will be sepia-filtered via CSS)
-  TILE_URL: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  TILE_ATTRIBUTION:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  // Map is 100% local via GeoJSON and Rectangle layers
   TILE_NO_WRAP: true,
 } as const;
 
@@ -47,15 +44,6 @@ export const CATEGORY_CONFIG = {
     icon: '〰',
     color: '#4A7C8B',  // river blue-grey (aged)
     markerBg: '#3A6270',
-  },
-  temple: {
-    label: 'Sacred City',
-    labelEn: 'Sacred Cities',
-    labelKn: 'ಪುಣ್ಯ ನಗರಗಳು',
-    labelHi: 'पवित्र शहर',
-    icon: '◆',
-    color: '#C45A1C',
-    markerBg: '#9B3E0D',
   },
   city: {
     label: 'Sacred City',
