@@ -414,7 +414,7 @@ function POILayer({ onItemClick, locations }: { onItemClick: (loc: Location) => 
 
   return (
     <>
-      {locations.filter(loc => (loc.category === 'temple' && activeFilters.temple) || (loc.category === 'city' && activeFilters.city)).map((item) => {
+      {locations.filter(loc => loc.category === 'city' && activeFilters.city).map((item) => {
         const title = item.name[lang];
         // Apply coordinate offset for clarity in dense zones
         const [lat, lng] = adjustCoords(item.id, item.latitude, item.longitude);

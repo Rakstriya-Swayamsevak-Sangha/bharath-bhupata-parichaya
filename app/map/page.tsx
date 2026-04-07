@@ -82,7 +82,7 @@ function MapContent() {
 
   const handleMarkerClick = useCallback(
     (location: Location) => {
-      const isArchival = ['mountain', 'river', 'city', 'temple'].includes(location.category);
+      const isArchival = ['mountain', 'river', 'city'].includes(location.category);
       if (isArchival) {
         closeSidebar();
         setSelectedLocation(location);

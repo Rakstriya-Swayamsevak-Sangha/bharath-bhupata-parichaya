@@ -18,7 +18,7 @@ function FilterButton({ category, isActive, onToggle }: FilterButtonProps) {
   let label = '';
   if (category === 'mountain') label = UI_TEXT.filterMountains[lang];
   else if (category === 'river') label = UI_TEXT.filterRivers[lang];
-  else if (category === 'temple') label = UI_TEXT.filterSacredCities[lang];
+  else if (category === 'city') label = UI_TEXT.filterSacredCities[lang];
 
   return (
     <motion.button
@@ -36,7 +36,7 @@ export function FilterBar() {
   const { activeFilters, toggleFilter, setAllFilters } = useFilter();
   const { lang } = useLanguageStore();
 
-  const allActive = activeFilters.mountain && activeFilters.river && activeFilters.temple;
+  const allActive = activeFilters.mountain && activeFilters.river && activeFilters.city;
 
   return (
     <>
@@ -48,7 +48,7 @@ export function FilterBar() {
         {UI_TEXT.filterAll[lang]}
       </motion.button>
 
-      {(['mountain', 'river', 'temple'] as Category[]).map(category => (
+      {(['mountain', 'river', 'city'] as Category[]).map(category => (
         <FilterButton
           key={category}
           category={category}

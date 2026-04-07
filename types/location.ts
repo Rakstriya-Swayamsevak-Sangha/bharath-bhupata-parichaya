@@ -1,4 +1,4 @@
-export type Category = 'mountain' | 'river' | 'temple' | 'city';
+export type Category = 'mountain' | 'river' | 'city';
 
 export interface LocationMetadata {
   elevation?: string;
@@ -35,5 +35,5 @@ export interface Location {
 export type FilterState = {
   mountain: boolean;
   river: boolean;
-  temple: boolean;
+  city: boolean;
 };

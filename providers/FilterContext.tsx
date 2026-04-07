@@ -15,7 +15,6 @@ const FilterContext = createContext<FilterContextType | undefined>(undefined);
 const DEFAULT_FILTERS: Record<Category, boolean> = {
   mountain: true,
   river: true,
-  temple: true,
   city: true,
 };
 
@@ -24,14 +23,13 @@ export function FilterProvider({ children }: { children: ReactNode }) {
 
   const toggleFilter = useCallback((category: Category) => {
     setActiveFilters(prev => {
-      const isAllActive = prev.mountain && prev.river && prev.temple && prev.city;
+      const isAllActive = prev.mountain && prev.river && prev.city;
       
       if (isAllActive) {
         return {
           mountain: category === 'mountain',
           river: category === 'river',
-          temple: category === 'temple' || category === 'city',
-          city: category === 'city' || category === 'temple',
+          city: category === 'city',
         };
       }
       
@@ -40,15 +38,9 @@ export function FilterProvider({ children }: { children: ReactNode }) {
         [category]: !prev[category],
       };
 
-      // Unify temple and city filtering
-      if (category === 'temple' || category === 'city') {
-        const val = !prev[category];
-        next.temple = val;
-        next.city = val;
-      }
-      
-      if (!next.mountain && !next.river && !next.temple && !next.city) {
-        return { mountain: true, river: true, temple: true, city: true };
+      // Ensure at least one filter remains active
+      if (!next.mountain && !next.river && !next.city) {
+        return { mountain: true, river: true, city: true };
       }
       
       return next;
@@ -59,7 +51,6 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     setActiveFilters({
       mountain: active,
       river: active,
-      temple: active,
       city: active,
     });
   }, []);

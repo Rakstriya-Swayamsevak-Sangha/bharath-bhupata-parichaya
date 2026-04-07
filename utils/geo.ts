@@ -28,7 +28,6 @@ export function adjustCoords(id: string, lat: number, lng: number): [number, num
 export function getPreciseZoom(category: string): number {
   switch (category) {
     case 'city':
-    case 'temple':
       return 8.5; // High zoom for cities/temples
     case 'river':
       return 6.5; // Moderate zoom for rivers

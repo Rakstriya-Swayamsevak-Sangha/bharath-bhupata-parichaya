@@ -50,7 +50,7 @@ export function getMarkerColor(category: string): string {
   const colors: Record<string, string> = {
     mountain: '#5C4033',
     river: '#3B82F6',
-    temple: '#E07A3C',
+    city: '#C45A1C',
   };
   return colors[category] || '#888888';
 }
