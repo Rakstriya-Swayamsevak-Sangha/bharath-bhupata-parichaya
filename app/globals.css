@@ -775,27 +775,10 @@ body {
   }
   
   .leaflet-control-zoom {
-    display: flex !important;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 100px !important;
-    margin-right: 16px !important;
-    border: none !important;
-    box-shadow: none !important;
+    margin-top: 70px !important;
+    margin-left: 12px !important;
   }
-  .leaflet-control-zoom a {
-    width: 42px !important;
-    height: 42px !important;
-    line-height: 42px !important;
-    border-radius: 50% !important;
-    background: rgba(28, 22, 18, 0.95) !important;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(212, 175, 55, 0.4) !important;
-    color: #ffd79a !important;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.5) !important;
-    font-size: 20px !important;
-  }
-  
+
   .leaflet-control-attribution {
     font-size: 8px !important;
     opacity: 0.5;
