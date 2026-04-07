@@ -43,15 +43,17 @@ const createSacredMarker = (isSelected = false) => {
   return L.divIcon({
     className: 'custom-marker', // clears leaflet defaults
     html: `
-      <div class="marker-wrapper ${isSelected ? 'marker-active' : ''}">
-        <div class="marker-glow"></div>
-        <div class="marker-core">
-          <div class="marker-symbol">ॐ</div>
+      <div class="marker-touch-target" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+        <div class="marker-wrapper ${isSelected ? 'marker-active' : ''}">
+          <div class="marker-glow"></div>
+          <div class="marker-core">
+            <div class="marker-symbol">ॐ</div>
+          </div>
         </div>
       </div>
     `,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
   });
 };
 
@@ -407,16 +409,19 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
 // SACRED CITIES LAYER (High-Priority Cultural Centers)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function POILayer({ onItemClick, locations }: { onItemClick: (loc: Location) => void; locations: Location[] }) {
+const POILayer = React.memo(({ onItemClick, locations }: { onItemClick: (loc: Location) => void; locations: Location[] }) => {
   const { selectedLocation } = useMap();
   const { activeFilters } = useFilter();
   const { lang } = useLanguageStore();
 
+  const filteredLocations = useMemo(() => 
+    locations.filter(loc => loc.category === 'city' && activeFilters.city),
+  [locations, activeFilters.city]);
+
   return (
     <>
-      {locations.filter(loc => loc.category === 'city' && activeFilters.city).map((item) => {
+      {filteredLocations.map((item) => {
         const title = item.name[lang];
-        // Apply coordinate offset for clarity in dense zones
         const [lat, lng] = adjustCoords(item.id, item.latitude, item.longitude);
         const isSelected = selectedLocation?.id === item.id;
 
@@ -443,7 +448,9 @@ function POILayer({ onItemClick, locations }: { onItemClick: (loc: Location) => 
       })}
     </>
   );
-}
+});
+
+POILayer.displayName = 'POILayer';
 
 function formatLabel(name: string) {
   if (name.includes("(")) {
@@ -722,7 +729,7 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
       scrollWheelZoom={true}
       style={{ width: '100%', height: '100%' }}
     >
-      <ZoomControl position="bottomright" />
+      <ZoomControl position="topleft" />
       {/* Viewport controller fixes tilePane z-index before other components */}
       <MapViewController />
       <FlyToLocation />

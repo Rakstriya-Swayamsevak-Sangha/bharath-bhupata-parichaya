@@ -308,8 +308,18 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  background: #1e1a16;
+  background: var(--color-background);
   border-bottom: 1px solid rgba(207, 174, 123, 0.15);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+#map-shell {
+  padding-top: 60px;
 }
 
 .title {
@@ -654,7 +664,17 @@ body {
   }
   .header {
     padding: 0 16px;
+    height: 56px;
   }
+  
+  #map-shell {
+    padding-top: 56px;
+  }
+
+  .mainLayout {
+    height: calc(100vh - 56px);
+  }
+
   .search-system {
     width: 100% !important;
     flex: 1;
@@ -868,16 +888,22 @@ body {
 .kp-description { font-size: clamp(14px, 3vw, 15px) !important; }
 /* --- Sidebar (secondary overlay) fixed for mobile --- */
 @media (max-width: 767px) {
-  aside[role='dialog'] {
+  .kp-panel {
     top: auto !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    height: 85vh !important;
+    height: 65vh !important;
     border-radius: 24px 24px 0 0 !important;
-    transform: translateY(0) !important;
-    animation: slideInBottom 0.3s ease-out;
+    border-left: none !important;
+    border-top: 2px solid rgba(207, 174, 123, 0.2) !important;
+    box-shadow: 0 -12px 30px rgba(0,0,0,0.7) !important;
+    transform: translateY(0);
+  }
+
+  .kp-panel.closed {
+    transform: translateY(100%);
   }
 }
 
