@@ -5,6 +5,7 @@ import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { mountainKnowledge } from '@/data/mountainKnowledge';
 import { riverKnowledge } from '@/data/riverKnowledge';
+import { cityKnowledge } from '@/data/cityKnowledge';
 
 interface KnowledgePanelProps {
   onClose: () => void;
@@ -56,7 +57,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   };
 
   useEffect(() => {
-    if (selectedLocation?.category === 'mountain' || selectedLocation?.category === 'river') {
+    if (selectedLocation?.category === 'mountain' || selectedLocation?.category === 'river' || selectedLocation?.category === 'city') {
       setLocalLocation(selectedLocation);
       const timer = setTimeout(() => setIsVisible(true), 10);
       return () => clearTimeout(timer);
@@ -66,17 +67,27 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   }, [selectedLocation]);
 
   if (!localLocation) return null;
-  if (localLocation.category !== 'mountain' && localLocation.category !== 'river') return null;
+  if (localLocation.category !== 'mountain' && localLocation.category !== 'river' && localLocation.category !== 'city') return null;
 
   const isRiver = localLocation.category === 'river';
-  const knowledge = isRiver ? riverKnowledge[localLocation.id] : mountainKnowledge[localLocation.id];
+  const isCity = localLocation.category === 'city';
+  
+  let knowledge: any = null;
+  if (isRiver) knowledge = riverKnowledge[localLocation.id];
+  else if (isCity) knowledge = cityKnowledge[localLocation.id];
+  else knowledge = mountainKnowledge[localLocation.id];
   
   if (!knowledge) return null;
 
-  const title = knowledge.title?.[lang] || knowledge.title?.en || localLocation.name;
-  const subtitle = knowledge.subtitle?.[lang] || knowledge.subtitle?.en || '';
-  const description = knowledge.description[lang] || knowledge.description.en;
-  const cultural = knowledge.cultural[lang] || knowledge.cultural.en;
+  const title = isCity ? (knowledge.title[lang] || knowledge.title.en) : (knowledge.title?.[lang] || knowledge.title?.en || localLocation.name);
+  const subtitle = !isCity ? (knowledge.subtitle?.[lang] || knowledge.subtitle?.en || '') : '';
+  const tagline = isCity ? (knowledge.tagline[lang] || knowledge.tagline.en) : '';
+  
+  const description = isCity ? (knowledge.description[lang] || knowledge.description.en) : (knowledge.description[lang] || knowledge.description.en);
+  const spiritual = isCity ? (knowledge.spiritual[lang] || knowledge.spiritual.en) : '';
+  const living = isCity ? (knowledge.living[lang] || knowledge.living.en) : '';
+  const cultural = !isCity ? (knowledge.cultural[lang] || knowledge.cultural.en) : '';
+  
   const labels = factLabels[lang] || factLabels.en;
 
   const handleClose = () => {
@@ -91,7 +102,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
     <>
       <div className={`kp-backdrop ${isVisible ? 'opacity-100' : 'opacity-0'}`} onClick={handleClose} />
       
-      <aside className={`kp-panel ${isVisible ? 'visible' : 'hidden'} ${isRiver ? 'river-theme' : 'mountain-theme'}`}>
+      <aside className={`kp-panel ${isVisible ? 'visible' : 'hidden'} ${isRiver ? 'river-theme' : isCity ? 'city-theme' : 'mountain-theme'}`}>
         <div className="kp-lang-switcher">
           {(['en', 'kn', 'hi'] as const).map((l) => (
             <button
@@ -110,79 +121,148 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
         <div className="kp-content">
           <div className="kp-header">
             <h1 className="kp-title">{title}</h1>
-            {knowledge.meta?.[lang] && (
-              <span className="kp-meta-badge">{knowledge.meta[lang]}</span>
+            {isCity && (
+              <div className="kp-city-identity">
+                {tagline && <p className="kp-tagline">{tagline}</p>}
+                {knowledge.meta?.[lang] && (
+                  <span className="kp-city-status">{knowledge.meta[lang]}</span>
+                )}
+              </div>
             )}
-            {knowledge.type?.[lang] && (
-              <span className="kp-type-tag">{knowledge.type[lang]}</span>
+            
+            {!isCity && (
+              <>
+                {knowledge.meta?.[lang] && (
+                  <span className="kp-meta-badge">{knowledge.meta[lang]}</span>
+                )}
+                {knowledge.type?.[lang] && (
+                  <span className="kp-type-tag">{knowledge.type[lang]}</span>
+                )}
+                {knowledge.scale?.[lang] && (
+                  <span className="kp-scale-tag">{knowledge.scale[lang]}</span>
+                )}
+                {knowledge.importance?.[lang] && (
+                  <span className="kp-importance-tag">{knowledge.importance[lang]}</span>
+                )}
+                {knowledge.relation?.[lang] && (
+                  <p className="kp-relation">{knowledge.relation[lang]}</p>
+                )}
+                {subtitle && <p className="kp-subtitle">{subtitle}</p>}
+              </>
             )}
-            {knowledge.scale?.[lang] && (
-              <span className="kp-scale-tag">{knowledge.scale[lang]}</span>
-            )}
-            {knowledge.importance?.[lang] && (
-              <span className="kp-importance-tag">{knowledge.importance[lang]}</span>
-            )}
-            {knowledge.relation?.[lang] && (
-              <p className="kp-relation">{knowledge.relation[lang]}</p>
-            )}
-            {subtitle && <p className="kp-subtitle">{subtitle}</p>}
           </div>
 
-          {isRiver && 'flow' in knowledge && (
-            <div className="kp-flow-strip">
-              <div className="flow-line" />
-              <div className="flow-nodes">
-                {knowledge.flow[lang].split(' → ').map((node, i, arr) => (
-                  <React.Fragment key={i}>
-                    <div className="flow-node-container">
-                      <div className="flow-dot" />
-                      <span className="flow-label">{node}</span>
-                    </div>
-                    {i < arr.length - 1 && <div className="flow-arrow">→</div>}
-                  </React.Fragment>
-                ))}
+          {isCity && (
+            <div className="kp-hero-container">
+              <div className="kp-hero city-hero">
+                <img 
+                  src={knowledge.image} 
+                  alt={String(title)}
+                  className="kp-hero-img"
+                />
+                <div className="kp-hero-overlay" />
+              </div>
+
+              <div className="kp-identity-strip">
+                <div className="identity-item">
+                  <span className="identity-label">{lang === 'kn' ? 'ಪ್ರದೇಶ' : lang === 'hi' ? 'क्षेत्र' : 'Region'}</span>
+                  <span className="identity-value">{knowledge.identity.region[lang]}</span>
+                </div>
+                <div className="identity-item">
+                  <span className="identity-label">{lang === 'kn' ? 'ನದಿ' : lang === 'hi' ? 'नदी' : 'River'}</span>
+                  <span className="identity-value">{knowledge.identity.river[lang]}</span>
+                </div>
+                <div className="identity-item">
+                  <span className="identity-label">{lang === 'kn' ? 'ಕಾಲ' : lang === 'hi' ? 'युग' : 'Era'}</span>
+                  <span className="identity-value">{knowledge.identity.era[lang]}</span>
+                </div>
               </div>
             </div>
           )}
 
-          <div className="kp-hero">
-            <img 
-              src={knowledge.image || `/place-images/${localLocation.category}s/${localLocation.id}.jpg`} 
-              alt={title}
-              className="kp-hero-img"
-            />
-            <div className="kp-hero-overlay" />
-          </div>
+          {!isCity && (
+            <>
+              {isRiver && 'flow' in knowledge && (
+                <div className="kp-flow-strip">
+                  <div className="flow-line" />
+                  <div className="flow-nodes">
+                    {knowledge.flow[lang].split(' → ').map((node: string, i: number, arr: string[]) => (
+                      <React.Fragment key={i}>
+                        <div className="flow-node-container">
+                          <div className="flow-dot" />
+                          <span className="flow-label">{node}</span>
+                        </div>
+                        {i < arr.length - 1 && <div className="flow-arrow">→</div>}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-          <div className="kp-facts">
-            {Object.entries(knowledge.facts).map(([key, value]) => (
-              <div key={key} className="kp-fact-row">
-                <span className="kp-fact-label">{labels[key as keyof typeof labels] || key}</span>
-                <span className="kp-fact-value">{value}</span>
+              <div className="kp-hero">
+                <img 
+                  src={knowledge.image || `/place-images/${localLocation.category}s/${localLocation.id}.jpg`} 
+                  alt={String(title)}
+                  className="kp-hero-img"
+                />
+                <div className="kp-hero-overlay" />
               </div>
-            ))}
-          </div>
+
+              <div className="kp-facts">
+                {Object.entries(knowledge.facts as Record<string, string>).map(([key, value]) => (
+                  <div key={key} className="kp-fact-row">
+                    <span className="kp-fact-label">{labels[key as keyof typeof labels] || key}</span>
+                    <span className="kp-fact-value">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="kp-section">
             <h3 className="kp-section-label">
-              {isRiver 
-                ? (lang === 'kn' ? 'ನದಿಯ ಹರಿವು' : lang === 'hi' ? 'नदी का प्रवाह' : 'Course Description')
-                : (lang === 'kn' ? 'ವಿವರಣೆ' : lang === 'hi' ? 'विवरण' : 'Description')
+              {isCity 
+                ? (lang === 'kn' ? 'ಐತಿಹಾಸಿಕ ಹಿನ್ನೆಲೆ' : lang === 'hi' ? 'ऐतिहासिक संदर्भ' : 'Historical Context')
+                : (isRiver 
+                    ? (lang === 'kn' ? 'ನದಿಯ ಹರಿವು' : lang === 'hi' ? 'नदी का प्रवाह' : 'Course Description')
+                    : (lang === 'kn' ? 'ವಿವರಣೆ' : lang === 'hi' ? 'विवरण' : 'Description')
+                  )
               }
             </h3>
-            <p className="kp-description">{description}</p>
+            <p className="kp-description">{String(description)}</p>
           </div>
 
-          <div className="kp-section kp-cultural">
-            <div className="kp-divider" />
-            <h3 className="kp-section-label">
-              {isRiver
-                ? (lang === 'kn' ? 'ನಾಗರಿಕತೆ ಮತ್ತು ಸಂಸ್ಕೃತಿ' : lang === 'hi' ? 'सभ्यता और संस्कृति' : 'Civilization & Culture')
-                : (lang === 'kn' ? 'ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ' : lang === 'hi' ? 'सांस्कृतिक महत्व' : 'Cultural Significance')
-              }
-            </h3>
-            <p className="kp-cultural-text">{cultural}</p>
-          </div>
+          {isCity && (
+            <>
+              <div className="kp-section kp-spiritual">
+                <div className="kp-divider" />
+                <h3 className="kp-section-label">
+                  {lang === 'kn' ? 'ಧಾರ್ಮಿಕ ಮಹತ್ವ' : lang === 'hi' ? 'आध्यात्मिक महत्व' : 'Spiritual Significance'}
+                </h3>
+                <p className="kp-description">{String(spiritual)}</p>
+              </div>
+
+              <div className="kp-section kp-living">
+                <h3 className="kp-section-label">
+                  {lang === 'kn' ? 'ಸಜೀವ ಸಂಪ್ರದಾಯ' : lang === 'hi' ? 'जीवंत परंपरा' : 'Living Tradition'}
+                </h3>
+                <p className="kp-description">{String(living)}</p>
+              </div>
+            </>
+          )}
+
+          {!isCity && (
+            <div className="kp-section kp-cultural">
+              <div className="kp-divider" />
+              <h3 className="kp-section-label">
+                {isRiver
+                  ? (lang === 'kn' ? 'ನಾಗರಿಕತೆ ಮತ್ತು ಸಂಸ್ಕೃತಿ' : lang === 'hi' ? 'सभ्यता और संस्कृति' : 'Civilization & Culture')
+                  : (lang === 'kn' ? 'ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ' : lang === 'hi' ? 'सांस्कृतिक महत्व' : 'Cultural Significance')
+                }
+              </h3>
+              <p className="kp-cultural-text">{String(cultural)}</p>
+            </div>
+          )}
         </div>
       </aside>
     </>

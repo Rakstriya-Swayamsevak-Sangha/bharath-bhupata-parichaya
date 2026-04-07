@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useFilter } from '@/providers/FilterContext';
+import { useLanguageStore } from '@/store/languageStore';
 import { Category } from '@/types/location';
 import { CATEGORY_CONFIG } from '@/utils/constants';
 
@@ -12,7 +13,9 @@ interface FilterButtonProps {
 }
 
 function FilterButton({ category, isActive, onToggle }: FilterButtonProps) {
-  const config = CATEGORY_CONFIG[category];
+  const { lang } = useLanguageStore();
+  const config = CATEGORY_CONFIG[category] as any;
+  const label = lang === 'kn' ? config.labelKn : lang === 'hi' ? config.labelHi : config.labelEn;
 
   return (
     <button
@@ -20,7 +23,7 @@ function FilterButton({ category, isActive, onToggle }: FilterButtonProps) {
       className={`filter ${isActive ? 'active' : ''}`}
       aria-pressed={isActive}
     >
-      {config.labelEn}
+      {label}
     </button>
   );
 }

@@ -21,55 +21,24 @@ import { useLanguageStore } from '@/store/languageStore';
 import { getContent } from '@/lib/i18n';
 import { mountainsGeometry } from '@/data/mountainsGeometry';
 import { riversGeometry } from '@/data/riversGeometry';
+import { mountainKnowledge } from '@/data/mountainKnowledge';
+import { riverKnowledge } from '@/data/riverKnowledge';
+import { citiesGeometry } from '@/data/citiesGeometry';
 import { Location, Category } from '@/types/location';
 import {
   MAP_CONFIG,
   CATEGORY_CONFIG,
 } from '@/utils/constants';
 import { AKHAND_BHARAT_BOUNDS } from '@/utils/mapBounds';
+import { adjustCoords, getPreciseZoom } from '@/utils/geo';
 import 'leaflet/dist/leaflet.css';
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // SACRED CITIES MARKERS — Copper engraving aesthetic
-// ═══════════════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
 
-const SACRED_CITIES = [
-  { id: "takshashila", name: "Takshashila", coords: [33.745, 72.787] },
-  { id: "amritsar", name: "Amritsar", coords: [31.634, 74.872] },
-  { id: "indraprastha", name: "Indraprastha", coords: [28.6139, 77.2090] },
-  { id: "mathura", name: "Mathura", coords: [27.4924, 77.6737] },
-  { id: "ayodhya", name: "Ayodhya", coords: [26.7999, 82.2042] },
-  { id: "vaishali", name: "Vaishali", coords: [25.9870, 85.1290] },
-  { id: "patliputra", name: "Patliputra", coords: [25.5941, 85.1376] },
-  { id: "prayag", name: "Prayag", coords: [25.4358, 81.8463] },
-  { id: "gaya", name: "Gaya", coords: [24.7955, 85.0002] },
-  { id: "avanthika", name: "Avanthika", coords: [23.1765, 75.7885] },
-  { id: "dwarka", name: "Dwarka", coords: [22.2442, 68.9685] },
-  { id: "somanath", name: "Somanath", coords: [20.8880, 70.4012] },
-  { id: "nagpur", name: "Nagpur", coords: [21.1458, 79.0882] },
-  { id: "puri", name: "Puri", coords: [19.8135, 85.8312] },
-  { id: "vijayanagar", name: "Vijaynagar", coords: [15.3350, 76.4600] },
-  { id: "kanchi", name: "Kanchi", coords: [12.8342, 79.7036] }
-];
-
-function adjustCoords(id: string, lat: number, lng: number): [number, number] {
-  const offsetMap: Record<string, [number, number]> = {
-    "vaishali": [0.15, 0.2],
-    "patliputra": [-0.1, 0.2],
-    "prayag": [-0.1, -0.3],
-    "mathura": [0.1, -0.2],
-    "indraprastha": [0.15, 0.15],
-  };
-
-  if (offsetMap[id]) {
-    return [
-      lat + offsetMap[id][0],
-      lng + offsetMap[id][1]
-    ];
-  }
-
-  return [lat, lng];
-}
+// SACRED CITIES MARKERS — Copper engraving aesthetic
+// ════════════════════════════════════════════════════
 
 const createSacredMarker = (isSelected = false) => {
   return L.divIcon({
@@ -333,7 +302,7 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
         if (river.id === 'mahanadi') scale = 1.15;
         if (river.id === 'krishna') scale = 1.35;
         if (river.id === 'kaveri') scale = 1.0;
-        
+
         const isSaraswati = river.id === 'saraswati';
         let coreColor = PALETTE.coreColor;
         if (river.id === 'yamuna') coreColor = '#104975'; // Yamuna slightly darker
@@ -385,28 +354,28 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
-              eventHandlers={{ 
-                click: () => onRiverClick({ 
-                  id: river.id, 
-                  category: 'river', 
+              eventHandlers={{
+                click: () => onRiverClick({
+                  id: river.id,
+                  category: 'river',
                   name: river.id,
                   latitude: labelPoint[0],
                   longitude: labelPoint[1]
-                } as Location) 
+                } as Location)
               }}
             />
             {/* Label */}
             <Marker
               position={labelPoint}
               icon={createRiverLabelIcon(label, isSelected)}
-              eventHandlers={{ 
-                click: () => onRiverClick({ 
-                  id: river.id, 
-                  category: 'river', 
+              eventHandlers={{
+                click: () => onRiverClick({
+                  id: river.id,
+                  category: 'river',
                   name: river.id,
                   latitude: labelPoint[0],
                   longitude: labelPoint[1]
-                } as Location) 
+                } as Location)
               }}
               zIndexOffset={isSelected ? 100 : 30}
             />
@@ -418,10 +387,10 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SACRED CITIES LAYER
+// SACRED CITIES LAYER (High-Priority Cultural Centers)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function SacredCitiesLayer() {
+function SacredCitiesLayer({ onItemClick }: { onItemClick: (loc: Location) => void }) {
   const { activeFilters } = useFilter();
   const { lang } = useLanguageStore();
   const content = getContent(lang);
@@ -430,19 +399,29 @@ function SacredCitiesLayer() {
 
   return (
     <>
-      {SACRED_CITIES.map((city) => {
-        const translatedName = content.sacredCities.find((c: { id: string; name: string }) => c.id === city.id)?.name ?? city.name;
+      {citiesGeometry.map((city) => {
+        const translatedName = (content.sacredCities as any[]).find((c: { id: string; name: string }) => c.id === city.id)?.name ?? city.name;
         const [lat, lng] = adjustCoords(city.id, city.coords[0], city.coords[1]);
         return (
           <Marker
-            key={city.id}
+            key={`city-${city.id}`}
             position={[lat, lng]}
             icon={createSacredMarker()}
+            eventHandlers={{
+              click: () => onItemClick({
+                id: city.id,
+                category: 'city',
+                name: city.name,
+                latitude: lat,
+                longitude: lng,
+                description: "",
+              } as unknown as Location)
+            }}
           >
             <Tooltip
               permanent
               direction="bottom"
-              offset={[0, 14]}
+              offset={[0, 6]}
               className="sacred-label"
               opacity={0.9}
             >
@@ -473,16 +452,16 @@ function formatLabel(name: string) {
 const COUNTRY_LABELS = [
   { name: "AFGHANISTAN (GANDHARA)", coords: [33.5, 68.0] as [number, number] },
   { name: "PAKISTAN", coords: [28.5, 70.0] as [number, number] },
-  { name: "NEPAL", coords: [28.2, 84.5] as [number, number] },
+  { name: "NEPAL", coords: [28.2, 83.9] as [number, number] },
   { name: "BANGLADESH", coords: [23.7, 90.3] as [number, number] },
   { name: "BRAHMADESH", coords: [21.5, 96.0] as [number, number] },
-  { name: "SRI LANKA", coords: [7.8, 80.7] as [number, number] }
+  { name: "SRI LANKA", coords: [7.2, 80.8] as [number, number] }
 ];
 
 const OCEAN_LABELS = [
   { name: "ARABIAN SEA (SINDHU SAGAR)", coords: [16.0, 62.0] as [number, number] },
   { name: "INDIAN OCEAN (HINDU MAHASAGAR)", coords: [3.2, 79.5] as [number, number] },
-  { name: "BAY OF BENGAL (GANGA SAGAR)", coords: [18.5, 90.0] as [number, number] }
+  { name: "BAY OF BENGAL (GANGA SAGAR)", coords: [17.0, 91.5] as [number, number] }
 ];
 
 function StaticLabelsLayer() {
@@ -549,6 +528,30 @@ function ParchmentOverlay() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// FLY-TO-LOCATION VIEWPORT CONTROLLER
+//
+// Listens for selection changes (from search or sidebar) and pans map to item
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function FlyToLocation() {
+  const map = useLeafletMap();
+  const { selectedLocation } = useMap();
+
+  useEffect(() => {
+    if (selectedLocation && selectedLocation.latitude && selectedLocation.longitude) {
+      const zoom = getPreciseZoom(selectedLocation.category);
+      map.flyTo([selectedLocation.latitude, selectedLocation.longitude], zoom, {
+        duration: 2.5,
+        easeLinearity: 0.35,
+        noMoveStart: true // More precise start
+      });
+    }
+  }, [selectedLocation, map]);
+
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // VIEWPORT CONTROLLER
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -592,9 +595,10 @@ function MapViewController() {
 
 interface CulturalMapProps {
   onMarkerClick: (loc: Location) => void;
+  locations: Location[];
 }
 
-export function CulturalMap({ onMarkerClick }: CulturalMapProps) {
+export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
   const [mounted, setMounted] = useState(false);
   const [bordersData, setBordersData] = useState<any>(null);
   const [stateBorders, setStateBorders] = useState<any>(null);
@@ -644,6 +648,7 @@ export function CulturalMap({ onMarkerClick }: CulturalMapProps) {
     >
       {/* Viewport controller fixes tilePane z-index before other components */}
       <MapViewController />
+      <FlyToLocation />
 
       {/* ── Layer 1: Base tiles — CartoDB light_nolabels ──────── */}
       <TileLayer
@@ -707,7 +712,7 @@ export function CulturalMap({ onMarkerClick }: CulturalMapProps) {
 
       {/* ── Layer 6: Sacred Cities (highest z-order) ───────── */}
       <Pane name="poiPane" style={{ zIndex: 600 }}>
-        <SacredCitiesLayer />
+        <SacredCitiesLayer onItemClick={onMarkerClick} />
       </Pane>
 
       {/* ── Final Mask Layer: Hides everything completely outside defined bounds ───────── */}

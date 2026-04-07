@@ -45,10 +45,21 @@ export const CATEGORY_CONFIG = {
     markerBg: '#3A6270',
   },
   temple: {
-    label: 'Mandir',
-    labelEn: 'Temples',
+    label: 'Sacred City',
+    labelEn: 'Sacred Cities',
+    labelKn: 'ಪುಣ್ಯ ನಗರಗಳು',
+    labelHi: 'पवित्र शहर',
     icon: '◆',
-    color: '#C45A1C',  // terracotta / sindoor
+    color: '#C45A1C',
+    markerBg: '#9B3E0D',
+  },
+  city: {
+    label: 'Sacred City',
+    labelEn: 'Sacred Cities',
+    labelKn: 'ಪುಣ್ಯ ನಗರಗಳು',
+    labelHi: 'पवित्र शहर',
+    icon: '◆',
+    color: '#C45A1C',
     markerBg: '#9B3E0D',
   },
 } as const;

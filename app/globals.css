@@ -119,8 +119,12 @@ body {
   position: relative;
   width: 28px;
   height: 28px;
-  cursor: default;
-  /* Use default cursor since there is no popup click */
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.marker-wrapper:hover {
+  transform: scale(1.15);
 }
 
 .marker-glow {
@@ -172,10 +176,12 @@ body {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+  padding: 0 !important;
 
   letter-spacing: 1px !important;
   text-transform: uppercase !important;
   white-space: nowrap !important;
+  pointer-events: none !important;
 }
 
 /* Hide leaflet tooltip pointer triangle */
@@ -799,6 +805,117 @@ body {
   transition: all 0.2s ease;
   z-index: 10; /* High z-index to be clickable above textures */
 }
+
+/* ─── Themes ─────────────────────────────────────────────── */
+.mountain-theme {
+  border-left-color: rgba(139, 69, 19, 0.4);
+}
+
+.river-theme {
+  border-left-color: rgba(30, 95, 168, 0.4);
+}
+
+.city-theme {
+  background: linear-gradient(to bottom, #251f18, #1a1612) !important;
+  border-left-color: #D6B37A !important;
+}
+
+.city-theme .kp-title {
+  color: #D6B37A !important;
+}
+
+/* ─── Sacred City Specifics ─────────────────────────────── */
+.kp-city-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: -8px;
+  margin-bottom: 4px;
+}
+
+.kp-tagline {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: #A89882;
+  letter-spacing: 0.15em;
+  opacity: 0.8;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.kp-city-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: rgba(214, 182, 122, 0.6);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.kp-city-status::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #D6B37A;
+  box-shadow: 0 0 6px rgba(214, 182, 122, 0.5);
+}
+
+.kp-hero-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.city-hero {
+  height: 200px !important;
+}
+
+.city-hero .kp-hero-img {
+  filter: saturate(0.7) contrast(1.1);
+}
+
+.kp-identity-strip {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(214, 182, 122, 0.15);
+  margin-bottom: 4px;
+}
+
+.identity-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.identity-label {
+  font-size: 9px;
+  font-family: 'Cinzel', serif;
+  color: rgba(214, 182, 122, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.identity-value {
+  font-size: 11px;
+  color: #F0E6D3;
+  font-weight: 500;
+}
+
+.kp-spiritual .kp-divider {
+  margin-bottom: 20px;
+}
+
+.kp-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #D1C5B0;
+  text-align: justify;
+}
+
 .kp-close:hover {
   background: rgba(212, 175, 55, 0.1);
   border-color: rgba(212, 175, 55, 0.6);
@@ -1178,3 +1295,140 @@ body {
     font-size: 18px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SEARCH SYSTEM — Parchment Aesthetic
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.search-system {
+  position: relative;
+  width: 320px;
+  z-index: 50;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #fdfaf3; /* Parchment white */
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+  padding: 0 12px;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.search-input-wrapper:focus-within {
+  border-color: #c5a363;
+  box-shadow: 0 0 0 3px rgba(197, 163, 99, 0.15);
+}
+
+.search-icon {
+  color: #7a6445;
+  margin-right: 10px;
+  opacity: 0.7;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  height: 38px;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  font-family: 'Source Sans 3', sans-serif !important;
+  font-size: 14px !important;
+  color: #4a3722 !important;
+}
+
+.search-input-wrapper input::placeholder {
+  color: #a89882;
+  font-style: italic;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #fdfaf3;
+  border: 1px solid #d4c4a8;
+  border-radius: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  max-height: 400px;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease-out;
+  z-index: 1000;
+}
+
+.search-dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb {
+  background: #d4c4a8;
+  border-radius: 2px;
+}
+
+.search-result-item {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(212, 196, 168, 0.3);
+  transition: background 0.15s ease;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover,
+.search-result-item.selected {
+  background: #f5f0e1;
+}
+
+.result-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-title {
+  font-family: 'Cinzel', serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #4a3722 !important;
+  margin: 0 !important;
+}
+
+.result-subtitle {
+  font-family: 'Source Sans 3', sans-serif !important;
+  font-size: 11px !important;
+  color: #a89882 !important;
+  margin-top: 1px !important;
+}
+
+.result-badge {
+  font-family: 'Cinzel', serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-mountain {
+  background: #e8dbcc;
+  color: #7a6445;
+}
+
+.badge-river {
+  background: #e0eef8;
+  color: #4a7eb8;
+}
+
+.badge-city {
+  background: #f2e6d9;
+  color: #8b5e34;
+}

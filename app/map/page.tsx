@@ -7,8 +7,10 @@ import { FilterProvider } from '@/providers/FilterContext';
 import { Sidebar } from '@/components/Sidebar/Sidebar';
 import { FilterBar } from '@/components/FilterControls/FilterBar';
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
+import { Search } from '@/components/Search/Search';
 import { KnowledgePanel } from '@/components/KnowledgePanel/KnowledgePanel';
 import { Location } from '@/types/location';
+import { citiesGeometry } from '@/data/citiesGeometry';
 
 const CulturalMap = dynamic(
   () =>
@@ -34,7 +36,7 @@ const CulturalMap = dynamic(
 );
 
 function MapContent() {
-  const { openSidebar, setSelectedLocation } = useMap();
+  const { openSidebar, closeSidebar, setSelectedLocation } = useMap();
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,12 +45,22 @@ function MapContent() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [mountains, rivers, temples] = await Promise.all([
+        const [mountains, rivers] = await Promise.all([
           fetch('/data/mountains.json').then((r) => r.json()),
           fetch('/data/rivers.json').then((r) => r.json()),
-          fetch('/data/temples.json').then((r) => r.json()),
         ]);
-        setLocations([...mountains, ...rivers, ...temples]);
+        
+        // Use Sacred Cities as our primary POI dataset
+        const cityLocations: Location[] = citiesGeometry.map(city => ({
+          id: city.id,
+          name: city.name,
+          category: 'city',
+          latitude: city.coords[0],
+          longitude: city.coords[1],
+          description: "", // Fetched from cityKnowledge in KnowledgePanel
+        }));
+
+        setLocations([...mountains, ...rivers, ...cityLocations]);
       } catch (err) {
         setError('Failed to load location data');
         console.error(err);
@@ -61,15 +73,17 @@ function MapContent() {
 
   const handleMarkerClick = useCallback(
     (location: Location) => {
-      if (location.category === 'mountain' || location.category === 'river') {
+      const isArchival = ['mountain', 'river', 'city'].includes(location.category);
+      if (isArchival) {
+        closeSidebar();
         setSelectedLocation(location);
         setShowKnowledge(true);
       } else {
-        openSidebar(location);
         setShowKnowledge(false);
+        openSidebar(location);
       }
     },
-    [openSidebar, setSelectedLocation]
+    [openSidebar, closeSidebar, setSelectedLocation]
   );
 
   if (error) {
@@ -107,7 +121,10 @@ function MapContent() {
         <h1 className="title">
           Akhand Bharat Darshan
         </h1>
-        <LanguageSwitcher />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <Search />
+          <LanguageSwitcher />
+        </div>
       </header>
 
       {/* ── Cultural Intro Strip ───────────────────── */}
@@ -119,11 +136,11 @@ function MapContent() {
 
       {/* ── Main Layout (Sidebar + Map) ────────────── */}
       <div className="mainLayout flex-1 w-full relative z-0">
-        
+
         {/* ── Left Sidebar ─────────────────────────── */}
         <div className="sidebar shrink-0">
           <h3>Explore</h3>
-          
+
           <FilterBar />
 
           <div className="flex-1"></div>
@@ -151,6 +168,7 @@ function MapContent() {
             ) : (
               <CulturalMap
                 onMarkerClick={handleMarkerClick}
+                locations={locations}
               />
             )}
           </div>
