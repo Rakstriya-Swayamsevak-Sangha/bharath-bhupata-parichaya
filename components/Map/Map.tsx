@@ -456,11 +456,11 @@ function formatLabel(name: string) {
   if (name.includes("(")) {
     const [main, sub] = name.split("(");
     return `
-      <div class="label-main">${main.trim()}</div>
-      <div class="label-sub">${sub.replace(")", "").trim()}</div>
+      <div class="label-main" style="font-weight: 800 !important; text-shadow: none !important;">${main.trim()}</div>
+      <div class="label-sub" style="font-weight: 600 !important; text-shadow: none !important;">${sub.replace(")", "").trim()}</div>
     `;
   }
-  return `<div class="label-main">${name}</div>`;
+  return `<div class="label-main" style="font-weight: 800 !important; text-shadow: none !important;">${name}</div>`;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -643,7 +643,12 @@ function MapViewController() {
 
   const applyViewport = useCallback(() => {
     map.invalidateSize({ animate: false });
-    map.fitBounds(AKHAND_BHARAT_BOUNDS, { padding: [0, 0], animate: false });
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      map.setView([19.0, 80.0], 4, { animate: false });
+    } else {
+      map.fitBounds(AKHAND_BHARAT_BOUNDS, { padding: [0, 0], animate: false });
+    }
     map.setMaxBounds(AKHAND_BHARAT_BOUNDS);
     map.options.maxBoundsViscosity = MAP_CONFIG.MAX_BOUNDS_VISCOSITY;
   }, [map]);

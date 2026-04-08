@@ -707,37 +707,37 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Nag River",
         kn: "ನಾಗ ನದಿ",
-        hi: "ನಾಗ ನದಿ"
+        hi: "ನಾಗ नदी"
       },
       era: {
-        en: "Modern Historical Period",
-        kn: "ಆಧುನಿಕ ಇತಿಹಾಸ",
-        hi: "आधुनिक काल"
+        en: "Modern Nationalist Era",
+        kn: "ಆಧುನಿಕ ರಾಷ್ಟ್ರೀಯ ಯುಗ",
+        hi: "आधुनिक राष्ट्रवादी काल"
       }
     },
   
     description: {
-      en: `Nagpur is located near the geographical center of Bharat and has historically served as an important administrative and political hub. It gained prominence during the British period and continues to be a key city in central India.`,
-  
-      kn: `ನಾಗಪುರವು ಭಾರತದ ಭೌಗೋಳಿಕ ಕೇಂದ್ರದ ಸಮೀಪದಲ್ಲಿದ್ದು ಪ್ರಮುಖ ಆಡಳಿತ ಕೇಂದ್ರವಾಗಿದೆ.`,
-  
-      hi: `नागपुर भारत के भौगोलिक केंद्र के पास स्थित है और एक महत्वपूर्ण प्रशासनिक शहर है।`
+      en: `Nagpur holds a defining place in modern Indian history as the birthplace of Dr. Keshav Baliram Hedgewar (born in 1889 in Nagpur), who later founded the Rashtriya Swayamsevak Sangh (RSS) in 1925. The city emerged as a nucleus for ideological organization and disciplined social mobilization during the early 20th century.`,
+
+      kn: `ನಾಗಪುರವು 1889ರಲ್ಲಿ ಇಲ್ಲಿ ಜನಿಸಿದ ಡಾ. ಕೆಶವ ಬಾಲಿರಾಮ ಹೆಡ್ಗೇವಾರ್ ಅವರ ಜನ್ಮಸ್ಥಳವಾಗಿದೆ. ಅವರು 1925ರಲ್ಲಿ ರಾಷ್ಟ್ರೀಯ ಸ್ವಯಂಸೇವಕ ಸಂಘ (ಆರ್ಎಸ್ಎಸ್)ವನ್ನು ಸ್ಥಾಪಿಸಿದರು. ಈ ನಗರವು ಆಧುನಿಕ ಭಾರತದ ಚಿಂತನಾ ಚಳವಳಿಗಳ ಕೇಂದ್ರವಾಗಿತ್ತು.`,
+
+      hi: `नागपुर 1889 में जन्मे डॉ. केशव बलिराम हेडगेवार का जन्मस्थान है, जिन्होंने 1925 में राष्ट्रीय स्वयंसेवक संघ (आरएसएस) की स्थापना की। यह शहर आधुनिक भारत में वैचारिक संगठन और सामाजिक संरचना का केंद्र बना।`
     },
   
     spiritual: {
-      en: `Nagpur is not traditionally classified as a sacred city in ancient texts, but it holds modern spiritual and cultural importance. It is associated with movements, traditions, and institutions that have shaped contemporary Indian society.`,
-  
-      kn: `ನಾಗಪುರವು ಪ್ರಾಚೀನ ತೀರ್ಥಕ್ಷೇತ್ರವಾಗಿಲ್ಲದಿದ್ದರೂ ಆಧುನಿಕ ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವವನ್ನು ಹೊಂದಿದೆ.`,
-  
-      hi: `नागपुर पारंपरिक रूप से प्राचीन तीर्थ स्थल नहीं है, लेकिन इसका आधुनिक सांस्कृतिक महत्व है।`
+      en: `Nagpur’s significance lies in its role as the origin point of the Rashtriya Swayamsevak Sangh. The first RSS branch (Shakha) was established in Mohitewadi, Nagpur, marking the beginning of a structured volunteer-based cultural organization. This transformed the city into a center of disciplined societal thought and nationalist ideology.`,
+
+      kn: `ನಾಗಪುರವು ರಾಷ್ಟ್ರೀಯ ಸ್ವಯಂಸೇವಕ ಸಂಘದ ಉದ್ಭವ ಸ್ಥಳವಾಗಿದ್ದು, ಮೊದಲ ಶಾಖೆ (ಶಾಖೆ) ಮೊಹಿತೇವಾಡಿ, ನಾಗಪುರದಲ್ಲಿ ಆರಂಭವಾಯಿತು. ಇದರಿಂದ ಈ ನಗರವು ಶಿಸ್ತುಬದ್ಧ ಸಾಮಾಜಿಕ ಚಿಂತನೆಯ ಕೇಂದ್ರವಾಯಿತು.`,
+
+      hi: `नागपुर राष्ट्रीय स्वयंसेवक संघ की उत्पत्ति का केंद्र है, जहाँ पहली शाखा (शाखा) मोहिटेवाड़ी, नागपुर में शुरू हुई। इससे यह शहर संगठित सामाजिक विचार और अनुशासन का केंद्र बना।`
     },
   
     living: {
-      en: `Today, Nagpur is a growing urban center with cultural diversity, educational institutions, and historical landmarks. It serves as a bridge between tradition and modern development in central India.`,
-  
-      kn: `ನಾಗಪುರ ಇಂದು ಆಧುನಿಕ ನಗರವಾಗಿದ್ದು ಸಂಸ್ಕೃತಿ ಮತ್ತು ಅಭಿವೃದ್ಧಿಯ ಮಿಶ್ರಣವಾಗಿದೆ.`,
-  
-      hi: `नागपुर आज एक आधुनिक शहर है जो परंपरा और विकास के बीच संतुलन बनाए रखता है।`
+      en: `Today, Nagpur continues to function as an important organizational and cultural hub, with historical sites such as Mohitewadi preserving its legacy. The city represents the continuity of ideas from early 20th-century movements into present-day institutional frameworks.`,
+
+      kn: `ಇಂದು ನಾಗಪುರವು ಮಹತ್ವದ ಸಾಂಸ್ಕೃತಿಕ ಮತ್ತು ಸಂಘಟನಾ ಕೇಂದ್ರವಾಗಿದ್ದು, ಮೊಹಿತೇವಾಡಿ ಮೊದಲ ಶಾಖೆಯ ಸ್ಮರಣೆಯನ್ನು ಉಳಿಸಿಕೊಂಡಿದೆ. ಈ ನಗರವು ಇತಿಹಾಸ ಮತ್ತು ವರ್ತಮಾನವನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ.`,
+
+      hi: `आज नागपुर एक महत्वपूर्ण सांस्कृतिक और संगठनात्मक केंद्र बना हुआ है, जहाँ मोहिटेवाड़ी जैसे स्थान इस विरासत को संरक्षित रखते हैं। यह शहर अतीत और वर्तमान के बीच एक सेतु है।`
     },
   
     image: "/place-images/sacred-cities/nagpur.jpg"

@@ -257,7 +257,7 @@ body {
   text-transform: uppercase;
   text-align: center;
   white-space: nowrap;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 4px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
   cursor: pointer;
   transition: all 0.2s ease;
   pointer-events: auto;
@@ -296,6 +296,7 @@ body {
 .leaflet-control-zoom a {
   background: var(--color-surface) !important;
   color: var(--color-accent) !important;
+  cursor: pointer !important;
 }
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -429,6 +430,8 @@ body {
   position: fixed;
   z-index: 1000;
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   background: linear-gradient(to bottom, rgba(28, 22, 18, 0.98), rgba(18, 14, 11, 0.99));
   box-shadow: -8px 0 30px rgba(0, 0, 0, 0.6);
   transition: transform 320ms ease-out, opacity 320ms ease-out;
@@ -647,11 +650,13 @@ body {
   }
   .header .title {
     display: block !important;
-    font-size: 13px !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
     letter-spacing: 1px !important;
-    margin-right: 12px !important;
-    flex: 0 0 auto !important;
-    white-space: nowrap !important;
+    margin-right: 8px !important;
+    flex: 1 1 auto !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
   .mainLayout {
     height: calc(100vh - 60px);
@@ -663,8 +668,23 @@ body {
     border-radius: 0 !important;
   }
   .header {
-    padding: 0 16px;
-    height: 56px;
+    padding: 0 12px;
+    height: 64px;
+  }
+  
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
   }
   
   #map-shell {
@@ -698,7 +718,7 @@ body {
     transform: translateY(0);
   }
   .kp-content {
-    padding: 20px 20px 80px !important; /* Space for mobile filters */
+    padding: 24px 20px 120px !important; /* Increased padding for better scroll end clearance */
   }
   .mobile-filters-bar {
     display: flex;
@@ -716,16 +736,16 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 16px rgba(212, 175, 55, 0.1);
     z-index: 850;
     overflow: hidden;
-    padding: 0 12px;
     align-items: center;
+    justify-content: stretch;
   }
   .mobile-filters-scroll {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     width: 100%;
     height: 100%;
     overflow-x: auto;
-    padding: 0 8px;
+    padding: 0 4px;
     align-items: center;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -734,22 +754,30 @@ body {
     display: none;
   }
   .mobile-filter-btn {
-    flex: 0 0 auto;
+    flex: 1 1 0%;
+    min-width: 0;
     display: flex;
     align-items: center;
-    gap: 6px;
-    height: 32px;
-    padding: 0 12px;
+    justify-content: center;
+    gap: 4px;
+    height: 36px;
+    padding: 0 4px;
     background: rgba(212, 175, 55, 0.05);
     border: 1px solid rgba(212, 175, 55, 0.15);
     border-radius: 16px;
     color: rgba(212, 175, 55, 0.7);
     font-family: 'Cinzel', serif;
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 9px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     transition: all 0.2s ease;
+  }
+
+  .mobile-filter-btn .filter-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .mobile-filter-btn.active {
     background: rgba(212, 175, 55, 0.15);
@@ -775,8 +803,12 @@ body {
   }
   
   .leaflet-control-zoom {
-    margin-top: 70px !important;
+    margin-top: 12px !important;
     margin-left: 12px !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 800 !important;
   }
 
   .leaflet-control-attribution {
@@ -877,7 +909,8 @@ body {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    height: 65vh !important;
+    height: 85vh !important; /* Increased height to allow seeing more content */
+    max-height: 92vh !important;
     border-radius: 24px 24px 0 0 !important;
     border-left: none !important;
     border-top: 2px solid rgba(207, 174, 123, 0.2) !important;
