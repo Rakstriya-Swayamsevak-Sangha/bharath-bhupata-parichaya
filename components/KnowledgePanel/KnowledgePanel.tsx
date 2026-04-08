@@ -169,7 +169,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   return (
     <>
       <AnimatePresence>
-        {(deviceMode !== 'desktop' && isVisible) && (
+        {isVisible && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -180,183 +180,189 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
         )}
       </AnimatePresence>
 
-      <motion.aside
-        drag={deviceMode === 'mobile' ? "y" : false}
-        dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={0.05}
-        onDragEnd={handleDragEnd}
-        className={`kp-panel ${isVisible ? 'visible' : ''} ${isRiver ? 'river-theme' : isCity ? 'city-theme' : 'mountain-theme'} kp-panel--${sheetMode} device-${deviceMode}`}
-        onClick={() => {
-          if (deviceMode === 'mobile' && sheetMode === 'collapsed') {
-            setSheetMode('half');
-          }
-        }}
+      <div
+        className={`kp-panel-v2 ${isVisible ? 'open' : ''} ${isRiver ? 'river-theme' : isCity ? 'city-theme' : 'mountain-theme'}`}
       >
-        {deviceMode === 'mobile' && <div className="kp-drag-handle" />}
-        
-        <div className="kp-lang-switcher">
-          {(['en', 'kn', 'hi'] as const).map((l) => (
+        {isVisible && (
+          <div className="h-full overflow-y-auto relative">
+            <div className="mobile-only">
+               <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mt-3 mb-1" />
+            </div>
+            
+            <div className="kp-lang-switcher">
+              {(['en', 'kn', 'hi'] as const).map((l) => (
+                <button
+                  key={l}
+                  className={`kp-lang-btn ${lang === l ? 'active' : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLang(l);
+                  }}
+                >
+                  {l === 'en' ? 'EN' : l === 'kn' ? 'KN' : 'HI'}
+                </button>
+              ))}
+            </div>
+            
             <button
-              key={l}
-              className={`kp-lang-btn ${lang === l ? 'active' : ''}`}
+              className="kp-close"
               onClick={(e) => {
                 e.stopPropagation();
-                setLang(l);
+                handleClose();
               }}
+              aria-label="Close Archival Sheet"
             >
-              {l === 'en' ? 'EN' : l === 'kn' ? 'KN' : 'HI'}
+              ×
             </button>
-          ))}
-        </div>
-        
-        <button
-          className="kp-close"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleClose();
-          }}
-          aria-label="Close Archival Sheet"
-        >
-          ×
-        </button>
 
-        <div className="kp-content">
-          <div className="kp-header">
-            <h1 className="kp-title">{title}</h1>
-            
-            {!isCity && (
-              <div className="kp-tag-container">
-                {knowledge.meta?.[lang] && (
-                  <span className="kp-meta-badge">{knowledge.meta[lang]}</span>
+            <div className="kp-content">
+              <div className="kp-header">
+                <h1 className="kp-title">{title}</h1>
+                
+                {!isCity && (
+                  <div className="kp-tag-container">
+                    {knowledge.meta?.[lang] && (
+                      <span className="kp-meta-badge">{knowledge.meta[lang]}</span>
+                    )}
+                    {knowledge.type?.[lang] && (
+                      <span className="kp-type-tag">{knowledge.type[lang]}</span>
+                    )}
+                    {knowledge.scale?.[lang] && (
+                      <span className="kp-scale-tag">{knowledge.scale[lang]}</span>
+                    )}
+                    {knowledge.importance?.[lang] && (
+                      <span className="kp-importance-tag">{knowledge.importance[lang]}</span>
+                    )}
+                    {knowledge.relation?.[lang] && (
+                      <p className="kp-relation">{knowledge.relation[lang]}</p>
+                    )}
+                    {subtitle && <p className="kp-subtitle">{subtitle}</p>}
+                  </div>
                 )}
-                {knowledge.type?.[lang] && (
-                  <span className="kp-type-tag">{knowledge.type[lang]}</span>
-                )}
-                {knowledge.scale?.[lang] && (
-                  <span className="kp-scale-tag">{knowledge.scale[lang]}</span>
-                )}
-                {knowledge.importance?.[lang] && (
-                  <span className="kp-importance-tag">{knowledge.importance[lang]}</span>
-                )}
-                {knowledge.relation?.[lang] && (
-                  <p className="kp-relation">{knowledge.relation[lang]}</p>
-                )}
-                {subtitle && <p className="kp-subtitle">{subtitle}</p>}
               </div>
-            )}
-          </div>
 
-          {isCity && (
-            <div className="kp-hero-container">
-              <div className="kp-hero city-hero">
-                <img
-                  src={knowledge.image}
-                  alt={String(title)}
-                  className="kp-hero-img"
-                />
-                <div className="kp-hero-overlay" />
-              </div>
-              {knowledge.identity && (
-                <div className="kp-identity-strip">
-                  <div className="identity-item">
-                    <span className="identity-label">{UI_TEXT.region[lang]}</span>
-                    <span className="identity-value">{knowledge.identity.region[lang]}</span>
+              {isCity && (
+                <div className="kp-hero-container">
+                  <div className="kp-hero city-hero">
+                    <img
+                      src={knowledge.image || `/place-images/sacred-cities/${localLocation.id}.jpg`}
+                      alt={String(title)}
+                      className="kp-hero-img"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/place-images/sacred-cities/default.jpg';
+                      }}
+                    />
+                    <div className="kp-hero-overlay" />
                   </div>
-                  <div className="identity-item">
-                    <span className="identity-label">{UI_TEXT.river[lang]}</span>
-                    <span className="identity-value">{knowledge.identity.river[lang]}</span>
-                  </div>
-                  <div className="identity-item">
-                    <span className="identity-label">{UI_TEXT.era[lang]}</span>
-                    <span className="identity-value">{knowledge.identity.era[lang]}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {!isCity && (
-            <>
-              {isRiver && 'flow' in knowledge && (
-                <div className="kp-flow-cards">
-                  {knowledge.flow[lang].split(' → ').map((node: string, i: number) => (
-                    <div key={i} className="flow-card">
-                      {node}
+                  {knowledge.identity && (
+                    <div className="kp-identity-strip">
+                      <div className="identity-item">
+                        <span className="identity-label">{UI_TEXT.region[lang]}</span>
+                        <span className="identity-value">{knowledge.identity.region[lang]}</span>
+                      </div>
+                      <div className="identity-item">
+                        <span className="identity-label">{UI_TEXT.river[lang]}</span>
+                        <span className="identity-value">{knowledge.identity.river[lang]}</span>
+                      </div>
+                      <div className="identity-item">
+                        <span className="identity-label">{UI_TEXT.era[lang]}</span>
+                        <span className="identity-value">{knowledge.identity.era[lang]}</span>
+                      </div>
                     </div>
-                  ))}
+                  )}
                 </div>
               )}
 
-              <div className="kp-hero">
-                <img
-                  src={knowledge.image || `/place-images/${localLocation.category}s/${localLocation.id}.jpg`}
-                  alt={String(title)}
-                  className="kp-hero-img"
-                />
-                <div className="kp-hero-overlay" />
-              </div>
+              {!isCity && (
+                <>
+                  {isRiver && 'flow' in knowledge && (
+                    <div className="kp-flow-cards">
+                      {knowledge.flow[lang].split(' → ').map((node: string, i: number) => (
+                        <div key={i} className="flow-card">
+                          {node}
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
-              <div className="kp-facts">
-                {Object.entries(knowledge.facts as Record<string, string>).map(([key, value]) => (
-                  <div key={key} className="kp-fact-row" style={{ flexWrap: 'wrap', height: 'auto', minHeight: '32px', alignItems: 'flex-start' }}>
-                    <span className="kp-fact-label" style={{ flex: '0 0 100px', paddingTop: '4px' }}>
-                      {labels[key as keyof typeof labels] || key}
-                    </span>
-                    <span className="kp-fact-value" style={{ flex: '1', textAlign: 'right', whiteSpace: 'normal', wordBreak: 'break-word', paddingTop: '4px' }}>
-                      {value}
-                    </span>
+                  <div className="kp-hero">
+                    <img
+                      src={knowledge.image || `/place-images/${localLocation.category === 'city' ? 'sacred-cities' : localLocation.category + 's'}/${localLocation.id}.jpg`}
+                      alt={String(title)}
+                      className="kp-hero-img"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const overlay = target.nextElementSibling as HTMLElement;
+                        if (overlay) overlay.style.display = 'none';
+                      }}
+                    />
+                    <div className="kp-hero-overlay" />
                   </div>
-                ))}
-              </div>
-            </>
-          )}
 
-          <div className="kp-section">
-            <h3 className="kp-section-label">
-              {isCity
-                ? UI_TEXT.historicalContext[lang]
-                : (isRiver
-                  ? UI_TEXT.courseDescription[lang]
-                  : UI_TEXT.mountainDescription[lang]
-                )
-              }
-            </h3>
-            <p className="kp-description">{String(description)}</p>
-          </div>
+                  <div className="kp-facts">
+                    {Object.entries(knowledge.facts as Record<string, string>).map(([key, value]) => (
+                      <div key={key} className="kp-fact-row" style={{ flexWrap: 'wrap', height: 'auto', minHeight: '32px', alignItems: 'flex-start' }}>
+                        <span className="kp-fact-label" style={{ flex: '0 0 100px', paddingTop: '4px' }}>
+                          {labels[key as keyof typeof labels] || key}
+                        </span>
+                        <span className="kp-fact-value" style={{ flex: '1', textAlign: 'right', whiteSpace: 'normal', wordBreak: 'break-word', paddingTop: '4px' }}>
+                          {value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
 
-          {isCity && (
-            <>
-              <div className="kp-section kp-spiritual">
-                <div className="kp-divider" />
+              <div className="kp-section">
                 <h3 className="kp-section-label">
-                  {UI_TEXT.spiritualSignificance[lang]}
+                  {isCity
+                    ? UI_TEXT.historicalContext[lang]
+                    : (isRiver
+                      ? UI_TEXT.courseDescription[lang]
+                      : UI_TEXT.mountainDescription[lang]
+                    )
+                  }
                 </h3>
-                <p className="kp-description">{String(spiritual)}</p>
+                <p className="kp-description">{String(description)}</p>
               </div>
 
-              <div className="kp-section kp-living">
-                <h3 className="kp-section-label">
-                  {UI_TEXT.livingTradition[lang]}
-                </h3>
-                <p className="kp-description">{String(living)}</p>
-              </div>
-            </>
-          )}
+              {isCity && (
+                <>
+                  <div className="kp-section kp-spiritual">
+                    <div className="kp-divider" />
+                    <h3 className="kp-section-label">
+                      {UI_TEXT.spiritualSignificance[lang]}
+                    </h3>
+                    <p className="kp-description">{String(spiritual)}</p>
+                  </div>
 
-          {!isCity && (
-            <div className="kp-section kp-cultural">
-              <div className="kp-divider" />
-              <h3 className="kp-section-label">
-                {isRiver
-                  ? UI_TEXT.civilizationCulture[lang]
-                  : UI_TEXT.mountainCultural[lang]
-                }
-              </h3>
-              <p className="kp-cultural-text">{String(cultural)}</p>
+                  <div className="kp-section kp-living">
+                    <h3 className="kp-section-label">
+                      {UI_TEXT.livingTradition[lang]}
+                    </h3>
+                    <p className="kp-description">{String(living)}</p>
+                  </div>
+                </>
+              )}
+
+              {!isCity && (
+                <div className="kp-section kp-cultural">
+                  <div className="kp-divider" />
+                  <h3 className="kp-section-label">
+                    {isRiver
+                      ? UI_TEXT.civilizationCulture[lang]
+                      : UI_TEXT.mountainCultural[lang]
+                    }
+                  </h3>
+                  <p className="kp-cultural-text">{String(cultural)}</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </motion.aside>
+          </div>
+        )}
+      </div>
     </>
   );
 }

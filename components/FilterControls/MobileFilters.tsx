@@ -33,8 +33,8 @@ export function MobileFilters() {
   const allActive = activeFilters.mountain && activeFilters.river && activeFilters.city;
 
   return (
-    <div className="mobile-filters-bar">
-      <div className="mobile-filters-scroll">
+    <div className="filters-mobile-overlay">
+      <div className="mobile-pill-bar">
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={() => setAllFilters(!allActive)}

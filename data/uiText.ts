@@ -1,8 +1,8 @@
 export const UI_TEXT = {
   headerTitle: {
-    en: "Akhand Bharat Darshan",
-    kn: "ಅಖಂಡ ಭಾರತ ದರ್ಶನ",
-    hi: "अखंड भारत दर्शन"
+    en: "Bharath Bhupata Parichaya",
+    kn: "ಭಾರತ ಭೂಪಟ ಪರಿಚಯ",
+    hi: "भारत मानचित्र परिचय"
   },
   introText: {
     en: "Explore the sacred geography of Bharat — rivers, mountains, and ancient cities that shaped civilization.",
