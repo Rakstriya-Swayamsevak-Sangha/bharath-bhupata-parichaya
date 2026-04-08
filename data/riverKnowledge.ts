@@ -263,7 +263,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       kn: "ಮಹಾನದಿ ನದಿ ಶತಮಾನಗಳಿಂದ ಕೃಷಿ ಮತ್ತು ವಸತಿಗಳನ್ನು ಬೆಂಬಲಿಸಿದೆ. ಇದರ ಡೆಲ್ಟಾ ಪ್ರದೇಶವು ಅತ್ಯಂತ ಫಲವತ್ತಾದ ಪ್ರದೇಶಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ.",
       hi: "महानदी ने सदियों से कृषि और बस्तियों को समर्थन दिया है। इसका डेल्टा क्षेत्र अत्यंत उपजाऊ है और ओडिशा की अर्थव्यवस्था का आधार है।"
     },
-    image: "/place-images/rivers/mahanadi.jpg"
+    image: "/place-images/rivers/Mahanadi.jpg"
   },
   krishna: {
     id: "krishna",

@@ -19,8 +19,6 @@ const getAllFiles = (dirPath, arrayOfFiles = []) => {
       
       // Only precache meaningful archival assets
       if (/\.(png|jpg|jpeg|webp|avif|geojson|json|ico|svg)$/i.test(relativePath)) {
-        // We use a fixed revision for static public assets to avoid redundant downloads
-        // but we can change this to a build-timestamp if needed.
         arrayOfFiles.push({ url: relativePath, revision: 'archival-v1' });
       }
     }
@@ -31,14 +29,13 @@ const getAllFiles = (dirPath, arrayOfFiles = []) => {
 // Scan the public directory for ALL museum-grade assets
 const archivalAssets = getAllFiles(path.join(process.cwd(), 'public'));
 
-const withPWA = require('next-pwa')({
+const pwaConfig = {
   dest: 'public',
   disable: process.env.NODE_ENV === 'development',
   register: true,
   skipWaiting: true,
   buildExcludes: [/middleware-manifest\.json$/],
   
-  // THE APP SHELL LOCK: Precache EVERYTHING archival
   additionalManifestEntries: [
     { url: '/', revision: 'html-v1' },
     { url: '/map/', revision: 'html-v1' },
@@ -47,7 +44,6 @@ const withPWA = require('next-pwa')({
   
   runtimeCaching: [
     {
-      // Aggressive CacheFirst for all data files (Backup to precaching)
       urlPattern: /\.(?:json|geojson|csv)$/i,
       handler: 'CacheFirst',
       options: {
@@ -59,7 +55,6 @@ const withPWA = require('next-pwa')({
       },
     },
     {
-      // Aggressive CacheFirst for all images (Backup to precaching)
       urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|avif|ico)$/i,
       handler: 'CacheFirst',
       options: {
@@ -71,7 +66,6 @@ const withPWA = require('next-pwa')({
       },
     },
     {
-      // Locked Google Fonts
       urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
       handler: 'CacheFirst',
       options: {
@@ -83,7 +77,9 @@ const withPWA = require('next-pwa')({
       },
     },
   ],
-});
+};
+
+const withPWA = require('next-pwa');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -92,6 +88,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  turbopack: {},
 };
 
-module.exports = withPWA(nextConfig);
+module.exports = withPWA(pwaConfig)(nextConfig);

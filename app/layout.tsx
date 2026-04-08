@@ -3,6 +3,7 @@ import './globals.css';
 import './stage2.css';
 import PWAUpdate from '@/components/PWA/PWAUpdate';
 import PreloadSystem from '@/components/PWA/PreloadSystem';
+import { Analytics } from '@vercel/analytics/react';
 
 export const viewport = {
   themeColor: '#FF9933',
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className="antialiased">
         <PWAUpdate />
         <PreloadSystem />
+        <Analytics />
         {children}
       </body>
     </html>
