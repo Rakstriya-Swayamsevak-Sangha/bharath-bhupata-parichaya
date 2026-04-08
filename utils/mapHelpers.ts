@@ -1,7 +1,7 @@
 import { Location } from '@/types/location';
 
 /**
- * Validates if coordinates are within Akhand Bharat region bounds
+ * Validates if coordinates are within Bharath Bhupata Parichaya region bounds
  * Southwest: [4.5, 58.0], Northeast: [37.5, 97.5]
  */
 export function isValidCoordinate(lat: number, lng: number): boolean {

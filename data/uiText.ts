@@ -4,11 +4,6 @@ export const UI_TEXT = {
     kn: "ಭಾರತ ಭೂಪಟ ಪರಿಚಯ",
     hi: "भारत मानचित्र परिचय"
   },
-  introText: {
-    en: "Explore the sacred geography of Bharat — rivers, mountains, and ancient cities that shaped civilization.",
-    kn: "ಭಾರತದ ಪವಿತ್ರ ಭೂಗೋಳವನ್ನು ಅನ್ವೇಷಿಸಿ - ನಾಗರಿಕತೆಯನ್ನು ರೂಪಿಸಿದ ನದಿಗಳು, ಪರ್ವತಗಳು ಮತ್ತು ಪ್ರಾಚೀನ ನಗರಗಳು.",
-    hi: "भारत के पवित्र भूगोल का अन्वेषण करें - सभ्यता को आकार देने वाली नदियाँ, पर्वत और प्राचीन शहर।"
-  },
   searchPlaceholder: {
     en: "Search cities, rivers, mountains...",
     kn: "ನಗರಗಳು, ನದಿಗಳು, ಪರ್ವತಗಳನ್ನು ಹುಡುಕಿ...",

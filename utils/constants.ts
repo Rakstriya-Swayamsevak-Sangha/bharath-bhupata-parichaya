@@ -1,4 +1,4 @@
-// NOTE: Leaflet-dependent exports (AKHAND_BHARAT_BOUNDS) have been moved
+// NOTE: Leaflet-dependent exports (REGION_BOUNDS) have been moved
 // to utils/mapBounds.ts to keep this file SSR-safe.
 
 // ─── Parchment Texture Overlay ──────────────────────────────────────────────

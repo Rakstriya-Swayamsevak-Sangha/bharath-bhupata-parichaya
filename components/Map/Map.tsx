@@ -28,7 +28,7 @@ import {
   MAP_CONFIG,
   CATEGORY_CONFIG,
 } from '@/utils/constants';
-import { AKHAND_BHARAT_BOUNDS } from '@/utils/mapBounds';
+import { REGION_BOUNDS } from '@/utils/mapBounds';
 import { adjustCoords, getPreciseZoom } from '@/utils/geo';
 import 'leaflet/dist/leaflet.css';
 
@@ -453,11 +453,18 @@ const POILayer = React.memo(({ onItemClick, locations }: { onItemClick: (loc: Lo
 POILayer.displayName = 'POILayer';
 
 function formatLabel(name: string) {
-  if (name.includes("(")) {
-    const [main, sub] = name.split("(");
+  if (name.includes("\n")) {
+    const [traditional, modern] = name.split("\n");
     return `
-      <div class="label-main" style="font-weight: 800 !important; text-shadow: none !important;">${main.trim()}</div>
-      <div class="label-sub" style="font-weight: 600 !important; text-shadow: none !important;">${sub.replace(")", "").trim()}</div>
+      <div class="label-main" style="font-weight: 700 !important; text-shadow: none !important;">${traditional.trim()}</div>
+      <div class="label-sub" style="font-weight: 500 !important; text-shadow: none !important; opacity: 0.85;">${modern.trim()}</div>
+    `;
+  }
+  if (name.includes("(")) {
+    const [modern, traditional] = name.split("(");
+    return `
+      <div class="label-main" style="font-weight: 700 !important; text-shadow: none !important;">${traditional.replace(")", "").trim()}</div>
+      <div class="label-sub" style="font-weight: 500 !important; text-shadow: none !important; opacity: 0.85;">${modern.trim()}</div>
     `;
   }
   return `<div class="label-main" style="font-weight: 800 !important; text-shadow: none !important;">${name}</div>`;
@@ -521,35 +528,36 @@ const COUNTRY_LABELS = [
 const OCEAN_LABELS = [
   {
     name: {
-      en: "Arabian Sea (Sindhu Sagar)",
-      kn: "ಅರಬ್ಬಿ ಸಮುದ್ರ (ಸಿಂಧು ಸಾಗರ)",
-      hi: "अरब सागर (सिंधु सागर)"
+      en: "SINDHU SAGAR\n(ARABIAN SEA)",
+      kn: "ಸಿಂಧು ಸಾಗರ\n(ಅರಬ್ಬಿ ಸಮುದ್ರ)",
+      hi: "सिंधु सागर\n(अरब सागर)"
     },
-    coords: [16.0, 62.0] as [number, number]
+    coords: [12.0, 64.5] as [number, number]
   },
   {
     name: {
-      en: "Indian Ocean (Hindu Mahasagar)",
-      kn: "ಇಂಡಿಯನ್ ಓಷನ್ (ಹಿಂದೂ ಮಹಾಸಾಗರ)",
-      hi: "इंडियन ओशन (हिंद महासागर)"
+      en: "HINDU MAHASAGAR\n(INDIAN OCEAN)",
+      kn: "ಹಿಂದೂ ಮಹಾಸಾಗರ\n(ಇಂಡಿಯನ್ ಓಷನ್)",
+      hi: "हिंद महासागर\n(इंडियन ओशन)"
     },
-    coords: [3.2, 79.5] as [number, number]
+    coords: [1.5, 78.5] as [number, number]
   },
   {
     name: {
-      en: "Bay of Bengal (Ganga Sagar)",
-      kn: "ಬಂಗಾಳ ಕೊಲ್ಲಿ (ಗಂಗಾ ಸಾಗರ)",
-      hi: "बंगाल की खाड़ी (गंगा सागर)"
+      en: "GANGA SAGAR\n(BAY OF BENGAL)",
+      kn: "ಗಂಗಾ ಸಾಗರ\n(ಬಂಗಾಳ ಕೊಲ್ಲಿ)",
+      hi: "गंगा सागर\n(बंगाल की खाड़ी)"
     },
-    coords: [17.0, 91.5] as [number, number]
+    coords: [12.0, 88.5] as [number, number]
   }
 ];
 
 function StaticLabelsLayer() {
   const { lang } = useLanguageStore();
-  // Static scale typography — centered markers to prevent drifting on zoom closer
   const labelWidth = 200;
   const labelHeight = 60;
+  const oceanLabelWidth = 220;
+  const oceanLabelHeight = 70;
 
   return (
     <>
@@ -574,8 +582,8 @@ function StaticLabelsLayer() {
           icon={L.divIcon({
             className: 'custom-marker',
             html: `<div class="ocean-label">${formatLabel(item.name[lang])}</div>`,
-            iconSize: [labelWidth, labelHeight],
-            iconAnchor: [labelWidth / 2, labelHeight / 2],
+            iconSize: [oceanLabelWidth, oceanLabelHeight],
+            iconAnchor: [oceanLabelWidth / 2, oceanLabelHeight / 2],
           })}
         />
       ))}
@@ -647,9 +655,9 @@ function MapViewController() {
     if (isMobile) {
       map.setView([19.0, 80.0], 4, { animate: false });
     } else {
-      map.fitBounds(AKHAND_BHARAT_BOUNDS, { padding: [0, 0], animate: false });
+      map.fitBounds(REGION_BOUNDS, { padding: [0, 0], animate: false });
     }
-    map.setMaxBounds(AKHAND_BHARAT_BOUNDS);
+    map.setMaxBounds(REGION_BOUNDS);
     map.options.maxBoundsViscosity = MAP_CONFIG.MAX_BOUNDS_VISCOSITY;
   }, [map]);
 
@@ -727,7 +735,7 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
       maxZoom={MAP_CONFIG.MAX_ZOOM}
       zoomSnap={MAP_CONFIG.ZOOM_SNAP}
       zoomDelta={MAP_CONFIG.ZOOM_DELTA}
-      maxBounds={AKHAND_BHARAT_BOUNDS}
+      maxBounds={REGION_BOUNDS}
       maxBoundsViscosity={MAP_CONFIG.MAX_BOUNDS_VISCOSITY}
       worldCopyJump={MAP_CONFIG.WORLD_COPY_JUMP}
       zoomControl={false}

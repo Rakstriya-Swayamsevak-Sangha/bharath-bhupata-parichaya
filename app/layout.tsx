@@ -13,13 +13,13 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Akhand Bharat Darshana | अखंड भारत दर्शन',
+  title: 'Bharatha Bhupata Parichaya',
   description: 'Interactive cultural and civilizational map of the Indian subcontinent featuring mountains, rivers, and sacred sites.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Bharat Darshana',
+    title: 'Bharath Bhupata',
   },
   other: {
     "mobile-web-app-capable": "yes",
