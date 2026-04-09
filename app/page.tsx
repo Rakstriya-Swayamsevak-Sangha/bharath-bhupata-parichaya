@@ -17,7 +17,7 @@ const englishMeaning = "The country that lies north of the ocean and south of th
 
 export default function Home() {
   const router = useRouter();
-  const [phase, setPhase] = useState(0); 
+  const [phase, setPhase] = useState(0);
   const [journeyState, setJourneyState] = useState("idle"); // "idle", "activating", "navigating"
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function Home() {
 
     // Phase 4: English Meaning & Bharat Presence (overlap slightly for flow)
     const t3 = setTimeout(() => setPhase(3), 7500);
-    
+
     // Phase 5: Entry CTA (snappier appearance)
     const t4 = setTimeout(() => setPhase(4), 9800);
 
@@ -46,13 +46,13 @@ export default function Home() {
   const handleEnter = () => {
     if (journeyState !== "idle") return;
     setJourneyState("activating");
-    
+
     // 1. Activation Phase (0-1200ms) handles button feedback and text swap via CSS
-    
+
     // 2. Navigation State Trigger (at 1200ms)
     setTimeout(() => {
       setJourneyState("navigating");
-      
+
       // 3. Navigation Finalization (after 500ms exit animation)
       setTimeout(() => {
         router.push('/map/');
@@ -63,11 +63,11 @@ export default function Home() {
   const easing: any = [0.16, 1, 0.3, 1];
 
   return (
-    <motion.main 
+    <motion.main
       className={styles.entryContainer}
       data-state={journeyState}
       initial={{ opacity: 1 }}
-      animate={{ 
+      animate={{
         opacity: journeyState === "navigating" ? 0 : 1
       }}
       transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -78,10 +78,10 @@ export default function Home() {
       <div className={styles.vignette} />
 
       {/* Temple Light Emergence (Phase 2+) */}
-      <motion.div 
+      <motion.div
         className={styles.radialLight}
         initial={{ opacity: 0 }}
-        animate={{ 
+        animate={{
           opacity: phase >= 1 && journeyState === "idle" ? 1 : 0,
           scale: 1
         }}
@@ -89,13 +89,13 @@ export default function Home() {
       />
 
 
-      <motion.div 
+      <motion.div
         className={styles.shlokaContainer}
-        animate={{ 
+        animate={{
           y: journeyState !== "idle" ? -20 : 0,
         }}
-        transition={{ 
-          duration: 1.2, 
+        transition={{
+          duration: 1.2,
           ease: "easeInOut",
         }}
       >
@@ -106,14 +106,14 @@ export default function Home() {
               key={i}
               className={styles.shlokaLine}
               initial={{ opacity: 0, y: 15 }}
-              animate={{ 
-                opacity: journeyState !== "idle" ? 0 : (phase >= 2 ? 1 : 0), 
-                y: phase >= 2 ? 0 : 15 
+              animate={{
+                opacity: journeyState !== "idle" ? 0 : (phase >= 2 ? 1 : 0),
+                y: phase >= 2 ? 0 : 15
               }}
-              transition={{ 
-                duration: journeyState !== "idle" ? 0.8 : 2.2, 
-                delay: journeyState !== "idle" ? 0 : (phase >= 2 ? i * 0.95 : 0), 
-                ease: easing 
+              transition={{
+                duration: journeyState !== "idle" ? 0.8 : 2.2,
+                delay: journeyState !== "idle" ? 0 : (phase >= 2 ? i * 0.95 : 0),
+                ease: easing
               }}
             >
               {line}
@@ -125,15 +125,15 @@ export default function Home() {
         <motion.div
           className={styles.translation}
           initial={{ opacity: 0, y: 10 }}
-          animate={{ 
-            opacity: journeyState !== "idle" ? 0 : (phase >= 3 ? 0.7 : 0), 
-            y: phase >= 3 ? 0 : 10 
+          animate={{
+            opacity: journeyState !== "idle" ? 0 : (phase >= 3 ? 0.7 : 0),
+            y: phase >= 3 ? 0 : 10
           }}
           transition={{ duration: 1.2, ease: easing }}
         >
           {englishMeaning}
         </motion.div>
- 
+
         {/* Entry Call-to-Action (Phase 5) */}
         <AnimatePresence mode="wait">
           {phase >= 4 && (
@@ -141,12 +141,12 @@ export default function Home() {
               key="cta-button"
               className={`${styles.ctaButton} ${journeyState !== "idle" ? styles.activeGlow : ''}`}
               initial={{ opacity: 0, y: 20 }}
-              animate={{ 
-                opacity: 1, 
+              animate={{
+                opacity: 1,
                 y: 0,
                 scale: journeyState === "activating" ? [1, 0.97, 1] : 1
               }}
-              transition={{ 
+              transition={{
                 duration: 0.8,
                 scale: { duration: 0.3, ease: "easeOut" }
               }}
@@ -155,7 +155,7 @@ export default function Home() {
               aria-busy={journeyState !== "idle"}
             >
               <div className={styles.textDefault}>
-                Begin the Darshan
+                Enter Darshan
               </div>
               <div className={styles.textLoading}>
                 <span className={styles.shimmer}>STEPPING INTO BHARATH...</span>
@@ -166,7 +166,7 @@ export default function Home() {
       </motion.div>
 
       {/* Brand Inscription (Bottom Center, Fixed) */}
-      <motion.div 
+      <motion.div
         className={styles.brandInscription}
         initial={{ opacity: 0 }}
         animate={{ opacity: phase >= 3 && journeyState === "idle" ? 1 : 0 }}

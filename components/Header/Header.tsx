@@ -13,8 +13,9 @@ export function Header() {
   return (
     <header className="header">
       <div className="header-container">
-        <h1 className="title-standard" title={title}>
-          {title}
+        <h1 className="title-standard">
+          <span className="title-line">Bharath Bhupata</span>
+          <span className="title-line">Parichaya</span>
         </h1>
         
         <div className="header-right-cluster">
