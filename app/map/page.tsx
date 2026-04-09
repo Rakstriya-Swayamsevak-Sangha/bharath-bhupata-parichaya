@@ -4,7 +4,6 @@ import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { MapProvider, useMap } from '@/providers/MapContext';
 import { FilterProvider } from '@/providers/FilterContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { Header } from '@/components/Header/Header';
 import { Location } from '@/types/location';
 import { citiesGeometry } from '@/data/citiesGeometry';
@@ -43,6 +42,8 @@ const CulturalMap = dynamic<{
 );
 
 import { motion } from 'framer-motion';
+
+const easing: any = [0.16, 1, 0.3, 1];
 
 function MapContent() {
   const { openSidebar, closeSidebar, setSelectedLocation, isFilterOpen, toggleFilterSidebar } = useMap();
@@ -115,24 +116,19 @@ function MapContent() {
   }
 
   return (
-    <div id="map-shell">
-      {/* ── Standardized Header ─────────────────── */}
+    <motion.main 
+      className="relative w-full h-screen bg-[#080706] flex flex-col"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
       <Header />
 
-      {/* ── Main Responsive Layout ─────────────── */}
-      <main className="flex-1 relative overflow-hidden">
-        
+      <div className="map-wrapper flex-1">
         {/* Map Canvas (Dominant) */}
         <div className="map-canvas-container">
           <div className="w-full h-full relative">
-            {isLoading ? (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-transparent gap-4">
-                <div className="map-loading-spinner" style={{ borderColor: 'rgba(207,174,123,0.3)', borderTopColor: '#CFAE7B' }} />
-                <span style={{ color: '#8B5E34', fontFamily: "'Cinzel', serif", fontSize: '13px', letterSpacing: '0.1em' }}>
-                  {UI_TEXT.discoveringSites[lang]}
-                </span>
-              </div>
-            ) : (
+            {!isLoading && (
               <CulturalMap
                 onMarkerClick={handleMarkerClick}
                 locations={locations}
@@ -141,19 +137,18 @@ function MapContent() {
           </div>
         </div>
 
-        {/* Filters (Bottom Overlay - used by both mobile and desktop) */}
+        {/* Filters (Bottom Overlay) */}
         <MobileFilters />
 
-        {/* Knowledge Panel (Responsive Dual Mode) */}
+        {/* Knowledge Panel */}
         <KnowledgePanel onClose={() => {
           setSelectedLocation(null);
           setShowKnowledge(false);
         }} />
-      </main>
+      </div>
 
-      {/* Archival Sidebar (Overlay for additional info if needed) */}
       <Sidebar />
-    </div>
+    </motion.main>
   );
 }
 

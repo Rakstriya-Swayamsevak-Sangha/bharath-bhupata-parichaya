@@ -3,14 +3,11 @@
 import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import {
   MapContainer,
-  TileLayer,
   Marker,
-  Popup,
   Tooltip,
   Polyline,
   Polygon,
   GeoJSON,
-  ImageOverlay,
   Pane,
   useMap as useLeafletMap,
   ZoomControl,
@@ -33,9 +30,6 @@ import { adjustCoords, getPreciseZoom } from '@/utils/geo';
 import 'leaflet/dist/leaflet.css';
 
 // ════════════════════════════════════════════════════
-// SACRED CITIES MARKERS — Copper engraving aesthetic
-// ════════════════════════════════════════════════════
-
 // SACRED CITIES MARKERS — Copper engraving aesthetic
 // ════════════════════════════════════════════════════
 
@@ -414,9 +408,9 @@ const POILayer = React.memo(({ onItemClick, locations }: { onItemClick: (loc: Lo
   const { activeFilters } = useFilter();
   const { lang } = useLanguageStore();
 
-  const filteredLocations = useMemo(() => 
+  const filteredLocations = useMemo(() =>
     locations.filter(loc => loc.category === 'city' && activeFilters.city),
-  [locations, activeFilters.city]);
+    [locations, activeFilters.city]);
 
   return (
     <>
@@ -694,13 +688,19 @@ interface CulturalMapProps {
 }
 
 export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
-  const [mounted, setMounted] = useState(false);
+  const [mapKey] = useState(() => `map-inst-${Math.random()}`);
+  const [isMapMounted, setIsMapMounted] = useState(false);
   const [bordersData, setBordersData] = useState<any>(null);
   const [stateBorders, setStateBorders] = useState<any>(null);
   const { lang } = useLanguageStore();
 
   useEffect(() => {
-    setMounted(true);
+    // 100ms Ritual delay allows DOM to stabilize after transition fade/zoom
+    const t = setTimeout(() => setIsMapMounted(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
     fetch('/countries.geojson')
       .then(r => r.json())
       .then(setBordersData)
@@ -711,24 +711,13 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
       .catch(console.error);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div style={{
-        width: '100%', height: '100%',
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        background: '#1C1A17', gap: '14px',
-      }}>
-        <div className="map-loading-spinner" />
-        <span style={{ color: '#A89882', fontFamily: "'Cinzel', serif", fontSize: '13px', letterSpacing: '0.1em' }}>
-          {UI_TEXT.loadingAtlas[lang]}
-        </span>
-      </div>
-    );
-  }
+  if (!isMapMounted) return (
+    <div style={{ width: '100%', height: '100%', backgroundColor: '#080706' }} />
+  );
 
   return (
     <MapContainer
+      key={mapKey}
       center={MAP_CONFIG.CENTER}
       zoom={MAP_CONFIG.MIN_ZOOM}
       minZoom={MAP_CONFIG.MIN_ZOOM}
@@ -740,7 +729,7 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
       worldCopyJump={MAP_CONFIG.WORLD_COPY_JUMP}
       zoomControl={false}
       scrollWheelZoom={true}
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%', outline: 'none' }}
     >
       <ZoomControl position="topleft" />
       {/* Viewport controller fixes tilePane z-index before other components */}

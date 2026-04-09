@@ -1,0 +1,279 @@
+.entryContainer {
+  background-color: #080706;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  animation: breathe 40s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.005); }
+}
+
+.parchment {
+  position: absolute;
+  inset: 0;
+  background-image: url('/parchment-texture.png');
+  background-repeat: repeat;
+  background-size: 512px;
+  mix-blend-mode: soft-light;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  background-image: url('/textures/noise.png');
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.9) 100%);
+  pointer-events: none;
+  z-index: 3;
+  transition: background 1.5s ease-in-out;
+}
+
+.entryContainer[data-entering="true"] .vignette {
+  background: radial-gradient(circle, transparent 15%, rgba(0,0,0,1) 90%);
+}
+
+.radialLight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(198, 168, 90, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 4;
+  animation: flicker 12s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.9; }
+  75% { opacity: 0.8; }
+}
+
+.shlokaContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 20;
+  padding: 0 24px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.shlokaLine {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: clamp(1.2rem, 1rem + 2vw, 2.5rem);
+  color: #D6B96B;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 20px rgba(214, 185, 107, 0.1);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.translation {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.75rem, 0.7rem + 0.4vw, 1rem);
+  color: rgba(240, 230, 211, 0.65);
+  margin-top: 2.5rem;
+  max-width: 550px;
+  line-height: 1.8;
+  font-style: italic;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .bharatVisualLayer {
+    bottom: -25%;
+    right: -50%;
+    width: 150vw;
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,1) 70%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,1) 70%);
+  }
+}
+
+.mapImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ctaButton {
+  margin-top: 3.5rem;
+  min-width: 440px; /* Fixed width to prevent layout shift */
+  height: 56px;
+  background: rgba(198, 168, 90, 0.05);
+  border: 1px solid rgba(198, 168, 90, 0.3);
+  color: #D6B96B;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 30;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+  pointer-events: auto;
+}
+
+.ctaButton:disabled {
+  pointer-events: none;
+}
+
+.ctaButton:hover {
+  border-color: rgba(198, 168, 90, 0.7);
+  box-shadow: 0 0 20px rgba(198, 168, 90, 0.1);
+}
+
+.activeGlow {
+  box-shadow: 0 0 30px rgba(198, 168, 90, 0.2);
+  border-color: rgba(198, 168, 90, 0.8) !important;
+}
+
+.brandInscription {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: #D6B96B;
+  opacity: 1;
+  letter-spacing: 0.8em;
+  text-transform: uppercase;
+  z-index: 50;
+  pointer-events: none;
+  text-shadow: 0 0 15px rgba(214, 185, 107, 0.4);
+}
+
+.skipBtn {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  z-index: 1000;
+  background: transparent;
+  border: none;
+  color: rgba(240, 230, 211, 0.25);
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  padding: 8px;
+  text-transform: uppercase;
+  transition: color 0.5s ease;
+}
+
+.skipBtn:hover {
+  color: rgba(240, 230, 211, 0.5);
+}
+
+@media (max-width: 768px) {
+  .shlokaLine {
+    font-size: 1.35rem;
+  }
+  .translation {
+    font-size: 0.8rem;
+    margin-top: 2rem;
+    padding: 0 20px;
+  }
+  .ctaButton {
+    margin-top: 3rem;
+    padding: 0.8rem 2.2rem;
+    font-size: 0.75rem;
+  }
+  .brandInscription {
+    bottom: 30px;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+  }
+  .skipBtn {
+    top: 20px;
+    right: 20px;
+  }
+}
+
+.ctaButton.active {
+  border-color: rgba(214, 185, 107, 1);
+  box-shadow: 
+    0 0 60px rgba(214, 185, 107, 0.15),
+    inset 0 0 20px rgba(214, 185, 107, 0.1);
+  pointer-events: none;
+}
+
+.ctaButtonText {
+  display: inline-block;
+}
+
+.textDefault, .textLoading {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+
+.textDefault {
+  opacity: 1;
+}
+
+.textLoading {
+  opacity: 0;
+  letter-spacing: 0.45em;
+}
+
+[data-state="activating"] .textDefault { opacity: 0; }
+[data-state="navigating"] .textDefault { opacity: 0; }
+[data-state="activating"] .textLoading { opacity: 1; }
+[data-state="navigating"] .textLoading { opacity: 1; }
+
+.shimmer {
+  color: #D6B96B;
+  background: linear-gradient(
+    90deg,
+    #D6B96B 0%,
+    #FFF 45%,
+    #D6B96B 55%,
+    #D6B96B 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+  to { background-position: 200% center; }
+}
+
+@media (max-width: 768px) {
+  .ctaButton {
+    min-width: 320px;
+  }
+}
