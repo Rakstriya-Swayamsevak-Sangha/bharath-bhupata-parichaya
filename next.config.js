@@ -38,7 +38,7 @@ const pwaConfig = {
   
   additionalManifestEntries: [
     { url: '/', revision: 'html-v1' },
-    { url: '/map/', revision: 'html-v1' },
+    { url: '/bharatvarsha', revision: 'html-v1' },
     ...archivalAssets
   ],
   
@@ -84,7 +84,7 @@ const withPWA = require('next-pwa');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  trailingSlash: true,
+  trailingSlash: false,
   images: {
     unoptimized: true,
   },

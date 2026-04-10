@@ -55,7 +55,7 @@ export default function Home() {
 
       // 3. Navigation Finalization (after 500ms exit animation)
       setTimeout(() => {
-        router.push('/map/');
+        router.push('/bharatvarsha');
       }, 500);
     }, 1200);
   };

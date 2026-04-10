@@ -14,7 +14,7 @@ export default function PreloadSystem() {
 
   useEffect(() => {
     // 1. Prefetch critical routes via Next.js router
-    router.prefetch('/map');
+    router.prefetch('/bharatvarsha');
 
     // 2. Clear old caches to ensure state consistency (App Shell Lock)
     const clearOldCaches = async () => {
@@ -45,7 +45,7 @@ export default function PreloadSystem() {
       // All discovered archival images + core data files
       const criticalAssets = [
         '/',
-        '/map/',
+        '/bharatvarsha',
         '/countries.geojson',
         '/india_states.geojson',
         '/data/mountains.json',
