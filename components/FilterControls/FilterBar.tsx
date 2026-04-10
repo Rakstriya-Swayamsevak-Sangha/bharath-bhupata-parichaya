@@ -19,6 +19,7 @@ function FilterButton({ category, isActive, onToggle }: FilterButtonProps) {
   if (category === 'mountain') label = UI_TEXT.filterMountains[lang];
   else if (category === 'river') label = UI_TEXT.filterRivers[lang];
   else if (category === 'city') label = UI_TEXT.filterSacredCities[lang];
+  else if (category === 'region') label = UI_TEXT.filterRegions[lang];
 
   return (
     <motion.button
@@ -33,22 +34,12 @@ function FilterButton({ category, isActive, onToggle }: FilterButtonProps) {
 }
 
 export function FilterBar() {
-  const { activeFilters, toggleFilter, setAllFilters } = useFilter();
+  const { activeFilters, toggleFilter } = useFilter();
   const { lang } = useLanguageStore();
-
-  const allActive = activeFilters.mountain && activeFilters.river && activeFilters.city;
 
   return (
     <>
-      <motion.button
-        whileTap={{ scale: 0.97 }}
-        onClick={() => setAllFilters(true)}
-        className={`filter ${allActive ? 'active' : ''}`}
-      >
-        {UI_TEXT.filterAll[lang]}
-      </motion.button>
-
-      {(['mountain', 'river', 'city'] as Category[]).map(category => (
+      {(['mountain', 'river', 'city', 'region'] as Category[]).map(category => (
         <FilterButton
           key={category}
           category={category}

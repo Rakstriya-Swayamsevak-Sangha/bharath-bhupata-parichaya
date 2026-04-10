@@ -6,7 +6,6 @@ import { Category } from '@/types/location';
 interface FilterContextType {
   activeFilters: Record<Category, boolean>;
   toggleFilter: (category: Category) => void;
-  setAllFilters: (active: boolean) => void;
   isFilterActive: (category: Category) => boolean;
 }
 
@@ -16,6 +15,7 @@ const DEFAULT_FILTERS: Record<Category, boolean> = {
   mountain: true,
   river: true,
   city: true,
+  region: true,
 };
 
 export function FilterProvider({ children }: { children: ReactNode }) {
@@ -23,13 +23,14 @@ export function FilterProvider({ children }: { children: ReactNode }) {
 
   const toggleFilter = useCallback((category: Category) => {
     setActiveFilters(prev => {
-      const isAllActive = prev.mountain && prev.river && prev.city;
+      const isAllActive = Object.values(prev).every(v => v);
       
       if (isAllActive) {
         return {
           mountain: category === 'mountain',
           river: category === 'river',
           city: category === 'city',
+          region: category === 'region',
         };
       }
       
@@ -39,19 +40,11 @@ export function FilterProvider({ children }: { children: ReactNode }) {
       };
 
       // Ensure at least one filter remains active
-      if (!next.mountain && !next.river && !next.city) {
-        return { mountain: true, river: true, city: true };
+      if (Object.values(next).every(v => !v)) {
+        return DEFAULT_FILTERS;
       }
       
       return next;
-    });
-  }, []);
-
-  const setAllFilters = useCallback((active: boolean) => {
-    setActiveFilters({
-      mountain: active,
-      river: active,
-      city: active,
     });
   }, []);
 
@@ -65,7 +58,6 @@ export function FilterProvider({ children }: { children: ReactNode }) {
       value={{
         activeFilters,
         toggleFilter,
-        setAllFilters,
         isFilterActive,
       }}
     >

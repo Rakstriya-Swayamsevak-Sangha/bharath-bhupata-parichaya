@@ -54,6 +54,15 @@ export const CATEGORY_CONFIG = {
     color: '#C45A1C',
     markerBg: '#9B3E0D',
   },
+  region: {
+    label: 'Region',
+    labelEn: 'Regions',
+    labelKn: 'ಪ್ರದೇಶಗಳು',
+    labelHi: 'क्षेत्र',
+    icon: '🗺️',
+    color: '#8B7355',
+    markerBg: '#6D5B45',
+  },
 } as const;
 
 // ─── Theme Colors — Ancient Manuscript Palette ──────────────────────────────

@@ -11,6 +11,8 @@ interface MapContextType {
   closeSidebar: () => void;
   isFilterOpen: boolean;
   toggleFilterSidebar: () => void;
+  isNavigating: boolean;
+  setIsNavigating: (val: boolean) => void;
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined);
@@ -19,6 +21,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const openSidebar = useCallback((location: Location) => {
     setSelectedLocation(location);
@@ -43,6 +46,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
         closeSidebar,
         isFilterOpen,
         toggleFilterSidebar,
+        isNavigating,
+        setIsNavigating,
       }}
     >
       {children}

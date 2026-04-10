@@ -19,8 +19,8 @@ import { useFilter } from '@/providers/FilterContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { mountainsGeometry } from '@/data/mountainsGeometry';
 import { riversGeometry } from '@/data/riversGeometry';
-import { Location, Category } from '@/types/location';
-import { UI_TEXT } from '@/data/uiText';
+import { COUNTRY_LABELS } from '@/data/regionsGeometry';
+import { Location } from '@/types/location';
 import {
   MAP_CONFIG,
   CATEGORY_CONFIG,
@@ -448,17 +448,18 @@ POILayer.displayName = 'POILayer';
 
 function formatLabel(name: string) {
   if (name.includes("\n")) {
-    const [traditional, modern] = name.split("\n");
+    const [primary, secondary] = name.split("\n");
     return `
-      <div class="label-main" style="font-weight: 700 !important; text-shadow: none !important;">${traditional.trim()}</div>
-      <div class="label-sub" style="font-weight: 500 !important; text-shadow: none !important; opacity: 0.85;">${modern.trim()}</div>
+      <div class="label-main" style="font-weight: 700 !important; text-shadow: none !important;">${primary.trim()}</div>
+      <div class="label-sub" style="font-weight: 500 !important; text-shadow: none !important; opacity: 0.85;">${secondary.trim()}</div>
     `;
   }
   if (name.includes("(")) {
-    const [modern, traditional] = name.split("(");
+    const [primary, secondaryRaw] = name.split("(");
+    const secondary = secondaryRaw.replace(")", "").trim();
     return `
-      <div class="label-main" style="font-weight: 700 !important; text-shadow: none !important;">${traditional.replace(")", "").trim()}</div>
-      <div class="label-sub" style="font-weight: 500 !important; text-shadow: none !important; opacity: 0.85;">${modern.trim()}</div>
+      <div class="label-main" style="font-weight: 700 !important; text-shadow: none !important;">${primary.trim()}</div>
+      <div class="label-sub" style="font-weight: 500 !important; text-shadow: none !important; opacity: 0.85;">${secondary}</div>
     `;
   }
   return `<div class="label-main" style="font-weight: 800 !important; text-shadow: none !important;">${name}</div>`;
@@ -467,57 +468,6 @@ function formatLabel(name: string) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // STATIC GEOGRAPHY LABELS (Countries & Oceans)
 // ═══════════════════════════════════════════════════════════════════════════════
-
-const COUNTRY_LABELS = [
-  {
-    name: {
-      en: "Afghanistan (Gandhara)",
-      kn: "ಅಫ್ಘಾನಿಸ್ತಾನ್ (ಗಾಂಧಾರ)",
-      hi: "अफगानिस्तान (गांधार)"
-    },
-    coords: [33.5, 68.0] as [number, number]
-  },
-  {
-    name: {
-      en: "Pakistan",
-      kn: "ಪಾಕಿಸ್ತಾನ",
-      hi: "पाकिस्तान"
-    },
-    coords: [28.5, 70.0] as [number, number]
-  },
-  {
-    name: {
-      en: "Nepal",
-      kn: "ನೇಪಾಳ",
-      hi: "नेपाल"
-    },
-    coords: [28.2, 83.9] as [number, number]
-  },
-  {
-    name: {
-      en: "Bangladesh",
-      kn: "ಬಾಂಗ್ಲಾದೇಶ",
-      hi: "बांग्लादेश"
-    },
-    coords: [23.7, 90.3] as [number, number]
-  },
-  {
-    name: {
-      en: "Brahmadesh",
-      kn: "ಬ್ರಹ್ಮದೇಶ",
-      hi: "ब्रह्मदेश"
-    },
-    coords: [21.5, 96.0] as [number, number]
-  },
-  {
-    name: {
-      en: "Sri Lanka",
-      kn: "ಶ್ರೀಲಂಕಾ",
-      hi: "श्रीलंका"
-    },
-    coords: [7.2, 80.8] as [number, number]
-  }
-];
 
 const OCEAN_LABELS = [
   {
@@ -546,8 +496,9 @@ const OCEAN_LABELS = [
   }
 ];
 
-function StaticLabelsLayer() {
+function StaticLabelsLayer({ onRegionClick }: { onRegionClick: (loc: Location) => void }) {
   const { lang } = useLanguageStore();
+  const { activeFilters } = useFilter();
   const labelWidth = 200;
   const labelHeight = 60;
   const oceanLabelWidth = 220;
@@ -555,17 +506,30 @@ function StaticLabelsLayer() {
 
   return (
     <>
-      {COUNTRY_LABELS.map((item, idx) => (
+      {activeFilters.region && COUNTRY_LABELS.map((item, idx) => (
         <Marker
-          key={`country-${idx}`}
+          key={`country-${item.id}-${lang}`}
           position={item.coords}
-          interactive={false}
+          interactive={true}
           icon={L.divIcon({
             className: 'custom-marker',
-            html: `<div class="country-label">${formatLabel(item.name[lang])}</div>`,
+            html: `<div class="country-label country-label--clickable">${formatLabel(item.name[lang])}</div>`,
             iconSize: [labelWidth, labelHeight],
             iconAnchor: [labelWidth / 2, labelHeight / 2],
           })}
+          eventHandlers={{
+            click: (e) => {
+              L.DomEvent.stopPropagation(e);
+              onRegionClick({
+                id: item.id,
+                category: 'region',
+                name: item.name,
+                latitude: item.coords[0],
+                longitude: item.coords[1],
+                description: "",
+              } as Location);
+            }
+          }}
         />
       ))}
       {OCEAN_LABELS.map((item, idx) => (
@@ -619,18 +583,28 @@ function ParchmentOverlay() {
 
 function FlyToLocation() {
   const map = useLeafletMap();
-  const { selectedLocation } = useMap();
+  const { selectedLocation, setIsNavigating } = useMap();
 
   useEffect(() => {
     if (selectedLocation && selectedLocation.latitude && selectedLocation.longitude) {
       const zoom = getPreciseZoom(selectedLocation.category);
+      
+      const handleMoveEnd = () => {
+        setIsNavigating(false);
+        map.off('zoomend', handleMoveEnd);
+        map.off('moveend', handleMoveEnd);
+      };
+
+      map.on('zoomend', handleMoveEnd);
+      map.on('moveend', handleMoveEnd);
+
       map.flyTo([selectedLocation.latitude, selectedLocation.longitude], zoom, {
-        duration: 0.6,
-        easeLinearity: 0.25, // ease-out feel
+        duration: 0.8,
+        easeLinearity: 0.25,
         noMoveStart: true
       });
     }
-  }, [selectedLocation, map]);
+  }, [selectedLocation, map, setIsNavigating]);
 
   return null;
 }
@@ -684,10 +658,11 @@ function MapViewController() {
 
 interface CulturalMapProps {
   onMarkerClick: (loc: Location) => void;
+  onRegionClick?: (loc: Location) => void;
   locations: Location[];
 }
 
-export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
+export function CulturalMap({ onMarkerClick, onRegionClick, locations }: CulturalMapProps) {
   const [mapKey] = useState(() => `map-inst-${Math.random()}`);
   const [isMapMounted, setIsMapMounted] = useState(false);
   const [bordersData, setBordersData] = useState<any>(null);
@@ -771,8 +746,8 @@ export function CulturalMap({ onMarkerClick, locations }: CulturalMapProps) {
       </Pane>
 
       {/* ── Layer 2.5: Static Map Labels ──────── */}
-      <Pane name="staticLabelsPane" style={{ zIndex: 250 }}>
-        <StaticLabelsLayer />
+      <Pane name="staticLabelsPane" style={{ zIndex: 850 }}>
+        <StaticLabelsLayer onRegionClick={onRegionClick || onMarkerClick} />
       </Pane>
 
       {/* ── Layer 3: Borders ──────── */}

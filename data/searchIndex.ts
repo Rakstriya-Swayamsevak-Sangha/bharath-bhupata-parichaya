@@ -1,10 +1,12 @@
 import { cityKnowledge } from "./cityKnowledge";
 import { mountainKnowledge } from "./mountainKnowledge";
 import { riverKnowledge } from "./riverKnowledge";
+import { regionKnowledge } from "./regionKnowledge";
+import { COUNTRY_LABELS } from "./regionsGeometry";
 
 export type SearchItem = {
   id: string;
-  type: "mountain" | "river" | "city";
+  type: "mountain" | "river" | "city" | "region";
   title: {
     en: string;
     kn: string;
@@ -84,4 +86,24 @@ const rivers: SearchItem[] = Object.values(riverKnowledge).map((r) => ({
   importance: r.id === "ganga" || r.id === "saraswati" || r.id === "sindhu" ? 10 : 8,
 }));
 
-export const SEARCH_INDEX: SearchItem[] = [...cities, ...mountains, ...rivers];
+const regions: SearchItem[] = Object.values(regionKnowledge).map((reg) => ({
+  id: reg.id,
+  type: "region",
+  title: reg.title,
+  keywords: [
+    reg.id,
+    ...reg.title.en.toLowerCase().split(" "),
+    ...reg.subtitle.en.toLowerCase().split(" "),
+    ...(reg.id === "gandhara" ? ["pakistan", "afghanistan", "taxila", "buddhism", "sculpture"] : []),
+    ...(reg.id === "sindhu_desha" ? ["pakistan", "sindh", "lowland", "sapta sindhu"] : []),
+    ...(reg.id === "sinhala" ? ["sri lanka", "ceylon", "island", "ravana", "ramayana"] : []),
+    ...(reg.id === "vanga_desha" ? ["bangladesh", "bengal", "pala", "maritime"] : []),
+    ...(reg.id === "brahma_desha" ? ["myanmar", "burma", "pagoda", "east"] : []),
+    ...(reg.id === "nepal" ? ["himalaya", "kathmandu", "licchavi", "malla"] : []),
+    ...(reg.id === "bhutan" ? ["himalaya", "vajrayana", "monastery", "thimphu"] : []),
+    ...(reg.id === "trivishtapa" ? ["china", "tibet", "plateau", "heavenly", "celestial"] : []),
+  ],
+  importance: 9,
+}));
+
+export const SEARCH_INDEX: SearchItem[] = [...cities, ...mountains, ...rivers, ...regions];

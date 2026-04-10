@@ -1,7 +1,7 @@
 .entryContainer {
   background-color: #080706;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -206,9 +206,9 @@
     font-size: 0.75rem;
   }
   .brandInscription {
-    bottom: 30px;
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
+    bottom: 40px;
+    font-size: 0.85rem;
+    letter-spacing: 0.6em;
   }
   .skipBtn {
     top: 20px;
@@ -275,5 +275,12 @@
 @media (max-width: 768px) {
   .ctaButton {
     min-width: 320px;
+  }
+  .brandInscription {
+    bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    padding: 0 16px;
+    position: fixed;
   }
 }

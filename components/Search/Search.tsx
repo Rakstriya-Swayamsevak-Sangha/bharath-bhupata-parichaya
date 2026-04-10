@@ -9,6 +9,7 @@ import { UI_TEXT } from '@/data/uiText';
 import { citiesGeometry } from '@/data/citiesGeometry';
 import { mountainsGeometry } from '@/data/mountainsGeometry';
 import { riversGeometry } from '@/data/riversGeometry';
+import { COUNTRY_LABELS } from '@/data/regionsGeometry';
 import { adjustCoords } from '@/utils/geo';
 import { Location } from '@/types/location';
 
@@ -17,7 +18,7 @@ export function Search() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const { setSelectedLocation } = useMap();
+  const { setSelectedLocation, setIsNavigating } = useMap();
   const { lang } = useLanguageStore();
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -74,22 +75,29 @@ export function Search() {
         lat = rv.path[idx][0];
         lng = rv.path[idx][1];
       }
+    } else if (item.type === 'region') {
+      const reg = COUNTRY_LABELS.find(r => r.id === item.id);
+      if (reg) {
+        lat = reg.coords[0];
+        lng = reg.coords[1];
+      }
     }
 
     const location: Location = {
       id: item.id,
       name: item.title,
-      category: item.type === 'city' ? 'city' : (item.type === 'mountain' ? 'mountain' : 'river'),
+      category: item.type as any,
       latitude: lat,
       longitude: lng,
-      description: '', // Will be loaded by KnowledgePanel
-      noAutoOpen: typeof window !== 'undefined' && window.innerWidth < 768
+      description: '', 
     } as unknown as Location;
 
+    // Trigger map move ritual ONLY
+    setIsNavigating(true);
     setSelectedLocation(location);
     setIsOpen(false);
     setQuery('');
-  }, [setSelectedLocation]);
+  }, [setSelectedLocation, setIsNavigating]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
@@ -113,10 +121,6 @@ export function Search() {
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
         <input
-          ref={(input) => {
-            // Auto focus on mobile when search is mounted if needed, 
-            // but standard behavior is better on tap.
-          }}
           id="cultural-search"
           name="cultural-search"
           type="text"
@@ -147,13 +151,16 @@ export function Search() {
                 whileTap={{ scale: 0.98 }}
                 className={`search-result-item ${index === selectedIndex ? 'selected' : ''}`}
                 onClick={() => handleSelect(result)}
-              >
+               >
                 <div className="result-info">
                   <span className="result-title">{result.title[lang]}</span>
                   {lang !== 'en' && <span className="result-subtitle">{result.title.en}</span>}
                 </div>
                 <span className={`result-badge badge-${result.type}`}>
-                  {result.type === 'mountain' ? UI_TEXT.filterMountains[lang] : (result.type === 'river' ? UI_TEXT.filterRivers[lang] : UI_TEXT.filterSacredCities[lang])}
+                  {result.type === 'mountain' ? UI_TEXT.filterMountains[lang] : 
+                   result.type === 'river' ? UI_TEXT.filterRivers[lang] : 
+                   result.type === 'region' ? UI_TEXT.filterRegions[lang] :
+                   UI_TEXT.filterSacredCities[lang]}
                 </span>
               </motion.div>
             ))}

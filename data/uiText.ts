@@ -9,11 +9,6 @@ export const UI_TEXT = {
     kn: "ನಗರಗಳು, ನದಿಗಳು, ಪರ್ವತಗಳನ್ನು ಹುಡುಕಿ...",
     hi: "शहरों, नदियों, पहाड़ों को खोजें..."
   },
-  filterAll: {
-    en: "All",
-    kn: "ಎಲ್ಲಾ",
-    hi: "सभी"
-  },
   filterMountains: {
     en: "Mountains",
     kn: "ಪರ್ವತಗಳು",
@@ -28,6 +23,11 @@ export const UI_TEXT = {
     en: "Sacred Cities",
     kn: "ಪವಿತ್ರ ನಗರಗಳು",
     hi: "पवित्र शहर"
+  },
+  filterRegions: {
+    en: "Regions",
+    kn: "ಪ್ರದೇಶಗಳು",
+    hi: "क्षेत्र"
   },
   loadingAtlas: {
     en: "Preparing atlas...",
@@ -74,6 +74,11 @@ export const UI_TEXT = {
     kn: "ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ",
     hi: "सांस्कृतिक महत्व"
   },
+  timelineEpochs: {
+    en: "Timeline",
+    kn: "ಕಾಲಾನುಕ್ರಮ",
+    hi: "कालक्रम"
+  },
   region: {
     en: "Region",
     kn: "ಪ್ರದೇಶ",
@@ -103,5 +108,15 @@ export const UI_TEXT = {
     en: "Explore",
     kn: "ಅನ್ವೇಷಿಸಿ",
     hi: "खोजें"
+  },
+  regionHistory: {
+    en: "Regional History",
+    kn: "ಪ್ರಾದೇಶಿಕ ಇತಿಹಾಸ",
+    hi: "क्षेत्रीय इतिहास"
+  },
+  regionCulture: {
+    en: "Civilizational Significance",
+    kn: "ನಾಗರಿಕತೆಯ ಮಹತ್ವ",
+    hi: "सभ्यता का महत्व"
   }
 };

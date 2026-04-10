@@ -1,4 +1,4 @@
-export type Category = 'mountain' | 'river' | 'city';
+export type Category = 'mountain' | 'river' | 'city' | 'region';
 
 export interface LocationMetadata {
   elevation?: string;
