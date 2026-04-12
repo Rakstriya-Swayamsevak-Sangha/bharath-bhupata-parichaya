@@ -11,11 +11,12 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: 'cover',
 };
 
 export const metadata: Metadata = {
   title: 'Bharatha Bhupata Parichaya',
-  description: 'Interactive cultural and civilizational map of the Indian subcontinent featuring mountains, rivers, and sacred sites.',
+  description: 'Cultural Atlas of Akhand Bharat',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

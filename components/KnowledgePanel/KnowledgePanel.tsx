@@ -5,6 +5,45 @@ import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UI_TEXT } from '@/data/uiText';
+import { RegionSkeleton, CitySkeleton, RiverSkeleton, MountainSkeleton, SkeletonLine } from './KnowledgePanelSkeletons';
+
+const ImageWithSkeleton = ({ src, alt, fallback, className, hideOnError }: any) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  
+  if (hasError && hideOnError) return null;
+
+  return (
+    <div className={`relative ${className}`} style={{ height: '200px', width: '100%', overflow: 'hidden', background: '#3A2F24' }}>
+      <AnimatePresence>
+        {!isLoaded && !hasError && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 skeleton-base"
+          />
+        )}
+      </AnimatePresence>
+      <img
+        src={src}
+        alt={alt}
+        className="w-full h-full object-cover transition-opacity duration-300"
+        style={{ opacity: isLoaded ? 1 : 0 }}
+        onLoad={() => setIsLoaded(true)}
+        onError={(e) => {
+          if (fallback) {
+            (e.target as HTMLImageElement).src = fallback;
+          } else {
+            setHasError(true);
+            setIsLoaded(true);
+          }
+        }}
+      />
+      <div className="kp-hero-overlay absolute inset-0" style={{ display: hasError ? 'none' : 'block' }} />
+    </div>
+  );
+};
 
 interface KnowledgePanelProps {
   onClose: () => void;
@@ -98,6 +137,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
       setLocalLocation(selectedLocation);
 
       const loadKnowledge = async () => {
+        const startTime = Date.now();
         try {
           let data;
           if (category === 'mountain') {
@@ -131,7 +171,13 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
           console.error('Failed to load knowledge data:', err);
         } finally {
           if (isMounted) {
-            setLoading(false);
+            const elapsed = Date.now() - startTime;
+            const minTime = 300;
+            if (elapsed < minTime) {
+              setTimeout(() => setLoading(false), minTime - elapsed);
+            } else {
+              setLoading(false);
+            }
           }
         }
       };
@@ -153,33 +199,34 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
     };
   }, [selectedLocation, isNavigating, deviceMode, knowledge, localLocation?.id]);
 
-  if (!localLocation || !knowledge) return null;
+  if (!localLocation) return null;
 
   const isRiver = localLocation.category === 'river';
   const isCity = localLocation.category === 'city';
   const isRegion = localLocation.category === 'region';
+  const isLoadingState = loading || !knowledge;
 
-  const title = knowledge.title?.[lang] || knowledge.title?.en || (localLocation?.name ? localLocation.name[lang] : '');
-  const subtitle = knowledge.subtitle?.[lang] || knowledge.subtitle?.en || '';
-  const description = knowledge.description?.[lang] || knowledge.description?.en || '';
+  const title = knowledge?.title?.[lang] || knowledge?.title?.en || (localLocation?.name ? localLocation.name[lang] : '');
+  const subtitle = knowledge?.subtitle?.[lang] || knowledge?.subtitle?.en || '';
+  const description = knowledge?.description?.[lang] || knowledge?.description?.en || '';
   const spiritual = isCity ? (knowledge.spiritual?.[lang] || knowledge.spiritual?.en || '') : '';
   const living = isCity ? (knowledge.living?.[lang] || knowledge.living?.en || '') : '';
 
   // Harmonized content mapping for Regions
   const cultural = isRegion
-    ? (knowledge.culturalSignificance?.[lang] ? knowledge.culturalSignificance[lang].join('\n\n') : '')
-    : (!isCity ? (knowledge.cultural?.[lang] || knowledge.cultural?.en || '') : '');
+    ? (knowledge?.culturalSignificance?.[lang] ? knowledge.culturalSignificance[lang].join('\n\n') : '')
+    : (!isCity ? (knowledge?.cultural?.[lang] || knowledge?.cultural?.en || '') : '');
 
-  const contextStrip = isRegion ? (knowledge.contextStrip?.[lang] || '') : '';
+  const contextStrip = isRegion ? (knowledge?.contextStrip?.[lang] || '') : '';
 
   // Map timeline to facts for standard UI display
-  const timelineData = isRegion ? (knowledge.timeline?.[lang] || knowledge.timeline?.en) : null;
+  const timelineData = isRegion ? (knowledge?.timeline?.[lang] || knowledge?.timeline?.en) : null;
   const finalFacts = isRegion && timelineData
     ? timelineData.reduce((acc: any, item: any) => {
       acc[item.label] = item.value;
       return acc;
     }, {})
-    : (knowledge.facts || {});
+    : (knowledge?.facts || {});
 
   const labels = factLabels[lang] || factLabels.en;
 
@@ -258,6 +305,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
           {isVisible && (
             <motion.div 
               className="h-full overflow-y-auto relative"
+              style={{ overscrollBehaviorY: 'contain', WebkitOverflowScrolling: 'touch' }}
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -293,9 +341,17 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                 ×
               </button>
 
-              <div className="kp-content">
-                <motion.div className="kp-header" variants={itemVariants}>
-                  <h1 className="kp-title">{title}</h1>
+              {isLoadingState ? (
+                <>
+                  {isRegion && <RegionSkeleton />}
+                  {isCity && <CitySkeleton />}
+                  {isRiver && <RiverSkeleton />}
+                  {!isRegion && !isCity && !isRiver && <MountainSkeleton />}
+                </>
+              ) : (
+                <div className="kp-content">
+                  <motion.div className="kp-header" variants={itemVariants}>
+                    <h1 className="kp-title">{title}</h1>
 
                   {!isCity && (
                     <div className="kp-tag-container">
@@ -321,17 +377,12 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
 
                 {isCity && (
                   <motion.div className="kp-hero-container" variants={itemVariants}>
-                    <div className="kp-hero city-hero">
-                      <img
-                        src={knowledge.image || `/place-images/sacred-cities/${localLocation.id}.jpg`}
-                        alt={String(title)}
-                        className="kp-hero-img"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/place-images/sacred-cities/default.jpg';
-                        }}
-                      />
-                      <div className="kp-hero-overlay" />
-                    </div>
+                    <ImageWithSkeleton
+                      src={knowledge.image || `/place-images/sacred-cities/${localLocation.id}.jpg`}
+                      alt={String(title)}
+                      className="kp-hero city-hero"
+                      fallback='/place-images/sacred-cities/default.jpg'
+                    />
                     {knowledge.identity && (
                       <div className="kp-identity-strip">
                         <div className="identity-item">
@@ -364,18 +415,12 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                     )}
 
                     <motion.div className="kp-hero" variants={itemVariants}>
-                      <img
+                      <ImageWithSkeleton
                         src={knowledge.image || `/place-images/${localLocation.category === 'city' ? 'sacred-cities' : localLocation.category + 's'}/${localLocation.id}.jpg`}
                         alt={String(title)}
-                        className="kp-hero-img"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const overlay = target.nextElementSibling as HTMLElement;
-                          if (overlay) overlay.style.display = 'none';
-                        }}
+                        className="kp-hero"
+                        hideOnError={true}
                       />
-                      <div className="kp-hero-overlay" />
                     </motion.div>
 
                     <motion.div variants={itemVariants}>
@@ -473,6 +518,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                   </motion.div>
                 )}
               </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

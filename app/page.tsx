@@ -158,7 +158,30 @@ export default function Home() {
                 Enter Darshan
               </div>
               <div className={styles.textLoading}>
-                <span className={styles.shimmer}>STEPPING INTO BHARATH...</span>
+                <span className={styles.shimmer}>
+                  {"STEPPING INTO BHARATVARSHA...".split("").map((char, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
+                      animate={journeyState !== "idle" ? { 
+                        opacity: 1, 
+                        y: 0, 
+                        filter: 'blur(0px)' 
+                      } : { opacity: 0 }}
+                      transition={{ 
+                        delay: i * 0.03, 
+                        duration: 0.5, 
+                        ease: "easeOut" 
+                      }}
+                      style={{ 
+                        display: 'inline-block',
+                        minWidth: char === ' ' ? '0.3em' : 'auto'
+                      }}
+                    >
+                      {char}
+                    </motion.span>
+                  ))}
+                </span>
               </div>
             </motion.button>
           )}

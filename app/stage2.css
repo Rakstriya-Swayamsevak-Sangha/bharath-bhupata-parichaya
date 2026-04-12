@@ -65,7 +65,7 @@ body {
     transform: translate(-50%, -50%) scale(0.95) !important;
     width: 90% !important;
     max-width: var(--panel-width-tablet) !important;
-    max-height: 85vh !important;
+    max-height: 85dvh !important;
     border-radius: 16px !important;
     opacity: 0 !important;
     pointer-events: none !important;
@@ -111,8 +111,8 @@ body {
   }
   
   .kp-panel--collapsed { height: 80px !important; }
-  .kp-panel--half { height: 50vh !important; }
-  .kp-panel--full { height: 92vh !important; border-radius: 0 !important; }
+  .kp-panel--half { height: 50dvh !important; }
+  .kp-panel--full { height: 92dvh !important; border-radius: 0 !important; }
   
   .kp-drag-handle {
     width: 48px !important;

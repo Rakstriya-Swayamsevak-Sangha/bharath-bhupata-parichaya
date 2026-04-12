@@ -76,152 +76,127 @@ body {
   overflow: hidden;
 }
 
-/* HEADER - Normalized Single Row */
+/* HEADER - Normalized Single Row (Mobile First) */
 .header {
-  height: var(--header-height);
+  height: auto;
+  min-height: var(--header-height);
   padding-top: var(--sat);
-  display: flex;
-  align-items: center;
   background: var(--color-background);
   border-bottom: 1px solid var(--color-border);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
   z-index: 1000;
-  box-sizing: content-box;
 }
 
 .header-container {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
-  padding: 0 12px;
-  height: var(--header-height);
+  padding: 8px 12px;
   gap: 8px;
+  height: var(--header-height);
 }
 
 .title-standard {
   font-family: 'Cinzel', serif;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.1em;
   color: #D6B96B;
   text-transform: uppercase;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
+  white-space: nowrap;
+  line-height: 1.2;
   flex: 0 0 auto;
-  min-width: 80px;
-  margin-left: 4px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
 }
 
 .header-right-cluster {
   display: flex;
   align-items: center;
-  gap: 4px;
-  flex: 0 0 auto;
-  margin-right: 4px;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+/* Base search and lang toggle (horizontal) */
+.search-system {
+  flex: 0 1 180px;
+  min-width: 80px;
+}
+
+.search-input-wrapper {
+  height: 32px;
+  padding: 0 8px;
+  width: 100%;
+}
+
+.search-system input {
+  font-size: 12px;
+}
+
+.lang-switch {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+.lang-switch button {
+  font-size: 9px;
+  padding: 4px 6px;
+  letter-spacing: 0.02em;
 }
 
 .search-bar-flex {
   display: none;
 }
 
-/* Mobile: two-line title with full controls */
-@media screen and (max-width: 767px) {
-  .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 0 16px;
-    height: var(--header-height);
-  }
-
-  .title-standard {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    white-space: nowrap;
-    color: #D6B96B;
-    line-height: 1.2;
-    flex: 0 0 auto;
-  }
-
-  .header-right-cluster {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 0 0 auto;
-  }
-
-  .search-system {
-    flex: 0 0 auto;
-    width: 110px;
-    min-width: 100px;
-    max-width: 120px;
-  }
-
-  .search-input-wrapper {
-    height: 32px;
-    padding: 0 8px;
-  }
-
-  .search-system input {
-    font-size: 11px;
-  }
-
-  .header .lang-switch {
-    display: flex;
-    gap: 2px;
-    padding: 3px;
-    flex: 0 0 auto;
-  }
-
-  .header .lang-switch button {
-    font-size: 10px;
-    padding: 6px 8px;
-    letter-spacing: 0.05em;
-  }
-}
-
-@media screen and (min-width: 480px) {
-  .title-standard {
-    margin-left: 12px;
-  }
-
-  .header-right-cluster {
-    margin-right: 12px;
-  }
-}
-
+/* Desktop Up */
 @media screen and (min-width: 1024px) {
+  .header {
+    height: var(--header-height);
+    min-height: var(--header-height);
+    display: flex;
+    align-items: center;
+    box-sizing: content-box;
+  }
+
   .header-container {
+    flex-wrap: nowrap;
     padding: 0 24px;
-    gap: 12px;
+    height: var(--header-height);
+    gap: 16px;
   }
 
   .title-standard {
+    font-size: 13px;
+    letter-spacing: 0.3em;
     margin-left: 16px;
+    order: unset;
   }
 
   .header-right-cluster {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 0 0 auto;
     margin-right: 16px;
-    gap: 6px;
   }
 
   .search-system {
+    order: unset;
     flex: 0 1 220px;
-    width: 220px;
-    max-width: 220px;
+    width: 220px !important;
+    max-width: 220px !important;
+    margin-top: 0;
+  }
+
+  .lang-switch {
+    order: unset;
   }
 }
 
@@ -1030,7 +1005,7 @@ body {
 .mainLayout {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 110px);
+  height: calc(100dvh - 110px);
   width: 100%;
 }
 
@@ -1040,7 +1015,7 @@ body {
     top: 0;
     right: 0;
     width: 380px;
-    height: 100vh;
+    height: 100dvh;
     border-left: 1px solid rgba(212, 175, 55, 0.25);
     transform: translateX(100%);
   }
@@ -1061,7 +1036,7 @@ body {
   }
 
   .mainLayout {
-    height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
   }
 
   .map-container {
@@ -1112,7 +1087,7 @@ body {
   }
 
   .mainLayout {
-    height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
   }
 
   .map-container {
@@ -1149,7 +1124,7 @@ body {
   }
 
   .mainLayout {
-    height: calc(100vh - 56px);
+    height: calc(100dvh - 56px);
   }
 
   .search-system {
@@ -1395,7 +1370,7 @@ body {
     left: 0;
     right: 0;
     width: 100vw;
-    height: calc(100vh - var(--header-height) - var(--sat));
+    height: calc(100dvh - var(--header-height) - var(--sat));
     border-radius: 0;
     border-top: 1px solid var(--color-border);
   }
@@ -1729,3 +1704,107 @@ body {
 .marker-active { animation: marker-pinpoint-arrival 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, pulse-glow-v2 2s infinite 0.8s ease-in-out !important; }
 @keyframes marker-pinpoint-arrival { 0% { transform: translateY(-40px) scale(2); opacity: 0; filter: blur(4px); } 60% { transform: translateY(5px) scale(0.9); opacity: 1; filter: blur(0px); } 100% { transform: translateY(0) scale(1); opacity: 1; } }
 @keyframes pulse-glow-v2 { 0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(207, 174, 123, 0.4); } 50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 20px 8px rgba(207, 174, 123, 0.3); } 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(207, 174, 123, 0.4); } }
+
+/* =========================================
+   LAYOUT SKELETON (BHARATVARSHA)
+========================================= */
+@keyframes parchmentShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-base {
+  background-color: #3A2F24;
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(0, 0, 0, 0) !important;
+}
+
+.skeleton-base::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(194, 164, 109, 0) 0%,
+    rgba(194, 164, 109, 0.08) 50%,
+    rgba(194, 164, 109, 0) 100%
+  );
+  animation: parchmentShimmer 1.8s infinite linear;
+}
+
+/* Header Skeleton Pieces */
+.skeleton-title-line {
+  height: 14px;
+  border-radius: 4px;
+}
+
+.skeleton-search-bar {
+  width: 250px;
+  height: 38px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+@media (max-width: 767px) {
+  .skeleton-search-bar {
+    width: 180px;
+    height: 32px;
+  }
+}
+
+.skeleton-search-placeholder {
+  width: 60%;
+  height: 8px;
+  border-radius: 2px;
+  background-color: rgba(194, 164, 109, 0.15);
+}
+
+/* Map Skeleton */
+.skeleton-map-container {
+  background-color: #D8C6A5; /* Parchment variant */
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-image: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(42,34,24,0.1) 100%);
+}
+
+.skeleton-map-texture {
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Filter Capsule Skeleton */
+.skeleton-capsule {
+  width: 110px;
+  height: 36px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 767px) {
+  .skeleton-capsule {
+    width: 90px;
+    height: 32px;
+  }
+}
+
+.skeleton-capsule-text {
+  width: 50%;
+  height: 6px;
+  border-radius: 2px;
+  background-color: rgba(194, 164, 109, 0.2);
+}
+

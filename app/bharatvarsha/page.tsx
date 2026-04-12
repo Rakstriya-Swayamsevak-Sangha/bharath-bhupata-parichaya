@@ -14,6 +14,8 @@ const Search = dynamic(() => import('@/components/Search/Search').then(mod => mo
 const FilterBar = dynamic(() => import('@/components/FilterControls/FilterBar').then(mod => mod.FilterBar), { ssr: false });
 const MobileFilters = dynamic(() => import('@/components/FilterControls/MobileFilters').then(mod => mod.MobileFilters), { ssr: false });
 const KnowledgePanel = dynamic(() => import('@/components/KnowledgePanel/KnowledgePanel').then(mod => mod.KnowledgePanel), { ssr: false });
+import { PageSkeleton } from './PageSkeleton';
+import { AnimatePresence } from 'framer-motion';
 
 const CulturalMap = dynamic<{
   onMarkerClick: (location: Location) => void;
@@ -24,19 +26,7 @@ const CulturalMap = dynamic<{
     import('@/components/Map/Map').then((mod) => mod.CulturalMap),
   {
     ssr: false,
-    loading: () => (
-      <div style={{
-        width: '100%', height: '100%',
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        backgroundColor: '#1C1A17', gap: '14px',
-      }}>
-        <div className="map-loading-spinner" />
-        <span style={{ color: '#A89882', fontFamily: "'Cinzel', serif", fontSize: '13px', letterSpacing: '0.1em' }}>
-          Preparing atlas…
-        </span>
-      </div>
-    ),
+    loading: () => null,
   }
 );
 
@@ -54,6 +44,7 @@ function MapContent() {
 
   useEffect(() => {
     async function loadData() {
+      const startTime = Date.now();
       try {
         const [mountains, rivers] = await Promise.all([
           fetch('/data/mountains.json').then((r) => r.json()),
@@ -74,7 +65,13 @@ function MapContent() {
         setError('Failed to load location data');
         console.error(err);
       } finally {
-        setIsLoading(false);
+        const elapsed = Date.now() - startTime;
+        const minDisplayTime = 500;
+        if (elapsed < minDisplayTime) {
+          setTimeout(() => setIsLoading(false), minDisplayTime - elapsed);
+        } else {
+          setIsLoading(false);
+        }
       }
     }
     loadData();
@@ -112,7 +109,7 @@ function MapContent() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-screen bg-[#1C1A17] text-[#8B0000] gap-4">
+      <div className="flex flex-col items-center justify-center w-full h-[100dvh] bg-[#1C1A17] text-[#8B0000] gap-4">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10" />
           <line x1="15" y1="9" x2="9" y2="15" />
@@ -125,7 +122,7 @@ function MapContent() {
 
   return (
     <motion.main
-      className="relative w-full h-screen bg-[#080706] flex flex-col overflow-hidden"
+      className="relative w-full h-[100dvh] bg-[#080706] flex flex-col overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -134,18 +131,15 @@ function MapContent() {
 
       <div className="relative flex-1 w-full overflow-hidden">
         {/* Map Canvas (Dominant Full-Bleed) */}
-        <div className="absolute inset-0 z-10">
+        <div className="absolute inset-0 z-10 transition-opacity duration-700 ease-in-out">
           <div className="w-full h-full">
-            {!isLoading && (
-              <CulturalMap
-                onMarkerClick={handleMarkerClick}
-                locations={locations}
-              />
-            )}
+            <CulturalMap
+              onMarkerClick={handleMarkerClick}
+              locations={locations}
+            />
           </div>
         </div>
 
-        {/* Filters (Bottom Overlay) */}
         <MobileFilters />
 
         {/* Knowledge Panel */}
@@ -155,6 +149,21 @@ function MapContent() {
           setLastSelectedId(null);
         }} />
       </div>
+
+      {/* Skeleton Overlay - Full Page Coverage */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            key="skeleton"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="absolute inset-0 z-50 pointer-events-none"
+          >
+            <PageSkeleton />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.main>
   );
 }
