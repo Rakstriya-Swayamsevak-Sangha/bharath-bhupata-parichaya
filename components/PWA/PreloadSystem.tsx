@@ -5,9 +5,17 @@ import { useRouter } from 'next/navigation';
 import { PRELOAD_IMAGES } from '@/data/assetsList';
 
 /**
+ * ═══════════════════════════════════════════════════════════════════════════════
  * ARCHIVAL PRELOAD SYSTEM
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * 
  * Forcefully prefetches all archival images, maps, and civilizational data
  * into the local device cache during the initial visit.
+ * 
+ * Works in tandem with ServiceWorkerManager — this handles the main-thread
+ * prefetch while SW handles cache persistence. Uses requestIdleCallback
+ * to avoid blocking animations or interaction.
+ * ═══════════════════════════════════════════════════════════════════════════════
  */
 export default function PreloadSystem() {
   const router = useRouter();
@@ -16,60 +24,47 @@ export default function PreloadSystem() {
     // 1. Prefetch critical routes via Next.js router
     router.prefetch('/bharatvarsha');
 
-    // 2. Clear old caches to ensure state consistency (App Shell Lock)
-    const clearOldCaches = async () => {
-      if (!('caches' in window)) return;
-      const cacheNames = await caches.keys();
-      const currentCaches = [
-        'cultural-data-v1', 
-        'atlas-assets-v1', 
-        'google-fonts-v1', 
-        'start-url', 
-        'workbox-precache'
-      ];
-      
-      await Promise.all(
-        cacheNames.map(name => {
-          if (!currentCaches.some(curr => name.includes(curr))) {
-            return caches.delete(name);
-          }
-          return Promise.resolve();
-        })
-      );
-    };
-
-    // 3. FULL MUSEUM-GRADE WARM-UP
+    // 2. FULL MUSEUM-GRADE WARM-UP (Non-blocking)
     const warmUp = async () => {
-      await clearOldCaches();
-      
-      // All discovered archival images + core data files
-      const criticalAssets = [
-        '/',
-        '/bharatvarsha',
+      // Core data files (small, critical)
+      const criticalData = [
         '/countries.geojson',
         '/india_states.geojson',
         '/data/mountains.json',
         '/data/rivers.json',
-        '/manifest.json',
-        '/favicon.png',
-        ...PRELOAD_IMAGES
+        '/data/external_borders.json',
+        '/data/internal_borders.json',
       ];
 
-      try {
-        // Parallel fetch with low priority
-        await Promise.all(
-          criticalAssets.map(url => 
-            fetch(url, { priority: 'low' }).catch(() => {})
-          )
+      // Fetch critical data first (serial, reliable)
+      for (const url of criticalData) {
+        try {
+          await fetch(url, { priority: 'low' as any });
+        } catch {
+          // Silent — SW will serve cached version if available
+        }
+      }
+
+      // Then progressively load images in batches to avoid overwhelming
+      const batchSize = 4;
+      for (let i = 0; i < PRELOAD_IMAGES.length; i += batchSize) {
+        const batch = PRELOAD_IMAGES.slice(i, i + batchSize);
+        await Promise.allSettled(
+          batch.map(url => fetch(url, { priority: 'low' as any }).catch(() => {}))
         );
-      } catch (e) {
-        console.warn('Archival Preload failed:', e);
+        // Small yield between batches
+        await new Promise(r => setTimeout(r, 100));
       }
     };
 
-    // Small delay to prevent blocking initial interaction
-    const timer = setTimeout(warmUp, 2000);
-    return () => clearTimeout(timer);
+    // Use requestIdleCallback to avoid blocking initial animations
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => warmUp(), { timeout: 5000 });
+    } else {
+      // Fallback: delayed start
+      const timer = setTimeout(warmUp, 3000);
+      return () => clearTimeout(timer);
+    }
   }, [router]);
 
   return null;

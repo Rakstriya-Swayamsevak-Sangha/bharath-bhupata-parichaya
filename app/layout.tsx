@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './stage2.css';
-import PWAUpdate from '@/components/PWA/PWAUpdate';
+import ServiceWorkerManager from '@/components/PWA/ServiceWorkerManager';
 import PreloadSystem from '@/components/PWA/PreloadSystem';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'Bharath Bhupata',
   },
+  icons: {
+    apple: '/icons/icon-192x192.png',
+  },
   other: {
     "mobile-web-app-capable": "yes",
   }
@@ -37,9 +40,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body className="antialiased">
-        <PWAUpdate />
+        <ServiceWorkerManager />
         <PreloadSystem />
         <Analytics />
         {children}

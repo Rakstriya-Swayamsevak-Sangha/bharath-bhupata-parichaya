@@ -1,26 +1,48 @@
 {
-  "name": "Eng: Bharath Bhupata Parichaya | Kan: ಭಾರತ ಭೂಪಟ ಪರಿಚಯ | Hin: भारत मानचित्र परिचय",
+  "name": "Bharath Bhupata Parichaya",
   "short_name": "Bharath Bhupata",
-  "description": "Interactive cultural and civilizational map of the Indian subcontinent.",
+  "description": "Cultural Atlas of Akhand Bharat",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#1C1A17",
+  "background_color": "#080706",
   "theme_color": "#FF9933",
   "orientation": "portrait-primary",
   "prefer_related_applications": false,
-  "categories": ["education", "navigation", "culture"],
+  "categories": [
+    "education",
+    "navigation",
+    "culture"
+  ],
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [],
+  "related_applications": [],
+  "id": "akhand-bharat-darshan"
 }
