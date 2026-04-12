@@ -158,6 +158,12 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
 
           if (data) {
             setKnowledge(data);
+            
+            // ─── Phase 3: Tier 2 Interaction Caching (Just-in-Time) ────────
+            const imagePath = data.image || `/place-images/${category === 'city' ? 'sacred-cities' : category + 's'}/${id}.jpg`;
+            import('@/components/PWA/PreloadSystem').then(mod => {
+              mod.cacheInteractionAssets([imagePath]);
+            });
           } else {
             setKnowledge({
               ...selectedLocation,
@@ -165,6 +171,12 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
               description: { en: (selectedLocation as any).description || "", kn: (selectedLocation as any).description || "", hi: (selectedLocation as any).description || "" },
               facts: (selectedLocation as any).metadata || {},
               cultural: { en: (selectedLocation as any).historicalSignificance || "", kn: (selectedLocation as any).historicalSignificance || "", hi: (selectedLocation as any).historicalSignificance || "" }
+            });
+            
+            // Trigger caching for default path even if no knowledge data
+            const imagePath = `/place-images/${category === 'city' ? 'sacred-cities' : category + 's'}/${id}.jpg`;
+            import('@/components/PWA/PreloadSystem').then(mod => {
+              mod.cacheInteractionAssets([imagePath]);
             });
           }
         } catch (err) {

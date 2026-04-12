@@ -4,19 +4,17 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════════
- * INVISIBLE INSTALL PROMPT SYSTEM
+ * DETERMINISTIC INSTALL STATE SYSTEM
  * ═══════════════════════════════════════════════════════════════════════════════
  * 
- * Captures the `beforeinstallprompt` event and defers it for programmatic
- * triggering on CTA click. Handles platform detection for iOS guidance.
- * 
- * RULES:
- *   - NEVER shows intrusive popups
- *   - NEVER blocks user flow
- *   - Only triggers on explicit CTA interaction
- *   - Remembers install state permanently
+ * Manages the transition through three critical PWA phases:
+ * 1. PREPARING: Initial state, browser evaluating engagement.
+ * 2. READY: Native prompt captured and ready for trigger.
+ * 3. INSTALLED: App detected in standalone mode or successful installation.
  * ═══════════════════════════════════════════════════════════════════════════════
  */
+
+export type InstallStatus = 'PREPARING' | 'READY' | 'INSTALLED' | 'IOS_GUIDE';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -24,71 +22,50 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
-interface InstallState {
-  /** Whether the native install prompt is available (Android/Desktop Chrome) */
-  canInstall: boolean;
-  /** Whether the app is already installed as standalone */
-  isInstalled: boolean;
-  /** Whether this is iOS Safari (requires manual add-to-home guidance) */
-  isIOSSafari: boolean;
-  /** Whether the user has already been shown iOS guidance */
-  iosGuidanceShown: boolean;
-  /** Trigger the native install prompt. Returns true if accepted. */
-  triggerInstall: () => Promise<boolean>;
-  /** Mark iOS guidance as shown */
-  dismissIOSGuidance: () => void;
-}
-
 const INSTALL_STATE_KEY = 'bharat-darshan-installed';
-const IOS_GUIDANCE_KEY = 'bharat-darshan-ios-guidance-shown';
 
-export function useInstallPrompt(): InstallState {
+export function useInstallPrompt() {
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null);
-  const [canInstall, setCanInstall] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const [isIOSSafari, setIsIOSSafari] = useState(false);
-  const [iosGuidanceShown, setIosGuidanceShown] = useState(false);
+  const [status, setStatus] = useState<InstallStatus>('PREPARING');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // ─── Check if already installed ──────────────────────────────────────
+    // ─── 1. Detect Existing Installation ───────────────────────────────
     const isStandalone = 
       window.matchMedia('(display-mode: standalone)').matches ||
       (window.navigator as any).standalone === true;
     
+    // Check localStorage fallback for persistence
     const wasInstalled = localStorage.getItem(INSTALL_STATE_KEY) === 'true';
-    
+
     if (isStandalone || wasInstalled) {
-      setIsInstalled(true);
-      return; // No install logic needed
+      setStatus('INSTALLED');
+      return;
     }
 
-    // ─── iOS Detection ───────────────────────────────────────────────────
+    // ─── 2. iOS Detection ──────────────────────────────────────────────
     const ua = window.navigator.userAgent;
     const isIOS = /iP(hone|od|ad)/.test(ua) || 
                   (ua.includes('Mac') && 'ontouchend' in document);
     const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|Chrome/.test(ua);
     
     if (isIOS && isSafari) {
-      setIsIOSSafari(true);
-      setIosGuidanceShown(localStorage.getItem(IOS_GUIDANCE_KEY) === 'true');
+      setStatus('IOS_GUIDE');
       return;
     }
 
-    // ─── Android / Desktop Chrome: Capture beforeinstallprompt ────────────
+    // ─── 3. Android / Desktop Chrome: Capture beforeinstallprompt ───────
     const handleBeforeInstall = (e: Event) => {
-      e.preventDefault(); // Prevent automatic mini-infobar
+      e.preventDefault();
       deferredPrompt.current = e as BeforeInstallPromptEvent;
-      setCanInstall(true);
+      setStatus('READY');
     };
 
-    // App installed from our prompt
     const handleAppInstalled = () => {
-      setIsInstalled(true);
-      setCanInstall(false);
-      deferredPrompt.current = null;
+      setStatus('INSTALLED');
       localStorage.setItem(INSTALL_STATE_KEY, 'true');
+      deferredPrompt.current = null;
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
@@ -100,42 +77,31 @@ export function useInstallPrompt(): InstallState {
     };
   }, []);
 
-  const triggerInstall = useCallback(async (): Promise<boolean> => {
-    if (!deferredPrompt.current) return false;
+  const triggerInstall = useCallback(async () => {
+    if (status !== 'READY' || !deferredPrompt.current) return false;
     
     try {
       await deferredPrompt.current.prompt();
       const { outcome } = await deferredPrompt.current.userChoice;
       
       if (outcome === 'accepted') {
-        setIsInstalled(true);
-        setCanInstall(false);
+        setStatus('INSTALLED');
         localStorage.setItem(INSTALL_STATE_KEY, 'true');
         deferredPrompt.current = null;
         return true;
       }
       
-      // User dismissed — don't ask again this session
-      deferredPrompt.current = null;
-      setCanInstall(false);
+      // Keep state as READY if dismissed
       return false;
     } catch (err) {
-      console.warn('[Install] Prompt failed:', err);
+      console.warn('[Install] System busy or prompt blocked.');
       return false;
     }
-  }, []);
-
-  const dismissIOSGuidance = useCallback(() => {
-    setIosGuidanceShown(true);
-    localStorage.setItem(IOS_GUIDANCE_KEY, 'true');
-  }, []);
+  }, [status]);
 
   return {
-    canInstall,
-    isInstalled,
-    isIOSSafari,
-    iosGuidanceShown,
+    status,
     triggerInstall,
-    dismissIOSGuidance,
+    isInstalled: status === 'INSTALLED'
   };
 }

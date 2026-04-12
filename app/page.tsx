@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './home.module.css';
-import { useInstallPrompt } from '@/components/PWA/useInstallPrompt';
-import { IOSInstallGuidance } from '@/components/PWA/IOSInstallGuidance';
 
 const shlokaLines = [
   "उत्तरं यत् समुद्रस्य",
@@ -21,16 +19,6 @@ export default function Home() {
   const router = useRouter();
   const [phase, setPhase] = useState(0);
   const [journeyState, setJourneyState] = useState("idle"); // "idle", "activating", "navigating"
-
-  // ─── Invisible Install System ──────────────────────────────────────
-  const { 
-    canInstall, 
-    isInstalled, 
-    isIOSSafari, 
-    iosGuidanceShown, 
-    triggerInstall, 
-    dismissIOSGuidance 
-  } = useInstallPrompt();
 
   useEffect(() => {
     // Phase 1: Void (0s - 1s) is handled by default state
@@ -59,14 +47,6 @@ export default function Home() {
     if (journeyState !== "idle") return;
     setJourneyState("activating");
 
-    // ─── Install Integration (Invisible) ───────────────────────────
-    // If install prompt available AND not yet installed:
-    //   → Fire native prompt (non-blocking, doesn't delay navigation)
-    //   → User can accept or dismiss — navigation proceeds regardless
-    if (canInstall && !isInstalled) {
-      triggerInstall(); // Fire-and-forget — does NOT block flow
-    }
-
     // 1. Activation Phase (0-1200ms) handles button feedback and text swap via CSS
 
     // 2. Navigation State Trigger (at 1200ms)
@@ -79,23 +59,6 @@ export default function Home() {
       }, 500);
     }, 1200);
   };
-
-  // ─── iOS Guidance: Show after CTA appears, auto-dismiss after 6s ──
-  const [showIOSGuide, setShowIOSGuide] = useState(false);
-  
-  useEffect(() => {
-    if (isIOSSafari && !iosGuidanceShown && !isInstalled && phase >= 4) {
-      const t = setTimeout(() => setShowIOSGuide(true), 2000);
-      const autoHide = setTimeout(() => {
-        setShowIOSGuide(false);
-        dismissIOSGuidance();
-      }, 10000);
-      return () => {
-        clearTimeout(t);
-        clearTimeout(autoHide);
-      };
-    }
-  }, [isIOSSafari, iosGuidanceShown, isInstalled, phase, dismissIOSGuidance]);
 
   const easing: any = [0.16, 1, 0.3, 1];
 
@@ -234,15 +197,6 @@ export default function Home() {
       >
         Bharath Bhupata Parichaya
       </motion.div>
-
-      {/* iOS Install Guidance — Subtle, non-blocking */}
-      <IOSInstallGuidance 
-        visible={showIOSGuide} 
-        onDismiss={() => {
-          setShowIOSGuide(false);
-          dismissIOSGuidance();
-        }} 
-      />
     </motion.main>
   );
 }

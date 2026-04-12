@@ -13,9 +13,9 @@ export function PageSkeleton() {
             <div className="skeleton-base skeleton-title-line" style={{ width: '30%' }} />
           </div>
 
-          <div className="header-right-cluster">
+          <div className="header-actions">
             {/* Search Bar Skeleton */}
-            <div className="skeleton-base skeleton-search-bar">
+            <div className="skeleton-base skeleton-search-bar" style={{ width: '120px', height: '36px' }}>
               <div className="skeleton-search-placeholder" />
             </div>
 

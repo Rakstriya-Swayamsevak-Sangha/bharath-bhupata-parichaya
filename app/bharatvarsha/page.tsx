@@ -98,7 +98,15 @@ function MapContent() {
         closeSidebar();
         setIsNavigating(true);
         setSelectedLocation(location);
-        // setShowKnowledge(true) is now handled by the useEffect above
+        
+        // ─── Phase 3: Tier 2 Interaction Caching (Just-in-Time) ───────
+        // Construct correct image path based on category
+        const categoryExt = location.category === 'city' ? 'sacred-cities' : location.category + 's';
+        const imagePath = `/place-images/${categoryExt}/${location.id}.jpg`;
+        
+        import('@/components/PWA/PreloadSystem').then(mod => {
+          mod.cacheInteractionAssets([imagePath]);
+        });
       } else {
         setShowKnowledge(false);
         openSidebar(location);

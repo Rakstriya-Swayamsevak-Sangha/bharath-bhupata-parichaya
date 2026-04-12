@@ -20,13 +20,13 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v1.0.5';
 
 const CACHE_NAMES = {
-  shell:  `app-shell-${CACHE_VERSION}`,
-  data:   `cultural-data-${CACHE_VERSION}`,
-  assets: `atlas-assets-${CACHE_VERSION}`,
-  fonts:  `google-fonts-${CACHE_VERSION}`,
+  shell:  `shl-v-${CACHE_VERSION}`,
+  data:   `dat-v-${CACHE_VERSION}`,
+  assets: `ast-v-${CACHE_VERSION}`,
+  fonts:  `fnt-v-${CACHE_VERSION}`,
 };
 
 // Storage limits per cache layer (bytes)
@@ -46,28 +46,30 @@ const MAX_ENTRIES = {
 };
 
 
-// ─── Core App Shell (MUST precache — install fails if these fail) ─────────────
+// ─── Tier 1: Critical Shell (Instantly cached during SW install) ────────────
 const APP_SHELL_URLS = [
   '/',
   '/bharatvarsha',
   '/manifest.json',
   '/favicon.png',
+  '/parchment-texture.png', // Background texture is critical for shell feel
 ];
 
-// ─── Data Layer (MUST precache — deterministic) ──────────────────────────────
-const DATA_URLS = [
+// Tier 2 & 3 lists (Used for progressive & background caching)
+const CRITICAL_DATA_URLS = [
   '/countries.geojson',
   '/india_states.geojson',
-  '/data/mountains.json',
-  '/data/rivers.json',
   '/data/external_borders.json',
   '/data/internal_borders.json',
 ];
 
-// ─── Critical Asset Layer (Precached with retry) ─────────────────────────────
+const EXTENDED_DATA_URLS = [
+  '/data/mountains.json',
+  '/data/rivers.json',
+];
+
+// All images: moved to background/Interaction caching
 const ASSET_URLS = [
-  // Textures (critical for map rendering)
-  '/parchment-texture.png',
   '/textures/noise.png',
   '/textures/paper.png',
   '/textures/mountain-texture.png',
@@ -131,11 +133,13 @@ const ARRAY_DATA_PATHS = [
 const GEOJSON_PATHS = [
   '/countries.geojson',
   '/india_states.geojson',
+  '/data/external_borders.json',
+  '/data/internal_borders.json',
 ];
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// INSTALL — Deterministic precaching with retry
+// INSTALL — LIGHTWEIGHT Tier 1 only
 // ═══════════════════════════════════════════════════════════════════════════════
 
 self.addEventListener('install', (event) => {
@@ -145,52 +149,10 @@ self.addEventListener('install', (event) => {
       const shellCache = await caches.open(CACHE_NAMES.shell);
       await shellCache.addAll(APP_SHELL_URLS);
 
-      // ─── Layer 2: Data (HARD FAIL — maps don't work without this) ──
-      const dataCache = await caches.open(CACHE_NAMES.data);
-      await dataCache.addAll(DATA_URLS);
-
-      // ─── Layer 3: Assets (Best-effort with retry) ──────────────────
-      const assetCache = await caches.open(CACHE_NAMES.assets);
-      const failedAssets = [];
-
-      // First pass: parallel fetch
-      const results = await Promise.allSettled(
-        ASSET_URLS.map(async (url) => {
-          const response = await fetch(url);
-          if (response.ok) {
-            await assetCache.put(url, response);
-          } else {
-            throw new Error(`HTTP ${response.status}`);
-          }
-        })
-      );
-
-      // Collect failures
-      results.forEach((result, i) => {
-        if (result.status === 'rejected') {
-          failedAssets.push(ASSET_URLS[i]);
-        }
-      });
-
-      // Second pass: retry failures sequentially
-      if (failedAssets.length > 0) {
-        log('RETRY', `Retrying ${failedAssets.length} failed assets`);
-        for (const url of failedAssets) {
-          try {
-            const response = await fetch(url);
-            if (response.ok) {
-              await assetCache.put(url, response);
-            }
-          } catch (e) {
-            log('WARN', `Asset still failed after retry: ${url}`);
-          }
-        }
-      }
-
       // Force immediate activation
       self.skipWaiting();
 
-      log('INSTALL', `Shell: ${APP_SHELL_URLS.length}, Data: ${DATA_URLS.length}, Assets: ${ASSET_URLS.length} (${failedAssets.length} retried)`);
+      log('INSTALL', `Tier 1 Shell Cached: ${APP_SHELL_URLS.length} assets`);
     })()
   );
 });
@@ -433,7 +395,8 @@ async function fontStrategy(request) {
   try {
     const response = await fetch(request);
     if (response.ok) {
-      cache.put(request, response.clone());
+      const copy = response.clone();
+      cache.put(request, copy);
       enforceCacheLimit(CACHE_NAMES.fonts, MAX_ENTRIES.fonts);
     }
     return response;
@@ -450,8 +413,9 @@ async function staleWhileRevalidate(request) {
   
   const fetchPromise = fetch(request).then((response) => {
     if (response.ok) {
+      const copy = response.clone();
       caches.open(CACHE_NAMES.shell).then((cache) => {
-        cache.put(request, response.clone());
+        cache.put(request, copy);
       });
     }
     return response;
@@ -595,9 +559,12 @@ self.addEventListener('message', (event) => {
     // ─── Cache integrity verification ─────────────────────────────────
     case 'VERIFY_CACHE': {
       (async () => {
+        // Combine all data URLs for verification
+        const dataUrls = [...CRITICAL_DATA_URLS, ...EXTENDED_DATA_URLS];
+        
         const results = {
           shell: { total: APP_SHELL_URLS.length, cached: 0, missing: [] },
-          data: { total: DATA_URLS.length, cached: 0, missing: [] },
+          data: { total: dataUrls.length, cached: 0, missing: [] },
           assets: { total: ASSET_URLS.length, cached: 0, missing: [] },
         };
 
@@ -611,7 +578,7 @@ self.addEventListener('message', (event) => {
         }
 
         const dataCache = await caches.open(CACHE_NAMES.data);
-        for (const url of DATA_URLS) {
+        for (const url of dataUrls) {
           if (await dataCache.match(url)) {
             results.data.cached++;
           } else {

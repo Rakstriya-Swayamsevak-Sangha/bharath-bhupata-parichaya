@@ -1,71 +1,95 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { PRELOAD_IMAGES } from '@/data/assetsList';
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════════
- * ARCHIVAL PRELOAD SYSTEM
+ * PROGRESSIVE CACHING SYSTEM (3-TIER)
  * ═══════════════════════════════════════════════════════════════════════════════
  * 
- * Forcefully prefetches all archival images, maps, and civilizational data
- * into the local device cache during the initial visit.
- * 
- * Works in tandem with ServiceWorkerManager — this handles the main-thread
- * prefetch while SW handles cache persistence. Uses requestIdleCallback
- * to avoid blocking animations or interaction.
+ * Strategy:
+ * 1. TIER 1 (Critical): Warm up essential GeoJSON immediately.
+ * 2. TIER 2 (Interaction): Helper to cache interaction-specific assets.
+ * 3. TIER 3 (Background): Quietly cache remaining assets during idle time.
  * ═══════════════════════════════════════════════════════════════════════════════
  */
+
+const CRITICAL_DATA = [
+  '/countries.geojson',
+  '/india_states.geojson',
+  '/data/external_borders.json',
+  '/data/internal_borders.json',
+];
+
+const EXTENDED_DATA = [
+  '/data/mountains.json',
+  '/data/rivers.json',
+];
+
 export default function PreloadSystem() {
   const router = useRouter();
 
   useEffect(() => {
-    // 1. Prefetch critical routes via Next.js router
+    // 1. Prefetch core route
     router.prefetch('/bharatvarsha');
 
-    // 2. FULL MUSEUM-GRADE WARM-UP (Non-blocking)
     const warmUp = async () => {
-      // Core data files (small, critical)
-      const criticalData = [
-        '/countries.geojson',
-        '/india_states.geojson',
-        '/data/mountains.json',
-        '/data/rivers.json',
-        '/data/external_borders.json',
-        '/data/internal_borders.json',
-      ];
-
-      // Fetch critical data first (serial, reliable)
-      for (const url of criticalData) {
+      // ─── Phase 1: Tier 1 Warm-up (Serial/High Priority) ──────────────
+      for (const url of CRITICAL_DATA) {
         try {
-          await fetch(url, { priority: 'low' as any });
-        } catch {
-          // Silent — SW will serve cached version if available
-        }
+          await fetch(url, { priority: 'high' as any });
+        } catch (e) {}
       }
 
-      // Then progressively load images in batches to avoid overwhelming
-      const batchSize = 4;
-      for (let i = 0; i < PRELOAD_IMAGES.length; i += batchSize) {
-        const batch = PRELOAD_IMAGES.slice(i, i + batchSize);
-        await Promise.allSettled(
-          batch.map(url => fetch(url, { priority: 'low' as any }).catch(() => {}))
-        );
-        // Small yield between batches
-        await new Promise(r => setTimeout(r, 100));
+      // ─── Phase 2: Tier 3 Background Queue (Batch/Idle) ───────────────
+      const processQueue = async () => {
+        // Data first
+        for (const url of EXTENDED_DATA) {
+          try {
+            await fetch(url, { priority: 'low' as any });
+          } catch (e) {}
+        }
+
+        // Then all remaining images in slow batches
+        const batchSize = 2;
+        for (let i = 0; i < PRELOAD_IMAGES.length; i += batchSize) {
+          const batch = PRELOAD_IMAGES.slice(i, i + batchSize);
+          await Promise.allSettled(
+            batch.map(url => fetch(url, { priority: 'low' as any }).catch(() => {}))
+          );
+          await new Promise(r => setTimeout(r, 400)); // Be extremely gentle
+        }
+      };
+
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(() => processQueue());
+      } else {
+        setTimeout(processQueue, 10000);
       }
     };
 
-    // Use requestIdleCallback to avoid blocking initial animations
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(() => warmUp(), { timeout: 5000 });
-    } else {
-      // Fallback: delayed start
-      const timer = setTimeout(warmUp, 3000);
-      return () => clearTimeout(timer);
-    }
+    // Start warm-up after a short delay to keep initial load snappier
+    const timer = setTimeout(warmUp, 3000);
+    return () => clearTimeout(timer);
   }, [router]);
 
   return null;
+}
+
+/**
+ * Tier 2: Interaction-Driven Cache Trigger
+ * Call this when a user clicks a marker or opens a panel.
+ */
+export async function cacheInteractionAssets(urls: string[]) {
+  if (typeof window === 'undefined') return;
+  
+  // Just-in-time fetch
+  urls.forEach(url => {
+    fetch(url, { priority: 'low' as any }).catch(() => {
+      // SW will handle the actual caching policy
+    });
+  });
 }
