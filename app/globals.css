@@ -107,6 +107,9 @@ body {
   text-transform: uppercase;
   flex: 0 1 auto;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
 }
 
 .truncate {
