@@ -34,18 +34,40 @@ export function SafeImage({
   }, []);
 
   const handleError = useCallback((e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    if (hasError) return;
     setHasError(true);
     setIsLoaded(true);
-    
-    if (onError) {
-      onError(new Error(`Failed to load image: ${src}`));
-    }
 
     const target = e.currentTarget;
+    const currentSrc = target.src;
+    
+    // Try case-adjusted src (Linux is case-sensitive)
+    if (currentSrc && currentSrc.includes('/place-images/')) {
+      const parts = currentSrc.split('/place-images/');
+      if (parts.length > 1) {
+        const filename = parts[parts.length - 1];
+        const dir = '/place-images/' + parts[parts.length - 1].split('/')[0] + '/';
+        // Try common case variations
+        const variations = [
+          filename,
+          filename.replace('.jpg', '.webp'),
+          filename.replace('.jpg', '.JPG'),
+          filename.replace('.jpg', '.JPEG'),
+          filename.charAt(0).toUpperCase() + filename.slice(1),
+        ];
+        for (const variant of variations) {
+          if (variant !== filename) {
+            target.src = dir + variant;
+            return;
+          }
+        }
+      }
+    }
+
     if (fallbackSrc && !hideOnError) {
       target.src = fallbackSrc;
     }
-  }, [src, fallbackSrc, hideOnError, onError]);
+  }, [src, fallbackSrc, hideOnError, onError, hasError]);
 
   if (hideOnError && hasError) {
     return null;
