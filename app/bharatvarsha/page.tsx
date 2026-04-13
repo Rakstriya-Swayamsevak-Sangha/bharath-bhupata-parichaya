@@ -11,29 +11,15 @@ import { useLanguageStore } from '@/store/languageStore';
 import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
 import { useNetwork } from '@/hooks/useNetwork';
 
-// Dynamic Imports for Bundle Optimization
-const Search = dynamic(() => import('@/components/Search/Search').then(mod => mod.Search), { ssr: false });
-const FilterBar = dynamic(() => import('@/components/FilterControls/FilterBar').then(mod => mod.FilterBar), { ssr: false });
-const MobileFilters = dynamic(() => import('@/components/FilterControls/MobileFilters').then(mod => mod.MobileFilters), { ssr: false });
-const KnowledgePanel = dynamic(() => import('@/components/KnowledgePanel/KnowledgePanel').then(mod => mod.KnowledgePanel), { ssr: false });
-const Sidebar = dynamic(() => import('@/components/Sidebar/Sidebar').then(mod => mod.Sidebar), { ssr: false });
+// Use ssr:false and loading to prevent SSR issues
+const Search = dynamic(() => import('@/components/Search/Search').then(mod => mod.Search), { ssr: false, loading: () => null });
+const MobileFilters = dynamic(() => import('@/components/FilterControls/MobileFilters').then(mod => mod.MobileFilters), { ssr: false, loading: () => null });
+const KnowledgePanel = dynamic(() => import('@/components/KnowledgePanel/KnowledgePanel').then(mod => mod.KnowledgePanel), { ssr: false, loading: () => null });
+const Sidebar = dynamic(() => import('@/components/Sidebar/Sidebar').then(mod => mod.Sidebar), { ssr: false, loading: () => null });
+const CulturalMap = dynamic(() => import('@/components/Map/Map').then(mod => mod.CulturalMap), { ssr: false, loading: () => null });
+
 import { PageSkeleton } from './PageSkeleton';
-import { AnimatePresence } from 'framer-motion';
-
-const CulturalMap = dynamic<{
-  onMarkerClick: (location: Location) => void;
-  onRegionClick?: (location: Location) => void;
-  locations: Location[];
-}>(
-  () =>
-    import('@/components/Map/Map').then((mod) => mod.CulturalMap),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-);
-
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const easing: any = [0.16, 1, 0.3, 1];
 
