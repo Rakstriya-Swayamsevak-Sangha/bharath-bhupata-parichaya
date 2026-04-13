@@ -8,6 +8,7 @@ import { UI_TEXT } from '@/data/uiText';
 import { RegionSkeleton, CitySkeleton, RiverSkeleton, MountainSkeleton } from './KnowledgePanelSkeletons';
 import { SafeImage } from '@/components/SafeImage/SafeImage';
 import { safeGet, safeGetString, safeGetArray, safeGetPath } from '@/utils/safeData';
+import { getImagePathVariants } from '@/utils/imagePath';
 
 const DEFAULT_IMAGE_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%233A2F24' width='400' height='300'/%3E%3Ctext fill='%238B7355' font-family='serif' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EImage unavailable%3C/text%3E%3C/svg%3E";
 
@@ -376,9 +377,9 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                   <motion.div className="kp-hero-container" variants={itemVariants}>
                     <SafeImage
                       src={knowledge.image || `/place-images/sacred-cities/${safeGetPath(localLocation, 'id', '')}.jpg`}
+                      variants={getImagePathVariants(safeGetPath(localLocation, 'id', ''), 'city')}
                       alt={String(title)}
                       className="kp-hero city-hero"
-                      fallbackSrc={DEFAULT_IMAGE_FALLBACK}
                       fallbackColor="#3A2F24"
                     />
                     {knowledge.identity && (
@@ -415,9 +416,9 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                     <motion.div className="kp-hero" variants={itemVariants}>
                       <SafeImage
                         src={knowledge.image || `/place-images/${localLocation?.category === 'city' ? 'sacred-cities' : (localLocation?.category || 'mountains') + 's'}/${safeGetPath(localLocation, 'id', '')}.jpg`}
+                        variants={getImagePathVariants(safeGetPath(localLocation, 'id', ''), localLocation?.category || 'mountain')}
                         alt={String(title)}
                         className="kp-hero"
-                        fallbackSrc={DEFAULT_IMAGE_FALLBACK}
                         fallbackColor="#3A2F24"
                         hideOnError={true}
                       />
