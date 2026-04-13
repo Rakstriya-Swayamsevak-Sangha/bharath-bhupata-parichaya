@@ -56,52 +56,21 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       return (
-        <div className="error-boundary-fallback">
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '24px',
-            minHeight: '200px',
-            backgroundColor: '#1C1A17',
-            color: '#8B7355',
-            textAlign: 'center',
-            fontFamily: "'Cinzel', serif",
-          }}>
-            <svg 
-              width="32" 
-              height="32" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="1.5"
-              style={{ marginBottom: '16px', opacity: 0.6 }}
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M8 8h8M8 12h8M8 16h2" />
-            </svg>
-            <p style={{ margin: 0, fontSize: '14px' }}>
+        <div className="error-boundary-fallback animate-fade-in">
+          <div className="flex flex-col items-center justify-center p-6 text-center">
+            <div className="text-primary/60 text-[10px] font-cinzel mb-2 uppercase tracking-[0.2em]">
+              अपूर्णता (Incomplete)
+            </div>
+            <p className="text-textSecondary text-xs leading-relaxed max-w-[200px]">
               {this.props.componentName 
-                ? `Unable to load ${this.props.componentName}`
-                : 'Something went wrong'}
+                ? `The ${this.props.componentName} module is temporarily unavailable.`
+                : 'This section could not be loaded.'}
             </p>
             <button
               onClick={this.reset}
-              style={{
-                marginTop: '16px',
-                padding: '8px 24px',
-                background: 'transparent',
-                border: '1px solid #8B7355',
-                color: '#8B7355',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontFamily: "'Cinzel', serif",
-                fontSize: '12px',
-                letterSpacing: '0.1em',
-              }}
+              className="mt-6 px-4 py-1.5 text-[10px] border border-primary/30 text-primary/70 hover:bg-primary/10 transition-all uppercase tracking-widest font-cinzel"
             >
-              Try Again
+              Retry Journey
             </button>
           </div>
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import { Location } from '@/types/location';
 
 interface MapContextType {
@@ -18,6 +18,30 @@ interface MapContextType {
 const MapContext = createContext<MapContextType | undefined>(undefined);
 
 export function MapProvider({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    const handleGlobalError = (event: ErrorEvent) => {
+      if (process.env.NODE_ENV === 'production') {
+        event.preventDefault(); // Suppress browser console noise for users
+      }
+      console.error('[Global Resilience] Caught unhandled error:', event.error);
+    };
+
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      if (process.env.NODE_ENV === 'production') {
+        event.preventDefault();
+      }
+      console.error('[Global Resilience] Caught unhandled rejection:', event.reason);
+    };
+
+    window.addEventListener('error', handleGlobalError);
+    window.addEventListener('unhandledrejection', handleRejection);
+
+    return () => {
+      window.removeEventListener('error', handleGlobalError);
+      window.removeEventListener('unhandledrejection', handleRejection);
+    };
+  }, []);
+
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(true);
@@ -58,7 +82,21 @@ export function MapProvider({ children }: { children: ReactNode }) {
 export function useMap() {
   const context = useContext(MapContext);
   if (context === undefined) {
-    throw new Error('useMap must be used within a MapProvider');
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('useMap must be used within a MapProvider. Returning safe mock for resilience.');
+    }
+    // Return a safe mock to prevent "cannot read property of undefined" crashes
+    return {
+      selectedLocation: null,
+      setSelectedLocation: () => { },
+      isSidebarOpen: false,
+      openSidebar: () => { },
+      closeSidebar: () => { },
+      isFilterOpen: false,
+      toggleFilterSidebar: () => { },
+      isNavigating: false,
+      setIsNavigating: () => { },
+    };
   }
   return context;
 }

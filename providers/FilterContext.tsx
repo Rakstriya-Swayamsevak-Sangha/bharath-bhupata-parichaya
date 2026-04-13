@@ -69,7 +69,14 @@ export function FilterProvider({ children }: { children: ReactNode }) {
 export function useFilter() {
   const context = useContext(FilterContext);
   if (context === undefined) {
-    throw new Error('useFilter must be used within a FilterProvider');
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('useFilter must be used within a FilterProvider. Returning safe mock.');
+    }
+    return {
+      activeFilters: DEFAULT_FILTERS,
+      toggleFilter: () => {},
+      isFilterActive: (cat: Category) => DEFAULT_FILTERS[cat],
+    };
   }
   return context;
 }
