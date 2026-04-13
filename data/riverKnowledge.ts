@@ -211,7 +211,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       kn: "ನರ್ಮದಾ ನದಿ ಭಾರತದಲ್ಲಿ ಅತ್ಯಂತ ಪವಿತ್ರ ನದಿಗಳಲ್ಲೊಂದು ಎಂದು ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ. ನರ್ಮದಾ ಪರಿಕ್ರಮೆಯಂತಹ ಆಚರಣೆಗಳು ಇದರ ಆಧ್ಯಾತ್ಮಿಕ ಮಹತ್ವವನ್ನು ತೋರಿಸುತ್ತವೆ.",
       hi: "नर्मदा नदी को भारत की सबसे पवित्र नदियों में से एक माना जाता है। नर्मदा परिक्रमा इसकी आध्यात्मिक महत्ता को दर्शाती है।"
     },
-    image: "/place-images/rivers/narmada.jpg"
+    image: "/place-images/rivers/Narmada.jpg"
   },
   godavari: {
     id: "godavari",
@@ -237,7 +237,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       kn: "ಗೋದಾವರಿಯನ್ನು ದಕ್ಷಿಣ ಭಾರತದ \"ದಕ್ಷಿಣ ಗಂಗಾ\" ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ. ನಾಸಿಕ್ನಲ್ಲಿ ನಡೆಯುವ ಕುಂಭಮೇಳ ಸೇರಿದಂತೆ ಅನೇಕ ಧಾರ್ಮಿಕ ಆಚರಣೆಗಳಿಗೆ ಇದು ಸಂಬಂಧಿಸಿದೆ.",
       hi: "गोदावरी को दक्षिण भारत में \"दक्षिण गंगा\" कहा जाता है। यह नासिक के कुंभ मेले सहित कई धार्मिक परंपराओं से जुड़ी हुई है।"
     },
-    image: "/place-images/rivers/godavari.jpg"
+    image: "/place-images/rivers/Godavari.jpg"
   },
   mahanadi: {
     id: "mahanadi",
@@ -263,7 +263,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       kn: "ಮಹಾನದಿ ನದಿ ಶತಮಾನಗಳಿಂದ ಕೃಷಿ ಮತ್ತು ವಸತಿಗಳನ್ನು ಬೆಂಬಲಿಸಿದೆ. ಇದರ ಡೆಲ್ಟಾ ಪ್ರದೇಶವು ಅತ್ಯಂತ ಫಲವತ್ತಾದ ಪ್ರದೇಶಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ.",
       hi: "महानदी ने सदियों से कृषि और बस्तियों को समर्थन दिया है। इसका डेल्टा क्षेत्र अत्यंत उपजाऊ है और ओडिशा की अर्थव्यवस्था का आधार है।"
     },
-    image: "/place-images/rivers/mahanadi.jpg"
+    image: "/place-images/rivers/Mahanadi.jpg"
   },
   krishna: {
     id: "krishna",

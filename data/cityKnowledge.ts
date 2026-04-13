@@ -794,7 +794,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       hi: `कांची मंदिरों और रेशम बुनाई के लिए प्रसिद्ध है।`
     },
   
-    image: "/place-images/sacred-cities/kanchi.jpg"
+    image: "/place-images/sacred-cities/Kanchi.jpg"
   },
 
   puri: {
