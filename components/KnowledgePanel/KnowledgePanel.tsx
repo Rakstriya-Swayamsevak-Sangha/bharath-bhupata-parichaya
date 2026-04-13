@@ -8,9 +8,7 @@ import { UI_TEXT } from '@/data/uiText';
 import { RegionSkeleton, CitySkeleton, RiverSkeleton, MountainSkeleton } from './KnowledgePanelSkeletons';
 import { SafeImage } from '@/components/SafeImage/SafeImage';
 import { safeGet, safeGetString, safeGetArray, safeGetPath } from '@/utils/safeData';
-import { getImagePathVariants } from '@/utils/imagePath';
-
-const DEFAULT_IMAGE_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%233A2F24' width='400' height='300'/%3E%3Ctext fill='%238B7355' font-family='serif' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EImage unavailable%3C/text%3E%3C/svg%3E";
+import { getImagePathVariants, getVariantsFromPath } from '@/utils/imagePath';
 
 interface KnowledgePanelProps {
   onClose: () => void;
@@ -140,11 +138,21 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
 
           if (data) {
             setKnowledge(data);
-            
-            const imagePath = data.image || `/place-images/${category === 'city' ? 'sacred-cities' : category + 's'}/${id}.jpg`;
+
+            const cat = category === 'city' ? 'sacred-cities' : category + 's';
+            const imagePath = data.image || `/place-images/${cat}/${id}.jpg`;
+            // Case variations for mixed-case filenames (Mahanadi, Godavari, Narmada)
+            const variants = [
+              `/place-images/${cat}/${id}.webp`,
+              `/place-images/${cat}/${id}.avif`,
+              `/place-images/${cat}/${id}.jpg`,
+              `/place-images/${cat}/${id}.png`,
+              `/place-images/${cat}/${id.charAt(0).toUpperCase() + id.slice(1)}.jpg`,
+              `/place-images/${cat}/${id.charAt(0).toUpperCase() + id.slice(1)}.webp`,
+            ];
             import('@/components/PWA/PreloadSystem').then(mod => {
               if (mod?.cacheInteractionAssets) {
-                mod.cacheInteractionAssets([imagePath]);
+                mod.cacheInteractionAssets([imagePath, ...variants]);
               }
             }).catch(() => {});
           } else {
@@ -156,11 +164,19 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
               facts: selectedLocation?.metadata || {},
               cultural: { en: safeGetString(selectedLocation?.historicalSignificance, ''), kn: safeGetString(selectedLocation?.historicalSignificance, ''), hi: safeGetString(selectedLocation?.historicalSignificance, '') }
             });
-            
-            const imagePath = `/place-images/${category === 'city' ? 'sacred-cities' : category + 's'}/${id}.jpg`;
+
+            const cat = category === 'city' ? 'sacred-cities' : category + 's';
+            const variants = [
+              `/place-images/${cat}/${id}.webp`,
+              `/place-images/${cat}/${id}.avif`,
+              `/place-images/${cat}/${id}.jpg`,
+              `/place-images/${cat}/${id}.png`,
+              `/place-images/${cat}/${id.charAt(0).toUpperCase() + id.slice(1)}.jpg`,
+              `/place-images/${cat}/${id.charAt(0).toUpperCase() + id.slice(1)}.webp`,
+            ];
             import('@/components/PWA/PreloadSystem').then(mod => {
               if (mod?.cacheInteractionAssets) {
-                mod.cacheInteractionAssets([imagePath]);
+                mod.cacheInteractionAssets(variants);
               }
             }).catch(() => {});
           }
@@ -377,7 +393,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                   <motion.div className="kp-hero-container" variants={itemVariants}>
                     <SafeImage
                       src={knowledge.image || `/place-images/sacred-cities/${safeGetPath(localLocation, 'id', '')}.jpg`}
-                      variants={getImagePathVariants(safeGetPath(localLocation, 'id', ''), 'city')}
+                      variants={knowledge.image ? getVariantsFromPath(knowledge.image) : getImagePathVariants(safeGetPath(localLocation, 'id', ''), 'city')}
                       alt={String(title)}
                       className="kp-hero city-hero"
                       fallbackColor="#3A2F24"
@@ -416,7 +432,7 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                     <motion.div className="kp-hero" variants={itemVariants}>
                       <SafeImage
                         src={knowledge.image || `/place-images/${localLocation?.category === 'city' ? 'sacred-cities' : (localLocation?.category || 'mountains') + 's'}/${safeGetPath(localLocation, 'id', '')}.jpg`}
-                        variants={getImagePathVariants(safeGetPath(localLocation, 'id', ''), localLocation?.category || 'mountain')}
+                        variants={knowledge.image ? getVariantsFromPath(knowledge.image) : getImagePathVariants(safeGetPath(localLocation, 'id', ''), localLocation?.category || 'mountain')}
                         alt={String(title)}
                         className="kp-hero"
                         fallbackColor="#3A2F24"

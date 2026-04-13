@@ -136,13 +136,23 @@ function MapContent() {
         closeSidebar();
         setIsNavigating(true);
         setSelectedLocation(location);
-        
+
         const categoryExt = location.category === 'city' ? 'sacred-cities' : location.category + 's';
-        const imagePath = `/place-images/${categoryExt}/${location.id}.jpg`;
-        
+        const id = location.id;
+        // Try all common image extensions AND case variations for mixed-case filenames (Mahanadi, Godavari, Narmada)
+        const variants = [
+          `/place-images/${categoryExt}/${id}.webp`,
+          `/place-images/${categoryExt}/${id}.avif`,
+          `/place-images/${categoryExt}/${id}.jpg`,
+          `/place-images/${categoryExt}/${id}.png`,
+          // Case variations for mixed-case filenames
+          `/place-images/${categoryExt}/${id.charAt(0).toUpperCase() + id.slice(1)}.jpg`,
+          `/place-images/${categoryExt}/${id.charAt(0).toUpperCase() + id.slice(1)}.webp`,
+        ];
+
         import('@/components/PWA/PreloadSystem').then(mod => {
           if (mod?.cacheInteractionAssets) {
-            mod.cacheInteractionAssets([imagePath]);
+            mod.cacheInteractionAssets(variants);
           }
         }).catch(() => {});
       } else {

@@ -12,8 +12,17 @@ interface SafeImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'onEr
   variants?: string[];
 }
 
-const DEFAULT_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%233A2F24' width='400' height='300'/%3E%3Ctext fill='%238B7355' font-family='serif' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EImage unavailable%3C/text%3E%3C/svg%3E";
+const DEFAULT_FALLBACK = '/fallback.svg';
 
+/**
+ * SafeImage — Production-grade image component with multi-layer fallback:
+ * 1. Try variants if provided (e.g., .webp, .avif, .jpg)
+ * 2. Try case-corrected extensions
+ * 3. Return fallback SVG (never shows broken image icon)
+ *
+ * CRITICAL: This component MUST handle ALL errors gracefully.
+ * Console must NEVER show unhandled image failures.
+ */
 export function SafeImage({
   src,
   alt,
@@ -40,39 +49,47 @@ export function SafeImage({
   const handleError = useCallback((e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
     const currentSrc = target.src;
-    
-    // Try variants if provided
+
+    // Layer 1: Try provided variants (e.g., webp → avif → jpg)
     if (variants && variantIndex.current < variants.length - 1 && !isRetrying.current) {
       isRetrying.current = true;
       variantIndex.current++;
       target.src = variants[variantIndex.current];
       return;
     }
-    
-    // Already tried all variants or no variants
-    if (hasError) return;
-    
-    // Last attempt - try simple variations
-    if (currentSrc && currentSrc.includes('/place-images/')) {
+
+    // Layer 2: Try common case/extension variations for place-images
+    if (currentSrc && currentSrc.includes('/place-images/') && !isRetrying.current) {
+      isRetrying.current = true;
       const name = currentSrc.split('/place-images/').pop()?.split('.')[0];
       const dir = currentSrc.substring(0, currentSrc.lastIndexOf('/') + 1);
       if (name) {
         const tries = [
           dir + name + '.webp',
           dir + name + '.WEBP',
+          dir + name + '.jpg',
+          dir + name + '.JPG',
+          dir + name + '.png',
+          dir + name + '.avif',
+          dir + name + '.AVIF',
+          // Case variations for mixed-case filenames like Mahanadi, Godavari, Narmada
+          dir + name.charAt(0).toUpperCase() + name.slice(1).toLowerCase() + '.jpg',
           dir + name.charAt(0).toUpperCase() + name.slice(1) + '.jpg',
+          dir + name.toUpperCase() + '.jpg',
         ];
         for (const t of tries) {
           if (t !== currentSrc) {
             variantIndex.current = 0;
-            isRetrying.current = false;
             target.src = t;
             return;
           }
         }
       }
     }
-    
+
+    // Layer 3: FINAL fallback — NEVER fail visibly
+    if (hasError) return;
+
     setHasError(true);
     setIsLoaded(true);
     if (onError) onError(new Error(`Failed to load image: ${src}`));

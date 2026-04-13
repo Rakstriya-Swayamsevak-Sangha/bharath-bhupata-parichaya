@@ -82,12 +82,16 @@ export default function PreloadSystem() {
 /**
  * Tier 2: Interaction-Driven Cache Trigger
  * Call this when a user clicks a marker or opens a panel.
+ * Accepts single URL or array of URL variants.
  */
-export async function cacheInteractionAssets(urls: string[]) {
+export async function cacheInteractionAssets(urls: string | string[]) {
   if (typeof window === 'undefined') return;
-  
-  // Just-in-time fetch
-  urls.forEach(url => {
+
+  const urlList = Array.isArray(urls) ? urls : [urls];
+
+  // Preload all variants (SW will cache whichever succeeds)
+  urlList.forEach(url => {
+    if (!url) return;
     fetch(url, { priority: 'low' as any }).catch(() => {
       // SW will handle the actual caching policy
     });
