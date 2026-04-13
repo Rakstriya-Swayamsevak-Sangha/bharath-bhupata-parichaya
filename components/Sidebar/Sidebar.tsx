@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { CloseButton } from '@/components/ui/CloseButton';
 import { UI_TEXT } from '@/data/uiText';
 import { Badge } from '@/components/ui/Badge';
 import { Location } from '@/types/location';
+import { safeGetString } from '@/utils/safeData';
 
 interface MetadataGridProps {
   metadata?: Record<string, string | undefined>;
@@ -14,7 +15,7 @@ interface MetadataGridProps {
 }
 
 function MetadataGrid({ metadata, excludeKeys = [] }: MetadataGridProps) {
-  if (!metadata) return null;
+  if (!metadata || typeof metadata !== 'object') return null;
 
   const entries = Object.entries(metadata).filter(
     ([key]) => !excludeKeys.includes(key)
@@ -52,7 +53,7 @@ interface LocationCardProps {
 
 function LocationCard({ location }: LocationCardProps) {
   const { lang } = useLanguageStore();
-  const name = location.name[lang] || location.name.en;
+  const name = location?.name?.[lang] || location?.name?.en || safeGetString(location?.id, 'Unknown');
 
   return (
     <div className="animate-fade-in">
@@ -61,23 +62,23 @@ function LocationCard({ location }: LocationCardProps) {
           <h2 className="font-cinzel text-2xl font-semibold text-primary mb-1">
             {name}
           </h2>
-          {(lang !== 'hi' && location.name.hi) && (
+          {(lang !== 'hi' && location?.name?.hi) && (
             <p className="text-accent text-lg" style={{ fontFamily: "'Noto Serif Devanagari', serif" }}>
               {location.name.hi}
             </p>
           )}
         </div>
-        <Badge category={location.category} />
+        <Badge category={location?.category || 'unknown'} />
       </div>
 
       <div className="space-y-4">
         <div>
           <p className="text-textSecondary text-sm leading-relaxed">
-            {location.description}
+            {safeGetString(location?.description, '')}
           </p>
         </div>
 
-        {location.historicalSignificance && (
+        {location?.historicalSignificance && (
           <div className="border-t border-border pt-4">
             <h3
               className="font-cinzel font-medium mb-2"
@@ -96,7 +97,7 @@ function LocationCard({ location }: LocationCardProps) {
           </div>
         )}
 
-        <MetadataGrid metadata={location.metadata} />
+        <MetadataGrid metadata={location?.metadata} />
 
         <div className="border-t border-border pt-4 mt-4">
           <div className="flex items-center gap-2 text-textSecondary text-xs">
@@ -105,7 +106,7 @@ function LocationCard({ location }: LocationCardProps) {
               <circle cx="12" cy="10" r="3" />
             </svg>
             <span>
-              {location.latitude !== undefined && location.longitude !== undefined
+              {location?.latitude !== undefined && location?.longitude !== undefined
                 ? `${location.latitude.toFixed(4)}°N, ${location.longitude.toFixed(4)}°E`
                 : UI_TEXT.coordinatesUnavailable[lang]}
             </span>

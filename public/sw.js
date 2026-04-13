@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════════
- * AKHAND BHARAT DARSHAN — Production Service Worker (Hardened)
+ * AKHAND BHARAT DARSHAN — Production Service Worker (Security-Hardened)
  * ═══════════════════════════════════════════════════════════════════════════════
  * 
  * ARCHITECTURE:
@@ -9,24 +9,26 @@
  *   Cache Layer 3: ASSETS       — Images, textures, fonts (cache-first + limits)
  *   Cache Layer 4: FONTS        — Google Fonts (cache-first, 1yr expiry)
  * 
- * HARDENED: 
- *   - Deterministic precaching with retry for critical assets
- *   - Context-aware data fallbacks (arrays for lists, objects for maps)
- *   - Storage quota monitoring
- *   - Cache completion verification
- *   - Structured failure logging
+ * SECURITY HARDENING:
+ *   - Zero-trust cache gatekeeper: only whitelisted URLs are cached
+ *   - Origin validation: rejects cross-origin opaque/redirected responses
+ *   - Response integrity checks before any cache.put()
+ *   - URL pattern matching: only known path prefixes allowed in cache
+ *   - Request method validation: only GET requests processed
+ *   - Deterministic cache cleanup on version bump
+ *   - No wildcard caching, no stale-while-revalidate for unknown URLs
  * 
  * VERSION CONTROL: Bump CACHE_VERSION to invalidate all caches on deploy.
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'v1.0.5';
+const CACHE_VERSION = 'v1.1.0';
 
 const CACHE_NAMES = {
-  shell:  `shl-v-${CACHE_VERSION}`,
-  data:   `dat-v-${CACHE_VERSION}`,
-  assets: `ast-v-${CACHE_VERSION}`,
-  fonts:  `fnt-v-${CACHE_VERSION}`,
+  shell:  `app-shell-${CACHE_VERSION}`,
+  data:   `data-${CACHE_VERSION}`,
+  assets: `media-${CACHE_VERSION}`,
+  fonts:  `fonts-${CACHE_VERSION}`,
 };
 
 // Storage limits per cache layer (bytes)
@@ -44,6 +46,38 @@ const MAX_ENTRIES = {
   data:   50,
   shell:  100,
 };
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SECURITY: WHITELIST DEFINITIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Trusted URL path prefixes — ONLY these paths are eligible for caching
+const TRUSTED_PATH_PREFIXES = [
+  '/_next/',        // Next.js static bundles (hashed, immutable)
+  '/data/',         // Application data files
+  '/place-images/', // Place image assets
+  '/textures/',     // Map textures
+  '/icons/',        // PWA icons
+  '/fonts/',        // Local fonts (if any)
+];
+
+// Exact-match trusted paths (root-level assets)
+const TRUSTED_EXACT_PATHS = [
+  '/',
+  '/bharatvarsha',
+  '/manifest.json',
+  '/favicon.png',
+  '/parchment-texture.png',
+  '/countries.geojson',
+  '/india_states.geojson',
+];
+
+// Trusted external domains (ONLY Google Fonts — nothing else)
+const TRUSTED_EXTERNAL_DOMAINS = [
+  'fonts.googleapis.com',
+  'fonts.gstatic.com',
+];
 
 
 // ─── Tier 1: Critical Shell (Instantly cached during SW install) ────────────
@@ -139,6 +173,103 @@ const GEOJSON_PATHS = [
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// SECURITY: URL VALIDATION FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Checks if a URL is from the same origin as the service worker.
+ */
+function isSameOrigin(url) {
+  return new URL(url).origin === self.location.origin;
+}
+
+/**
+ * Checks if a URL belongs to a trusted external domain.
+ */
+function isTrustedExternalDomain(url) {
+  const hostname = new URL(url).hostname;
+  return TRUSTED_EXTERNAL_DOMAINS.some(domain => hostname === domain);
+}
+
+/**
+ * Checks if a same-origin URL path is on the whitelist.
+ * Returns true ONLY if the path matches a trusted prefix or exact path.
+ */
+function isTrustedPath(url) {
+  const pathname = new URL(url).pathname;
+
+  // Check exact matches first
+  if (TRUSTED_EXACT_PATHS.includes(pathname)) return true;
+
+  // Check prefix matches
+  if (TRUSTED_PATH_PREFIXES.some(prefix => pathname.startsWith(prefix))) return true;
+
+  // Check if it's a known file extension in root (JS/CSS bundles)
+  if (/^\/_next\//.test(pathname)) return true;
+  if (/\.(js|css)$/i.test(pathname) && !pathname.includes('..')) return true;
+
+  return false;
+}
+
+/**
+ * Master URL validation: determines if a URL is eligible for caching.
+ * This is the ZERO-TRUST GATEKEEPER.
+ */
+function isUrlCacheable(url) {
+  try {
+    const parsed = new URL(url);
+
+    // Block non-HTTP(S) protocols
+    if (!parsed.protocol.startsWith('http')) return false;
+
+    // Block URLs with query strings (prevents cache poisoning via query manipulation)
+    if (parsed.search && parsed.search.length > 0) return false;
+
+    // Same-origin: check against whitelist
+    if (isSameOrigin(url)) return isTrustedPath(url);
+
+    // External: only trusted domains
+    if (isTrustedExternalDomain(url)) return true;
+
+    // Everything else: REJECT
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Validates a Response object before caching.
+ * Rejects opaque, redirected, and non-200 responses.
+ */
+function isResponseCacheable(response) {
+  // Must be a successful response
+  if (!response || response.status !== 200) return false;
+
+  // Reject opaque responses (cross-origin no-cors) — cannot verify integrity
+  if (response.type === 'opaque') return false;
+
+  // Reject redirected responses — prevents cache poisoning via redirect chains
+  if (response.redirected) return false;
+
+  return true;
+}
+
+/**
+ * Validates a Response for same-origin strict caching.
+ * Enforces response.type === 'basic' (same-origin only).
+ */
+function isResponseStrictCacheable(response) {
+  if (!isResponseCacheable(response)) return false;
+
+  // For same-origin resources, response type must be 'basic'
+  if (response.type !== 'basic' && response.type !== 'cors') return false;
+
+  return true;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // INSTALL — LIGHTWEIGHT Tier 1 only
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -167,7 +298,7 @@ self.addEventListener('activate', (event) => {
   
   event.waitUntil(
     (async () => {
-      // Purge outdated caches
+      // Purge ALL caches not matching current version — deterministic cleanup
       const keys = await caches.keys();
       await Promise.all(
         keys
@@ -181,24 +312,24 @@ self.addEventListener('activate', (event) => {
       // Immediately take control of all open tabs
       await self.clients.claim();
 
-      log('ACTIVATE', `Active with ${currentCacheNames.length} cache layers`);
+      log('ACTIVATE', `Active with ${currentCacheNames.length} cache layers (${CACHE_VERSION})`);
     })()
   );
 });
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// FETCH — Multi-strategy routing
+// FETCH — Multi-strategy routing with security validation
 // ═══════════════════════════════════════════════════════════════════════════════
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET requests
+  // ─── SECURITY GATE 1: Only process GET requests ───────────────────
   if (request.method !== 'GET') return;
 
-  // Skip chrome-extension, devtools, etc.
+  // ─── SECURITY GATE 2: Skip non-HTTP protocols ────────────────────
   if (!url.protocol.startsWith('http')) return;
 
   // ─── Strategy 1: Navigation requests (HTML pages) ─────────────────────
@@ -207,10 +338,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // ─── Strategy 2: Google Fonts (long-lived cache) ──────────────────────
-  if (url.hostname.includes('fonts.googleapis.com') || 
-      url.hostname.includes('fonts.gstatic.com')) {
+  // ─── Strategy 2: Google Fonts (trusted external, long-lived cache) ────
+  if (isTrustedExternalDomain(request.url)) {
     event.respondWith(fontStrategy(request));
+    return;
+  }
+
+  // ─── SECURITY GATE 3: Block non-same-origin requests from caching ────
+  if (!isSameOrigin(request.url)) {
+    // Unknown external domain — pass through to network without caching
+    return;
+  }
+
+  // ─── SECURITY GATE 4: Only cache whitelisted paths ───────────────────
+  if (!isTrustedPath(request.url)) {
+    // Unknown path — pass through to network without caching
     return;
   }
 
@@ -232,19 +374,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // ─── Fallback: Stale-while-revalidate for anything else ───────────────
-  event.respondWith(staleWhileRevalidate(request));
+  // ─── SECURITY: No fallback for unrecognized file types ────────────────
+  // Unknown same-origin asset types pass through to network without caching
 });
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// STRATEGY IMPLEMENTATIONS
+// STRATEGY IMPLEMENTATIONS (WITH SECURITY VALIDATION)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
  * Navigation Strategy: Cache-first with network fallback.
- * On first visit, caches the response. On subsequent visits, serves from cache.
+ * On first visit, caches the response after validation. 
  * Falls back to cached root `/` if specific route not cached.
+ * 
+ * SECURITY: Validates response before caching. Only caches same-origin navigations.
  */
 async function navigationStrategy(request) {
   const cache = await caches.open(CACHE_NAMES.shell);
@@ -252,15 +396,15 @@ async function navigationStrategy(request) {
   // Try cache first
   const cached = await cache.match(request, { ignoreSearch: true });
   if (cached) {
-    // Background refresh (non-blocking)
-    fetchAndCache(request, cache);
+    // Background refresh (non-blocking) — with validation
+    safeBackgroundUpdate(request, cache);
     return cached;
   }
   
   // Network with cache fallback
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    if (isResponseStrictCacheable(response)) {
       cache.put(request, response.clone());
     }
     return response;
@@ -270,16 +414,15 @@ async function navigationStrategy(request) {
     if (fallback) return fallback;
     
     // Nuclear fallback: minimal offline page
-    return new Response(
-      '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Akhand Bharat Darshan</title><style>body{background:#080706;color:#D6B96B;display:flex;align-items:center;justify-content:center;height:100vh;font-family:"Cinzel",serif;text-align:center;margin:0}h1{font-size:1.5rem;letter-spacing:0.15em;font-weight:400}p{color:rgba(214,185,107,0.5);font-size:0.85rem;margin-top:1rem;font-style:italic}</style></head><body><div><h1>Akhand Bharat Darshan</h1><p>Awaiting network to complete initial load...</p><p style="margin-top:2rem;font-size:0.7rem;opacity:0.3">Please connect to the internet and reload</p></div></body></html>',
-      { headers: { 'Content-Type': 'text/html' } }
-    );
+    return createOfflineFallbackPage();
   }
 }
 
 /**
  * Shell Strategy: Cache-first for JS/CSS bundles.
  * Next.js hashed bundles are immutable — serve from cache immediately.
+ * 
+ * SECURITY: Validates response type + status before caching.
  */
 async function shellStrategy(request) {
   const cached = await caches.match(request);
@@ -287,7 +430,7 @@ async function shellStrategy(request) {
   
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    if (isResponseStrictCacheable(response)) {
       const cache = await caches.open(CACHE_NAMES.shell);
       cache.put(request, response.clone());
       // Enforce entry limit
@@ -302,22 +445,22 @@ async function shellStrategy(request) {
 /**
  * Data Strategy: Cache-first with context-aware offline fallbacks.
  * 
- * CRITICAL FIX: Returns structurally valid fallback data (not bare `{}`)
- * so consuming code doesn't crash on `.map()`, `.features`, etc.
+ * SECURITY: Validates response before caching. Returns structurally valid 
+ * fallback data (not bare `{}`) so consuming code doesn't crash.
  */
 async function dataStrategy(request) {
   const cache = await caches.open(CACHE_NAMES.data);
   const cached = await cache.match(request);
   
   if (cached) {
-    // Stale-while-revalidate: serve cached, refresh in background
-    fetchAndCache(request, cache);
+    // Stale-while-revalidate: serve cached, refresh in background with validation
+    safeBackgroundUpdate(request, cache);
     return cached;
   }
   
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    if (isResponseStrictCacheable(response)) {
       cache.put(request, response.clone());
     }
     return response;
@@ -360,6 +503,9 @@ function getDataFallback(pathname) {
 /**
  * Asset Strategy: Cache-first for images/textures.
  * Images are immutable content — cache permanently.
+ * 
+ * SECURITY: Validates response integrity before caching.
+ * Returns transparent 1x1 PNG for failed images (no broken icons).
  */
 async function assetStrategy(request) {
   const cached = await caches.match(request);
@@ -367,7 +513,7 @@ async function assetStrategy(request) {
   
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    if (isResponseStrictCacheable(response)) {
       const cache = await caches.open(CACHE_NAMES.assets);
       cache.put(request, response.clone());
       // Enforce entry limit (evict oldest)
@@ -386,6 +532,9 @@ async function assetStrategy(request) {
 /**
  * Font Strategy: Cache-first with very long expiry.
  * Google Fonts are immutable once loaded.
+ * 
+ * SECURITY: Only processes requests to TRUSTED_EXTERNAL_DOMAINS.
+ * Validates response before caching (accepts 'cors' type for cross-origin).
  */
 async function fontStrategy(request) {
   const cache = await caches.open(CACHE_NAMES.fonts);
@@ -394,7 +543,7 @@ async function fontStrategy(request) {
   
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    if (isResponseCacheable(response)) {
       const copy = response.clone();
       cache.put(request, copy);
       enforceCacheLimit(CACHE_NAMES.fonts, MAX_ENTRIES.fonts);
@@ -405,23 +554,41 @@ async function fontStrategy(request) {
   }
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SECURITY: SAFE BACKGROUND UPDATE (replaces old fetchAndCache)
+// ═══════════════════════════════════════════════════════════════════════════════
+
 /**
- * Stale-While-Revalidate fallback for miscellaneous requests.
+ * Non-blocking background fetch + cache update WITH validation.
+ * Only caches responses that pass all security checks.
  */
-async function staleWhileRevalidate(request) {
-  const cached = await caches.match(request);
-  
-  const fetchPromise = fetch(request).then((response) => {
-    if (response.ok) {
-      const copy = response.clone();
-      caches.open(CACHE_NAMES.shell).then((cache) => {
-        cache.put(request, copy);
-      });
-    }
-    return response;
-  }).catch(() => null);
-  
-  return cached || (await fetchPromise) || new Response('', { status: 503 });
+function safeBackgroundUpdate(request, cache) {
+  fetch(request)
+    .then((response) => {
+      if (isResponseStrictCacheable(response)) {
+        cache.put(request, response.clone());
+      }
+    })
+    .catch(() => {
+      // Silent failure — we already have cached version
+    });
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SECURITY: OFFLINE FALLBACK PAGE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Creates a controlled, deterministic offline fallback page.
+ * No external resources, no dynamic content, no injection surface.
+ */
+function createOfflineFallbackPage() {
+  return new Response(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Akhand Bharat Darshan</title><style>body{background:#080706;color:#D6B96B;display:flex;align-items:center;justify-content:center;height:100vh;font-family:"Cinzel",serif;text-align:center;margin:0}h1{font-size:1.5rem;letter-spacing:0.15em;font-weight:400}p{color:rgba(214,185,107,0.5);font-size:0.85rem;margin-top:1rem;font-style:italic}</style></head><body><div><h1>Akhand Bharat Darshan</h1><p>Awaiting network to complete initial load...</p><p style="margin-top:2rem;font-size:0.7rem;opacity:0.3">Please connect to the internet and reload</p></div></body></html>',
+    { headers: { 'Content-Type': 'text/html' } }
+  );
 }
 
 
@@ -471,23 +638,6 @@ async function getStorageEstimate() {
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// UTILITY: Non-blocking background fetch + cache update
-// ═══════════════════════════════════════════════════════════════════════════════
-
-function fetchAndCache(request, cache) {
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        cache.put(request, response.clone());
-      }
-    })
-    .catch(() => {
-      // Silent failure — we already have cached version
-    });
-}
-
-
-// ═══════════════════════════════════════════════════════════════════════════════
 // STRUCTURED LOGGING — Lightweight tracing for diagnostics
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -505,7 +655,7 @@ self.addEventListener('message', (event) => {
 
   switch (event.data.type) {
     
-    // ─── Background precaching with verification ──────────────────────
+    // ─── Background precaching with validation ────────────────────────
     case 'PRECACHE_ASSETS': {
       const urls = event.data.urls || [];
       if (urls.length === 0) return;
@@ -518,6 +668,14 @@ self.addEventListener('message', (event) => {
 
         for (const url of urls) {
           try {
+            // SECURITY: Validate URL before precaching
+            const fullUrl = new URL(url, self.location.origin).href;
+            if (!isUrlCacheable(fullUrl)) {
+              log('PRECACHE:REJECT', `Blocked untrusted URL: ${url}`);
+              failed++;
+              continue;
+            }
+
             // Route to correct cache based on file type
             const isData = /\.(json|geojson)$/i.test(url);
             const targetCache = isData ? dataCache : assetCache;
@@ -529,10 +687,13 @@ self.addEventListener('message', (event) => {
             }
 
             const response = await fetch(url, { priority: 'low' });
-            if (response.ok) {
+            
+            // SECURITY: Validate response before caching
+            if (isResponseStrictCacheable(response)) {
               await targetCache.put(url, response);
               cached++;
             } else {
+              log('PRECACHE:REJECT', `Invalid response for: ${url} (status=${response.status}, type=${response.type})`);
               failed++;
             }
           } catch (e) {

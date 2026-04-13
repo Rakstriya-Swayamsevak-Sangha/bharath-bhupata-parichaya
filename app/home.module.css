@@ -96,7 +96,7 @@
 }
 
 .shlokaLine {
-  font-family: 'Noto Serif Devanagari', serif;
+  font-family: 'Noto Serif Devanagari', 'Georgia', 'Times New Roman', serif;
   font-size: clamp(1.2rem, 1rem + 2vw, 2.5rem);
   color: #D6B96B;
   margin-bottom: 0.8rem;
@@ -107,7 +107,7 @@
 }
 
 .translation {
-  font-family: 'Cinzel', serif;
+  font-family: 'Cinzel', 'Georgia', 'Times New Roman', serif;
   font-size: clamp(0.75rem, 0.7rem + 0.4vw, 1rem);
   color: rgba(240, 230, 211, 0.65);
   margin-top: 2.5rem;
@@ -142,7 +142,7 @@
   background: rgba(198, 168, 90, 0.05);
   border: 1px solid rgba(198, 168, 90, 0.3);
   color: #D6B96B;
-  font-family: 'Cinzel', serif;
+  font-family: 'Cinzel', 'Georgia', 'Times New Roman', serif;
   text-transform: uppercase;
   letter-spacing: 0.25em;
   border-radius: 4px;
@@ -178,7 +178,7 @@
   left: 0;
   right: 0;
   text-align: center;
-  font-family: 'Cinzel', serif;
+  font-family: 'Cinzel', 'Georgia', 'Times New Roman', serif;
   font-size: 1rem;
   color: #D6B96B;
   opacity: 1;
@@ -197,7 +197,7 @@
   background: transparent;
   border: none;
   color: rgba(240, 230, 211, 0.25);
-  font-family: 'Cinzel', serif;
+  font-family: 'Cinzel', 'Georgia', 'Times New Roman', serif;
   font-size: 0.7rem;
   letter-spacing: 0.15em;
   cursor: pointer;

@@ -274,6 +274,8 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
 
   if (!activeFilters.river) return null;
 
+  const safeRivers = Array.isArray(riversGeometry) ? riversGeometry : [];
+  
   const PALETTE = {
     glowColor: '#8AB8DC',
     glowOpacity: 0.18,
@@ -294,12 +296,15 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
 
   return (
     <>
-      {riversGeometry.map((river) => {
+      {safeRivers.map((river) => {
+        if (!river?.id) return null;
         const isSelected = selectedLocation?.id === river.id;
-        const path = river.path;
+        const path = Array.isArray(river.path) ? river.path : [];
+        if (path.length === 0) return null;
+        
         const labelIdx = Math.floor(path.length * 0.4);
-        const labelPoint = path[labelIdx];
-        const label = river.title[lang] || river.id;
+        const labelPoint = path[labelIdx] || path[0];
+        const label = river.title?.[lang] || river.id;
 
         // 🎯 Dynamic Visual Hierarchy
         let scale = 1.0;
@@ -408,15 +413,18 @@ const POILayer = React.memo(({ onItemClick, locations }: { onItemClick: (loc: Lo
   const { activeFilters } = useFilter();
   const { lang } = useLanguageStore();
 
+  const safeLocations = Array.isArray(locations) ? locations : [];
+  
   const filteredLocations = useMemo(() =>
-    locations.filter(loc => loc.category === 'city' && activeFilters.city),
-    [locations, activeFilters.city]);
+    safeLocations.filter(loc => loc?.category === 'city' && activeFilters.city),
+    [safeLocations, activeFilters.city]);
 
   return (
     <>
       {filteredLocations.map((item) => {
-        const title = item.name[lang];
-        const [lat, lng] = adjustCoords(item.id, item.latitude, item.longitude);
+        if (!item?.id) return null;
+        const title = item?.name?.[lang] || item?.name?.en || item.id;
+        const [lat, lng] = adjustCoords(item.id, item.latitude || 0, item.longitude || 0);
         const isSelected = selectedLocation?.id === item.id;
 
         return (
@@ -670,25 +678,32 @@ export function CulturalMap({ onMarkerClick, onRegionClick, locations }: Cultura
   const { lang } = useLanguageStore();
 
   useEffect(() => {
-    // 100ms Ritual delay allows DOM to stabilize after transition fade/zoom
     const t = setTimeout(() => setIsMapMounted(true), 100);
     return () => clearTimeout(t);
   }, []);
 
   useEffect(() => {
     fetch('/countries.geojson')
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error('Failed to load countries');
+        return r.json();
+      })
       .then(setBordersData)
-      .catch(console.error);
+      .catch(() => {});
     fetch('/india_states.geojson')
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error('Failed to load states');
+        return r.json();
+      })
       .then(setStateBorders)
-      .catch(console.error);
+      .catch(() => {});
   }, []);
 
   if (!isMapMounted) return (
     <div style={{ width: '100%', height: '100%', backgroundColor: '#080706' }} />
   );
+
+  const safeLocations = Array.isArray(locations) ? locations : [];
 
   return (
     <MapContainer

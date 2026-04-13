@@ -1,52 +1,29 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UI_TEXT } from '@/data/uiText';
-import { RegionSkeleton, CitySkeleton, RiverSkeleton, MountainSkeleton, SkeletonLine } from './KnowledgePanelSkeletons';
+import { RegionSkeleton, CitySkeleton, RiverSkeleton, MountainSkeleton } from './KnowledgePanelSkeletons';
+import { SafeImage } from '@/components/SafeImage/SafeImage';
+import { safeGet, safeGetString, safeGetArray, safeGetPath } from '@/utils/safeData';
 
-const ImageWithSkeleton = ({ src, alt, fallback, className, hideOnError }: any) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  
-  if (hasError && hideOnError) return null;
-
-  return (
-    <div className={`relative ${className}`} style={{ height: '200px', width: '100%', overflow: 'hidden', background: '#3A2F24' }}>
-      <AnimatePresence>
-        {!isLoaded && !hasError && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0 skeleton-base"
-          />
-        )}
-      </AnimatePresence>
-      <img
-        src={src}
-        alt={alt}
-        className="w-full h-full object-cover transition-opacity duration-300"
-        style={{ opacity: isLoaded ? 1 : 0 }}
-        onLoad={() => setIsLoaded(true)}
-        onError={(e) => {
-          if (fallback) {
-            (e.target as HTMLImageElement).src = fallback;
-          } else {
-            setHasError(true);
-            setIsLoaded(true);
-          }
-        }}
-      />
-      <div className="kp-hero-overlay absolute inset-0" style={{ display: hasError ? 'none' : 'block' }} />
-    </div>
-  );
-};
+const DEFAULT_IMAGE_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%233A2F24' width='400' height='300'/%3E%3Ctext fill='%238B7355' font-family='serif' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EImage unavailable%3C/text%3E%3C/svg%3E";
 
 interface KnowledgePanelProps {
   onClose: () => void;
+}
+
+interface SafeLocation {
+  id: string;
+  name: { en: string; kn: string; hi: string };
+  category: string;
+  latitude?: number;
+  longitude?: number;
+  description?: string;
+  metadata?: Record<string, string>;
+  historicalSignificance?: string;
 }
 
 export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
@@ -55,9 +32,10 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [deviceMode, setDeviceMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [sheetMode, setSheetMode] = useState<'collapsed' | 'half' | 'full'>('full');
-  const [localLocation, setLocalLocation] = useState(selectedLocation);
+  const [localLocation, setLocalLocation] = useState<SafeLocation | null>(null);
   const [knowledge, setKnowledge] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -129,29 +107,32 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
 
     // 2. Handle Opening / Loading
     // Only fetch if location changed or knowledge is missing
-    if (selectedLocation.id !== localLocation?.id || !knowledge) {
-      const category = selectedLocation.category;
-      const id = selectedLocation.id;
+    if (selectedLocation?.id && selectedLocation.id !== localLocation?.id || !knowledge) {
+      const category = selectedLocation?.category;
+      const id = selectedLocation?.id;
+
+      if (!category || !id) return;
 
       setLoading(true);
-      setLocalLocation(selectedLocation);
+      setLocalLocation(selectedLocation as SafeLocation);
+      setLoadError(false);
 
       const loadKnowledge = async () => {
         const startTime = Date.now();
         try {
           let data;
           if (category === 'mountain') {
-            const mod = await import('@/data/mountainKnowledge');
-            data = mod.mountainKnowledge[id];
+            const mod = await import('@/data/mountainKnowledge').catch(() => null);
+            data = mod?.mountainKnowledge?.[id];
           } else if (category === 'river') {
-            const mod = await import('@/data/riverKnowledge');
-            data = mod.riverKnowledge[id];
+            const mod = await import('@/data/riverKnowledge').catch(() => null);
+            data = mod?.riverKnowledge?.[id];
           } else if (category === 'city') {
-            const mod = await import('@/data/cityKnowledge');
-            data = mod.cityKnowledge[id];
+            const mod = await import('@/data/cityKnowledge').catch(() => null);
+            data = mod?.cityKnowledge?.[id];
           } else if (category === 'region') {
-            const mod = await import('@/data/regionKnowledge');
-            data = mod.regionKnowledge[id];
+            const mod = await import('@/data/regionKnowledge').catch(() => null);
+            data = mod?.regionKnowledge?.[id];
           }
 
           if (!isMounted) return;
@@ -159,28 +140,32 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
           if (data) {
             setKnowledge(data);
             
-            // ─── Phase 3: Tier 2 Interaction Caching (Just-in-Time) ────────
             const imagePath = data.image || `/place-images/${category === 'city' ? 'sacred-cities' : category + 's'}/${id}.jpg`;
             import('@/components/PWA/PreloadSystem').then(mod => {
-              mod.cacheInteractionAssets([imagePath]);
-            });
+              if (mod?.cacheInteractionAssets) {
+                mod.cacheInteractionAssets([imagePath]);
+              }
+            }).catch(() => {});
           } else {
+            const locationName = selectedLocation?.name || { en: id, kn: id, hi: id };
             setKnowledge({
-              ...selectedLocation,
-              title: selectedLocation.name,
-              description: { en: (selectedLocation as any).description || "", kn: (selectedLocation as any).description || "", hi: (selectedLocation as any).description || "" },
-              facts: (selectedLocation as any).metadata || {},
-              cultural: { en: (selectedLocation as any).historicalSignificance || "", kn: (selectedLocation as any).historicalSignificance || "", hi: (selectedLocation as any).historicalSignificance || "" }
+              id: id,
+              title: locationName,
+              description: { en: safeGetString(selectedLocation?.description, ''), kn: safeGetString(selectedLocation?.description, ''), hi: safeGetString(selectedLocation?.description, '') },
+              facts: selectedLocation?.metadata || {},
+              cultural: { en: safeGetString(selectedLocation?.historicalSignificance, ''), kn: safeGetString(selectedLocation?.historicalSignificance, ''), hi: safeGetString(selectedLocation?.historicalSignificance, '') }
             });
             
-            // Trigger caching for default path even if no knowledge data
             const imagePath = `/place-images/${category === 'city' ? 'sacred-cities' : category + 's'}/${id}.jpg`;
             import('@/components/PWA/PreloadSystem').then(mod => {
-              mod.cacheInteractionAssets([imagePath]);
-            });
+              if (mod?.cacheInteractionAssets) {
+                mod.cacheInteractionAssets([imagePath]);
+              }
+            }).catch(() => {});
           }
         } catch (err) {
           console.error('Failed to load knowledge data:', err);
+          setLoadError(true);
         } finally {
           if (isMounted) {
             const elapsed = Date.now() - startTime;
@@ -389,25 +374,26 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
 
                 {isCity && (
                   <motion.div className="kp-hero-container" variants={itemVariants}>
-                    <ImageWithSkeleton
-                      src={knowledge.image || `/place-images/sacred-cities/${localLocation.id}.jpg`}
+                    <SafeImage
+                      src={knowledge.image || `/place-images/sacred-cities/${safeGetPath(localLocation, 'id', '')}.jpg`}
                       alt={String(title)}
                       className="kp-hero city-hero"
-                      fallback='/place-images/sacred-cities/default.jpg'
+                      fallbackSrc={DEFAULT_IMAGE_FALLBACK}
+                      fallbackColor="#3A2F24"
                     />
                     {knowledge.identity && (
                       <div className="kp-identity-strip">
                         <div className="identity-item">
                           <span className="identity-label">{UI_TEXT.region[lang]}</span>
-                          <span className="identity-value">{knowledge.identity.region[lang]}</span>
+                          <span className="identity-value">{safeGetPath(knowledge.identity, `region.${lang}`, '')}</span>
                         </div>
                         <div className="identity-item">
                           <span className="identity-label">{UI_TEXT.river[lang]}</span>
-                          <span className="identity-value">{knowledge.identity.river[lang]}</span>
+                          <span className="identity-value">{safeGetPath(knowledge.identity, `river.${lang}`, '')}</span>
                         </div>
                         <div className="identity-item">
                           <span className="identity-label">{UI_TEXT.era[lang]}</span>
-                          <span className="identity-value">{knowledge.identity.era[lang]}</span>
+                          <span className="identity-value">{safeGetPath(knowledge.identity, `era.${lang}`, '')}</span>
                         </div>
                       </div>
                     )}
@@ -427,10 +413,12 @@ export function KnowledgePanel({ onClose }: KnowledgePanelProps) {
                     )}
 
                     <motion.div className="kp-hero" variants={itemVariants}>
-                      <ImageWithSkeleton
-                        src={knowledge.image || `/place-images/${localLocation.category === 'city' ? 'sacred-cities' : localLocation.category + 's'}/${localLocation.id}.jpg`}
+                      <SafeImage
+                        src={knowledge.image || `/place-images/${localLocation?.category === 'city' ? 'sacred-cities' : (localLocation?.category || 'mountains') + 's'}/${safeGetPath(localLocation, 'id', '')}.jpg`}
                         alt={String(title)}
                         className="kp-hero"
+                        fallbackSrc={DEFAULT_IMAGE_FALLBACK}
+                        fallbackColor="#3A2F24"
                         hideOnError={true}
                       />
                     </motion.div>

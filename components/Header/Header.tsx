@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useLanguageStore } from '@/store/languageStore';
-import { UI_TEXT } from '@/data/uiText';
 import { Search } from '@/components/Search/Search';
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { useInstallPrompt } from '@/components/PWA/useInstallPrompt';
@@ -13,7 +12,7 @@ import { Download } from 'lucide-react';
 export function Header() {
   const { lang } = useLanguageStore();
   const pathname = usePathname();
-  
+
   // ─── Install UX State System ─────────────────────────────────
   const { status, triggerInstall, isInstalled } = useInstallPrompt();
   const [showIOSGuide, setShowIOSGuide] = useState(false);
@@ -58,15 +57,19 @@ export function Header() {
           <span className="title-line">Bharath Bhupata</span>
           <span className="title-line">Parichaya</span>
         </h1>
-        
-        <div className="header-actions">
+
+        <div className="header-center flex-grow">
+          <Search />
+        </div>
+
+        <div className="header-actions flex-shrink-0">
           {shouldShow && (
-            <button 
+            <button
               className={`install-button-header state-${status.toLowerCase()}`}
               onClick={handleInstallClick}
               aria-label={getAriaLabel()}
               aria-disabled={status === 'PREPARING'}
-              style={{ 
+              style={{
                 opacity: status === 'PREPARING' ? 0.6 : 1,
                 cursor: status === 'READY' || status === 'IOS_GUIDE' ? 'pointer' : 'default',
                 pointerEvents: status === 'PREPARING' ? 'none' : 'auto'
@@ -76,14 +79,13 @@ export function Header() {
               <span className="label-text">{getInstallLabel()}</span>
             </button>
           )}
-          <Search />
           <LanguageSwitcher />
         </div>
       </div>
 
-      <IOSInstallGuidance 
-        visible={showIOSGuide} 
-        onDismiss={() => setShowIOSGuide(false)} 
+      <IOSInstallGuidance
+        visible={showIOSGuide}
+        onDismiss={() => setShowIOSGuide(false)}
       />
     </header>
   );
