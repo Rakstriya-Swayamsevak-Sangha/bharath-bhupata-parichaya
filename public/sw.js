@@ -22,7 +22,7 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'v1.1.0';
+const CACHE_VERSION = 'v1.2.0';
 
 const CACHE_NAMES = {
   shell:  `app-shell-${CACHE_VERSION}`,
@@ -71,6 +71,7 @@ const TRUSTED_EXACT_PATHS = [
   '/parchment-texture.png',
   '/countries.geojson',
   '/india_states.geojson',
+  '/fallback.svg', // Fallback image for failed asset loads
 ];
 
 // Trusted external domains (ONLY Google Fonts — nothing else)
@@ -87,6 +88,7 @@ const APP_SHELL_URLS = [
   '/manifest.json',
   '/favicon.png',
   '/parchment-texture.png', // Background texture is critical for shell feel
+  '/fallback.svg', // Fallback image for failed asset loads (critical for UX)
 ];
 
 // Tier 2 & 3 lists (Used for progressive & background caching)
@@ -503,28 +505,64 @@ function getDataFallback(pathname) {
 /**
  * Asset Strategy: Cache-first for images/textures.
  * Images are immutable content — cache permanently.
- * 
+ *
  * SECURITY: Validates response integrity before caching.
- * Returns transparent 1x1 PNG for failed images (no broken icons).
+ * Returns themed fallback SVG for failed images (no broken icons).
  */
 async function assetStrategy(request) {
   const cached = await caches.match(request);
   if (cached) return cached;
-  
+
   try {
     const response = await fetch(request);
     if (isResponseStrictCacheable(response)) {
       const cache = await caches.open(CACHE_NAMES.assets);
       cache.put(request, response.clone());
-      // Enforce entry limit (evict oldest)
       enforceCacheLimit(CACHE_NAMES.assets, MAX_ENTRIES.assets);
     }
     return response;
   } catch (err) {
-    // Return transparent 1x1 PNG for failed images (prevents broken image icons)
+    // Try case variations with ALL extensions for mixed-case filenames (Mahanadi, Godavari, Narmada)
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+    if (pathname.includes('/place-images/')) {
+      const name = pathname.split('/').pop()?.split('.')[0] || '';
+      const dir = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+      const exts = ['jpg', 'JPG', 'jpeg', 'webp', 'avif', 'png', 'PNG'];
+
+      // Try capitalized first-letter variant with EACH extension
+      for (const e of exts) {
+        const capitalized = dir + name.charAt(0).toUpperCase() + name.slice(1) + '.' + e;
+        try {
+          const altResponse = await fetch(capitalized);
+          if (isResponseStrictCacheable(altResponse)) {
+            const cache = await caches.open(CACHE_NAMES.assets);
+            cache.put(capitalized, altResponse.clone());
+            enforceCacheLimit(CACHE_NAMES.assets, MAX_ENTRIES.assets);
+            return altResponse;
+          }
+        } catch (e) { /* continue */ }
+      }
+
+      // Try ALL uppercase variant
+      for (const e of exts) {
+        const upper = dir + name.toUpperCase() + '.' + e;
+        try {
+          const altResponse = await fetch(upper);
+          if (isResponseStrictCacheable(altResponse)) {
+            const cache = await caches.open(CACHE_NAMES.assets);
+            cache.put(upper, altResponse.clone());
+            enforceCacheLimit(CACHE_NAMES.assets, MAX_ENTRIES.assets);
+            return altResponse;
+          }
+        } catch (e) { /* continue */ }
+      }
+    }
+
+    // Return fallback SVG for failed images
     return new Response(
-      Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='), c => c.charCodeAt(0)),
-      { headers: { 'Content-Type': 'image/png' } }
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#3A2F24" width="400" height="300"/><text fill="#8B7355" font-family="serif" font-size="16" x="50%" y="50%" text-anchor="middle" dy=".3em">Image unavailable</text></svg>',
+      { headers: { 'Content-Type': 'image/svg+xml' } }
     );
   }
 }
