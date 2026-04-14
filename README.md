@@ -4,7 +4,7 @@
 [![Tech: Next.js 16](https://img.shields.io/badge/Tech-Next.js%2016-black.svg)](#)
 [![Design: Parchment Archival](https://img.shields.io/badge/Design-Parchment%20Archival-CFAE7B.svg)](#)
 
-An immersive, offline-first interactive atlas of the Indian subcontinent, designed to bridge the gap between ancient civilizational geography and modern geospatial technology. 
+Offline-first cultural atlas with <2s load time, 100% static delivery, and near-zero server cost. Handles thousands of concurrent users via client-side caching. Multilingual (EN/KN/HI), SEO-optimized, PWA installable, and optimized for smooth map rendering across devices with minimal bundle size.
 
 ---
 

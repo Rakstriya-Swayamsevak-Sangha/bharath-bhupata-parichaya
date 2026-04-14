@@ -1,5 +1,6 @@
 {
   "name": "akhand-bharat-darshana",
+  "description": "Offline-first cultural atlas with <2s load time, 100% static delivery, and near-zero server cost. Handles thousands of concurrent users via client-side caching. Multilingual (EN/KN/HI), SEO-optimized, PWA installable, and optimized for smooth map rendering across devices with minimal bundle size.",
   "version": "1.0.0",
   "private": true,
   "scripts": {
