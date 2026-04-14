@@ -22,10 +22,12 @@ export function adjustCoords(id: string, lat: number, lng: number): [number, num
 }
 
 /**
- * Returns a precise zoom level based on the item category.
+ * Returns a precise zoom level based on the item category and ID.
  * Used for "precise" fly-to actions from search results.
  */
-export function getPreciseZoom(category: string): number {
+export function getPreciseZoom(category: string, id?: string): number {
+  if (id === 'raivataka') return 7.5; // Raivataka is a smaller range, needs closer zoom
+
   switch (category) {
     case 'city':
       return 8.5; // High zoom for cities/temples

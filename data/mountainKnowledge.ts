@@ -31,9 +31,9 @@ export const mountainKnowledge: Record<string, MountainKnowledge> = {
     id: "himalaya",
 
     title: {
-      en: "Himavan",
-      kn: "ಹಿಮವಂತ",
-      hi: "हिमवान"
+      en: "Himalaya",
+      kn: "ಹಿಮಾಲಯ",
+      hi: "हिमालय"
     },
 
     facts: {

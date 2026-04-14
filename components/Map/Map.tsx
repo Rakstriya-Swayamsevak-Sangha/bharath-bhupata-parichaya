@@ -93,6 +93,7 @@ const TERRAIN_CONFIG: Record<string, { zoneWidth: number; density: number; impor
   'mahendra': { zoneWidth: 1.0, density: 3, importance: 0.4 }, // Mahendra — LOW (coastal slant)
   'vindhya': { zoneWidth: 1.8, density: 5, importance: 0.7 }, // Vindhya — MEDIUM
   'aravalli': { zoneWidth: 1.6, density: 4, importance: 0.65 },// Aravalli — MEDIUM
+  'raivataka': { zoneWidth: 0.6, density: 2, importance: 0.3 }, // Raivataka — LOW
 };
 
 // Jitter — removes machine-precision look, gives hand-drawn feel
@@ -603,7 +604,7 @@ function FlyToLocation() {
 
   useEffect(() => {
     if (selectedLocation && selectedLocation.latitude && selectedLocation.longitude) {
-      const zoom = getPreciseZoom(selectedLocation.category);
+      const zoom = getPreciseZoom(selectedLocation.category, selectedLocation.id);
 
       const handleMoveEnd = () => {
         setIsNavigating(false);
@@ -615,7 +616,7 @@ function FlyToLocation() {
       map.on('moveend', handleMoveEnd);
 
       map.flyTo([selectedLocation.latitude, selectedLocation.longitude], zoom, {
-        duration: 0.8,
+        duration: 1.2,
         easeLinearity: 0.25,
         noMoveStart: true
       });
