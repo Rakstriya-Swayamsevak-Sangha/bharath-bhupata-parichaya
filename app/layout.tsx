@@ -4,6 +4,8 @@ import ServiceWorkerManager from '@/components/PWA/ServiceWorkerManager';
 import PreloadSystem from '@/components/PWA/PreloadSystem';
 import ViewportStabilizer from '@/components/ui/ViewportStabilizer';
 import AssetGuard from '@/components/AssetGuard';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 export const viewport = {
   themeColor: '#FF9933',
@@ -48,6 +50,8 @@ export default function RootLayout({
         <ServiceWorkerManager />
         <PreloadSystem />
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
