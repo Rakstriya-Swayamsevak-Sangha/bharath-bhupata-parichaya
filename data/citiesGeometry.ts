@@ -15,14 +15,14 @@ export const citiesGeometry: CityGeometry[] = [
   { id: "mathura", name: { en: "Mathura", kn: "ಮಥುರಾ", hi: "मथुरा" }, coords: [27.4924, 77.6737] },
   { id: "ayodhya", name: { en: "Ayodhya", kn: "ಅಯೋಧ್ಯೆ", hi: "अयोध्या" }, coords: [26.7999, 82.2042] },
   { id: "vaishali", name: { en: "Vaishali", kn: "ವೈಶಾಲಿ", hi: "वैशाली" }, coords: [25.9870, 85.1290] },
-  { id: "patliputra", name: { en: "Patliputra", kn: "ಪಾಟಲಿಪುತ್ರ", hi: "पाटलिपुत्र" }, coords: [25.5941, 85.1376] },
+  { id: "pataliputra", name: { en: "Pataliputra", kn: "ಪಾಟಲಿಪುತ್ರ", hi: "पाटलिपुत्र" }, coords: [25.5941, 85.1376] },
   { id: "prayag", name: { en: "Prayag", kn: "ಪ್ರಯಾಗ", hi: "प्रयाग" }, coords: [25.4358, 81.8463] },
   { id: "gaya", name: { en: "Gaya", kn: "ಗಯಾ", hi: "गया" }, coords: [24.7955, 85.0002] },
-  { id: "avanthika", name: { en: "Avanthika", kn: "ಅವಂತಿಕಾ", hi: "अवंतिका" }, coords: [23.1765, 75.7885] },
+  { id: "ujjain", name: { en: "Avanthika", kn: "ಅವಂತಿಕಾ", hi: "अवंतिका" }, coords: [23.1765, 75.7885] },
   { id: "dwarka", name: { en: "Dwarka", kn: "ದ್ವಾರಕಾ", hi: "द्वारका" }, coords: [22.2442, 68.9685] },
   { id: "somnath", name: { en: "Somanath", kn: "ಸೋಮನಾಥ", hi: "सोमनाथ" }, coords: [20.8880, 70.4012] },
   { id: "nagpur", name: { en: "Nagpur", kn: "ನಾಗಪುರ", hi: "नागपुर" }, coords: [21.1458, 79.0882] },
   { id: "puri", name: { en: "Puri", kn: "ಪುರಿ", hi: "पुरी" }, coords: [19.8135, 85.8312] },
-  { id: "vijayanagar", name: { en: "Vijaynagar", kn: "ವಿಜಯನಗರ", hi: "विजयनगर" }, coords: [15.3350, 76.4600] },
+  { id: "vijaya-nagar", name: { en: "Vijaynagar", kn: "ವಿಜಯನಗರ", hi: "विजयनगर" }, coords: [15.3350, 76.4600] },
   { id: "kanchi", name: { en: "Kanchi", kn: "ಕಾಂಚಿ", hi: "कांची" }, coords: [12.8342, 79.7036] }
 ];

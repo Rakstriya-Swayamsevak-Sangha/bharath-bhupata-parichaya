@@ -33,17 +33,17 @@ const cities: SearchItem[] = Object.values(cityKnowledge).map((city) => ({
     ...(city.id === "indraprastha" ? ["pandavas", "delhi", "mahabharata", "epic"] : []),
     ...(city.id === "prayag" ? ["sangam", "confluence", "triveni", "kumbh", "allahabad"] : []),
     ...(city.id === "vaishali" ? ["republic", "buddha", "mahavira", "jainism"] : []),
-    ...(city.id === "patliputra" ? ["patna", "magadha", "maurya", "gupta", "empire"] : []),
+    ...(city.id === "pataliputra" ? ["patna", "magadha", "maurya", "gupta", "empire"] : []),
     ...(city.id === "gaya" ? ["moksha", "pind daan", "ancestors", "phalgu", "shradh"] : []),
     ...(city.id === "dwarka" ? ["krishna", "submerged", "coastal", "char dham", "gujarat"] : []),
     ...(city.id === "somnath" ? ["jyotirlinga", "shiva", "shrine", "prabhas patan"] : []),
-    ...(city.id === "avanthika" ? ["ujjain", "mahakal", "jyotirlinga", "shipra", "vikramaditya"] : []),
+    ...(city.id === "ujjain" ? ["mahakal", "jyotirlinga", "shipra", "vikramaditya"] : []),
     ...(city.id === "nagpur" ? ["vidarbha", "center", "maharashtra"] : []),
     ...(city.id === "puri" ? ["jagannath", "chariot", "odisha", "east", "char dham"] : []),
-    ...(city.id === "vijayanagar" ? ["hampi", "ruins", "tunga", "empire", "karnataka"] : []),
+    ...(city.id === "vijaya-nagar" ? ["hampi", "ruins", "tunga", "empire", "karnataka"] : []),
     ...(city.id === "kanchi" ? ["kanchipuram", "silk", "pallava", "temple city", "tamil nadu"] : []),
   ],
-  importance: city.id === "prayag" || city.id === "ayodhya" || city.id === "avanthika" || city.id === "mathura" ? 10 : 8,
+  importance: city.id === "prayag" || city.id === "ayodhya" || city.id === "ujjain" || city.id === "mathura" ? 10 : 8,
 }));
 
 const mountains: SearchItem[] = Object.values(mountainKnowledge).map((m) => ({

@@ -404,8 +404,8 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
     }
   },
 
-  patliputra: {
-    id: "patliputra",
+  pataliputra: {
+    id: "pataliputra",
   
     title: {
       en: "Pataliputra",
@@ -612,8 +612,8 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
     }
   },
 
-  avanthika: {
-    id: "avanthika",
+  ujjain: {
+    id: "ujjain",
   
     title: {
       en: "Avanthika",
@@ -820,8 +820,8 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
     }
   },
 
-  vijayanagar: {
-    id: "vijayanagar",
+  "vijaya-nagar": {
+    id: "vijaya-nagar",
   
     title: {
       en: "Vijayanagar",

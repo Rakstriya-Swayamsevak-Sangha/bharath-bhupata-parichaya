@@ -23,6 +23,8 @@ The project was born out of a technical intent to solve the "DevTools vs. Real D
 - **🔋 Offline-First (PWA)**: Hard-precached assets and data for 100% functionality without network access.
 - **🎨 Zero-CLS Skeleton System**: Layout-accurate predictive loading that mirrors final UI structures to eliminate layout shifts.
 - **📱 Real-Device Responsive**: A strict mobile-first architecture optimized for physical hardware, not just browser emulators.
+- **🛡️ Museum-Grade UI Resilience**: Asset Guard and Safe Rendering layer ensure failure-proof UX — images, panels, and data gracefully degrade without breaking the experience.
+- **📐 Viewport Stability**: Dynamic `100dvh` handling and stabilized headers prevent common mobile layout drift issues.
 
 ---
 
@@ -37,11 +39,12 @@ The system is built on a **Modular Layered Architecture** to ensure high perform
 ---
 
 ## 🗂️ 4. Folder Structure
-- `app/`: Contains the Next.js App Router logic, including the core `/bharatvarsha` route and global layout.
-- `components/`: Modular UI system split into `Map`, `Header`, `KnowledgePanel`, and `FilterControls`.
-- `data/`: The heart of the application—contains optimized JSON/GeoJSON datasets for mountains, rivers, cities, and cultural knowledge.
+- `app/`: Contains the Next.js App Router logic, including the core `/bharatvarsha` route, global layout, and offline-capable entry points.
+- `components/`: Modular UI system split into `Map`, `Header`, `KnowledgePanel`, `FilterControls`, `SafeImage`, `AssetGuard`, `ui/`, and PWA management components.
+- `data/`: The heart of the application — contains GeoJSON geometry datasets (`mountainsGeometry.ts`), rich multilingual knowledge content (`mountainKnowledge.ts`, `riverKnowledge.ts`, `cityKnowledge.ts`, `regionKnowledge.ts`), search indexing, and image manifests.
 - `lib/`: Utility functions for geospatial math, distance calculations, and coordinate adjustments.
-- `public/`: Static assets including parchment textures, brand icons, and service worker configurations.
+- `public/`: Static assets including parchment textures, brand icons, GeoJSON data files, place images, and service worker configurations.
+- `providers/`: React context providers for cross-component state synchronization.
 
 ---
 
@@ -110,15 +113,17 @@ The application utilizes a sophisticated service worker strategy:
 
 ## 🧪 12. Challenges & Learnings
 - **Boundary Precision**: Handling the intersection of administrative lines and civilizational regions required a custom "Land Mask" overlay logic.
-- **Viewport Drift**: Solving the inconsistency between Chrome DevTools and real mobile hardware required refactoring the entire layout to avoid `position: fixed` bottlenecks.
+- **Viewport Drift**: Solving the inconsistency between Chrome DevTools and real mobile hardware required refactoring the entire layout to avoid `position: fixed` bottlenecks — solved with `100dvh` and `ViewportStabilizer`.
 - **CLS Control**: Matching skeleton dimensions exactly to dynamic multilingual content was a rigorous exercise in CSS-grid synchronization.
+- **Image Resilience**: Inconsistent file extensions (`.jpg` vs `.JPG`) and missing assets caused silent failures — solved with `SafeImage` (which tries multiple extensions/case variations) and a build-time `AssetGuard` that validates all referenced assets exist.
+- **Offline PWA Reliability**: Service worker cache-first strategies were hardened with deterministic precaching and manifest-driven data file serving to guarantee full offline functionality.
 
 ---
 
 ## 🤝 13. Contribution & Credits
-Built as a solo endeavor to celebrate the civilizational continuity of Bharat. 
+Built as a solo endeavor to celebrate the civilizational continuity of Bharat.
 
-**Engineering & Design**: [Your Name/Handle]
+**Engineering & Design**: [Chiranjeevi005](https://github.com/Chiranjeevi005)
 
 ---
 
