@@ -22,7 +22,7 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'v1.2.0';
+const CACHE_VERSION = 'v2.1.0';
 
 const CACHE_NAMES = {
   shell:  `app-shell-${CACHE_VERSION}`,
@@ -112,43 +112,41 @@ const ASSET_URLS = [
   // Icons
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
-  // Mountain images
+  // Manifest Assets (Strict List derived from imageManifest)
   '/place-images/mountains/aravalli.webp',
   '/place-images/mountains/himalaya.avif',
   '/place-images/mountains/mahendra.jpg',
   '/place-images/mountains/malaya.jpg',
+  '/place-images/mountains/raivataka.webp',
   '/place-images/mountains/sahyadri.jpg',
   '/place-images/mountains/vindhya.webp',
-  // River images
   '/place-images/rivers/brahmaputra.webp',
   '/place-images/rivers/gandaki.webp',
   '/place-images/rivers/ganga.jpg',
-  '/place-images/rivers/Godavari.jpg',
+  '/place-images/rivers/godavari.jpg',
   '/place-images/rivers/kaveri.jpg',
   '/place-images/rivers/krishna.jpg',
-  '/place-images/rivers/Mahanadi.jpg',
-  '/place-images/rivers/Narmada.jpg',
+  '/place-images/rivers/mahanadi.jpg',
+  '/place-images/rivers/narmada.jpg',
   '/place-images/rivers/saraswati.jpg',
   '/place-images/rivers/sindhu.jpg',
   '/place-images/rivers/yamuna.jpg',
-  // Sacred city images
   '/place-images/sacred-cities/amritsar.jpg',
   '/place-images/sacred-cities/ayodhya.jpg',
   '/place-images/sacred-cities/dwarka.jpg',
   '/place-images/sacred-cities/gaya.jpg',
   '/place-images/sacred-cities/indraprastha.jpg',
-  '/place-images/sacred-cities/Kanchi.jpg',
+  '/place-images/sacred-cities/kanchi.jpg',
   '/place-images/sacred-cities/mathura.jpg',
   '/place-images/sacred-cities/nagpur.jpg',
-  '/place-images/sacred-cities/patliputra.jpg',
+  '/place-images/sacred-cities/pataliputra.jpg',
   '/place-images/sacred-cities/prayag.webp',
   '/place-images/sacred-cities/puri.jpg',
   '/place-images/sacred-cities/somnath.jpg',
   '/place-images/sacred-cities/takshashila.jpg',
   '/place-images/sacred-cities/ujjain.webp',
   '/place-images/sacred-cities/vaishali.jpg',
-  '/place-images/sacred-cities/vijaynagar.jpg',
-  // Region images
+  '/place-images/sacred-cities/vijaya-nagar.jpg',
   '/place-images/regions/afghanistan.jpg',
   '/place-images/regions/bangladesh.jpg',
   '/place-images/regions/bhutan.jpg',
@@ -156,7 +154,7 @@ const ASSET_URLS = [
   '/place-images/regions/myanmar.jpg',
   '/place-images/regions/nepal.jpg',
   '/place-images/regions/pakistan.png',
-  '/place-images/regions/srilanka.jpg',
+  '/place-images/regions/sri-lanka.jpg',
 ];
 
 // Data files that return arrays when parsed (used for context-aware fallbacks)
@@ -522,42 +520,6 @@ async function assetStrategy(request) {
     }
     return response;
   } catch (err) {
-    // Try case variations with ALL extensions for mixed-case filenames (Mahanadi, Godavari, Narmada)
-    const url = new URL(request.url);
-    const pathname = url.pathname;
-    if (pathname.includes('/place-images/')) {
-      const name = pathname.split('/').pop()?.split('.')[0] || '';
-      const dir = pathname.substring(0, pathname.lastIndexOf('/') + 1);
-      const exts = ['jpg', 'JPG', 'jpeg', 'webp', 'avif', 'png', 'PNG'];
-
-      // Try capitalized first-letter variant with EACH extension
-      for (const e of exts) {
-        const capitalized = dir + name.charAt(0).toUpperCase() + name.slice(1) + '.' + e;
-        try {
-          const altResponse = await fetch(capitalized);
-          if (isResponseStrictCacheable(altResponse)) {
-            const cache = await caches.open(CACHE_NAMES.assets);
-            cache.put(capitalized, altResponse.clone());
-            enforceCacheLimit(CACHE_NAMES.assets, MAX_ENTRIES.assets);
-            return altResponse;
-          }
-        } catch (e) { /* continue */ }
-      }
-
-      // Try ALL uppercase variant
-      for (const e of exts) {
-        const upper = dir + name.toUpperCase() + '.' + e;
-        try {
-          const altResponse = await fetch(upper);
-          if (isResponseStrictCacheable(altResponse)) {
-            const cache = await caches.open(CACHE_NAMES.assets);
-            cache.put(upper, altResponse.clone());
-            enforceCacheLimit(CACHE_NAMES.assets, MAX_ENTRIES.assets);
-            return altResponse;
-          }
-        } catch (e) { /* continue */ }
-      }
-    }
 
     // Return fallback SVG for failed images
     return new Response(

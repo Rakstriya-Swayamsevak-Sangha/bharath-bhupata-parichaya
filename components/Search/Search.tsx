@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { search, SearchResult } from '@/utils/search';
+import { resolveText } from '@/utils/resolveText';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UI_TEXT } from '@/data/uiText';
 import { citiesGeometry } from '@/data/citiesGeometry';
@@ -13,7 +14,7 @@ import { COUNTRY_LABELS } from '@/data/regionsGeometry';
 import { adjustCoords } from '@/utils/geo';
 import { Location } from '@/types/location';
 
-export function Search() {
+export const Search = React.memo(function Search() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -153,8 +154,8 @@ export function Search() {
                 onClick={() => handleSelect(result)}
                >
                 <div className="result-info">
-                  <span className="result-title">{result.title[lang]}</span>
-                  {lang !== 'en' && <span className="result-subtitle">{result.title.en}</span>}
+                  <span className="result-title">{resolveText(result.title, lang)}</span>
+                  {lang !== 'en' && <span className="result-subtitle">{resolveText(result.title, 'en')}</span>}
                 </div>
                 <span className={`result-badge badge-${result.type}`}>
                   {result.type === 'mountain' ? UI_TEXT.filterMountains[lang] : 
@@ -169,4 +170,6 @@ export function Search() {
       </AnimatePresence>
     </div>
   );
-}
+});
+
+Search.displayName = 'Search';

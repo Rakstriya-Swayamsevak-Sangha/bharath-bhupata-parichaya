@@ -54,7 +54,7 @@ export function Header() {
     <header className="header">
       <div className="header-container">
         <h1 className="title-standard">
-          <span className="title-line">Bharath Bhupata</span>
+          <span className="title-line">Bharata Bhupata</span>
           <span className="title-line">Parichaya</span>
         </h1>
 

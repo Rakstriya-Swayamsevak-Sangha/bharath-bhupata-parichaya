@@ -63,5 +63,20 @@ export const mountainsGeometry: MountainGeometry[] = [
       [22.05, 80.0], [21.8, 82.0]
     ],
     labelCoords: [22.35, 76.0]
+  },
+  {
+    id: "raivataka",
+    title: {
+      en: "Raivataka",
+      kn: "ರೈವತಕ",
+      hi: "रैवतक"
+    },
+    path: [
+      [21.62, 70.30],
+      [21.60, 70.55],
+      [21.55, 70.85],
+      [21.50, 71.10]
+    ],
+    labelCoords: [21.55, 70.85]
   }
 ];

@@ -27,13 +27,12 @@ export interface RiverKnowledge {
     kn: string;
     hi: string;
   };
-  image: string;
 }
 
 export const riverKnowledge: Record<string, RiverKnowledge> = {
   sindhu: {
     id: "sindhu",
-    title: { en: "Sindhu", kn: "ಸಿಂಧು", hi: "सिंधु" },
+    title: { en: "Sindhu", kn: "ಸಿಂಧು", hi: "सिंधು" },
     facts: {
       length: "3,180 km",
       origin: "Tibetan Plateau",
@@ -52,10 +51,9 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
     },
     cultural: {
       en: "The Sindhu River is the foundation of the Indus Valley Civilization, one of the oldest urban cultures in the world. It gave rise to early cities, trade systems, and cultural identity. The very name \"India\" is derived from Sindhu, reflecting its deep historical significance.",
-      kn: "ಸಿಂಧು ನದಿ ಪ್ರಪಂಚದ ಅತ್ಯಂತ ಹಳೆಯ ನಾಗರಿಕತೆಯಾದ ಸಿಂಧು ನಾಗರಿಕತೆಯ ಮೂಲವಾಗಿದೆ. ಇದು ಆರಂಭಿಕ ನಗರಗಳು, ವ್ಯಾಪಾರ ವ್ಯವಸ್ಥೆಗಳು ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಗುರುತನ್ನು ನೀಡಿದೆ. \"ಇಂಡಿಯಾ\" ಎಂಬ ಹೆಸರು ಕೂಡ ಸಿಂಧು ಎಂಬ ಪದದಿಂದಲೇ ಬಂದದ್ದಾಗಿದೆ.",
+      kn: "ಸಿಂಧು ನದಿ ಪ್ರಪಂಚದ ಅತ್ಯಂತ ಹಳೆಯ ನಾಗರಿಕತೆಯಾದ ಸಿಂಧು ನಾಗರಿಕತೆಯ ಮೂಲವಾಗಿದೆ. ಇದು ಆರಂಭಿಕ ನಗರಗಳು, ವ್ಯಾಪಾರ ವ್ಯವಸ್ಥೆಗಳು och ಸಾಂಸ್ಕೃತಿಕ ಗುರುತನ್ನು ನೀಡಿದೆ. \"ಇಂಡಿಯಾ\" ಎಂಬ ಹೆಸರು ಕೂಡ ಸಿಂಧು ಎಂಬ ಪದದಿಂದಲೇ ಬಂದದ್ದಾಗಿದೆ.",
       hi: "सिंधु नदी विश्व की प्राचीनतम सभ्यताओं में से एक, सिंधु घाटी सभ्यता का आधार रही है। इसने प्रारंभिक नगरों, व्यापार प्रणालियों और सांस्कृतिक पहचान को जन्म दिया। \"इंडिया\" नाम भी सिंधु से ही निकला है, जो इसके गहरे ऐतिहासिक महत्व को दर्शाता है।"
-    },
-    image: "/place-images/rivers/sindhu.jpg"
+    }
   },
   ganga: {
     id: "ganga",
@@ -78,10 +76,9 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
     },
     cultural: {
       en: "The Ganga is revered as a sacred river in Indian civilization and is personified as the goddess Ganga. It is central to rituals, pilgrimages, and spiritual practices. Cities like Varanasi and Prayag have flourished along its banks for millennia. The river represents purity, life, and liberation (moksha) in Hindu philosophy.",
-      kn: "ಗಂಗಾ ನದಿಯನ್ನು ಭಾರತೀಯ ನಾಗರಿಕತೆಯಲ್ಲಿ ಪವಿತ್ರ ನದಿಯಾಗಿ ಪೂಜಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ಗಂಗಾ ದೇವಿಯ ರೂಪವೆಂದು ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ. ಕಾಶಿ ಮತ್ತು ಪ್ರಯಾಗದಂತಹ ನಗರಗಳು ಇದರ ದಡದಲ್ಲಿ ಸಾವಿರಾರು ವರ್ಷಗಳಿಂದ ಅಭಿವೃದ್ಧಿ ಹೊಂದಿವೆ. ಈ ನದಿಯು ಶುದ್ಧತೆ ಮತ್ತು ಮೋಕ್ಷದ ಸಂಕೇತವಾಗಿದೆ.",
+      kn: "ಗಂಗಾ ನದಿಯನ್ನು ಭಾರತೀಯ ನಾಗರಿಕತೆಯಲ್ಲಿ ಪವಿತ್ರ ನದಿಯಾಗಿ ಪೂಜಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ಗಂಗಾ ದೇವಿಯ ರೂಪವೆಂದು ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ. ಕಾಶಿ ಮತ್ತು ಪ್ರಯಾಗದಂತಹ ನಗರಗಳು ಇದರ ದಡದಲ್ಲಿ ಸಾವಿರಾರು ವರ್ಷಗಳಿಂದ ಅಭಿವೃದ್ಧಿ ಹೊಂದಿವೆ. ಈ ನದಿಯು ಶುದ್ಧತೆ och ಮೋಕ್ಷದ ಸಂಕೇತವಾಗಿದೆ.",
       hi: "गंगा नदी को भारतीय सभ्यता में एक अत्यंत पवित्र नदी के रूप में पूजा जाता है और इसे देवी गंगा के रूप में माना जाता है। यह अनुष्ठानों, तीर्थयात्राओं और आध्यात्मिक अभ्यासों का केंद्र है। वाराणसी और प्रयाग जैसे शहर सदियों से इसके तट पर फले-फूले हैं।"
-    },
-    image: "/place-images/rivers/ganga.jpg"
+    }
   },
   saraswati: {
     id: "saraswati",
@@ -106,8 +103,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       en: "The Saraswati holds immense significance in Vedic literature as a symbol of knowledge, purity, and wisdom. It is associated with the goddess Saraswati, the deity of learning and arts. Many early Vedic settlements are believed to have developed along its banks, making it central to the earliest phases of Indian civilization.",
       kn: "ವೇದ ಸಾಹಿತ್ಯದಲ್ಲಿ ಸರಸ್ವತಿಯು ಜ್ಞಾನ ಮತ್ತು ಬುದ್ಧಿವಂತಿಕೆಯ ಸಂಕೇತವಾಗಿದೆ. ಇದನ್ನು ಕಲೆ ಮತ್ತು ವಿದ್ಯೆಯ ದೇವತೆ ಸರಸ್ವತಿಯೊಂದಿಗೆ ಸಂಯೋಜಿಸಲಾಗಿದೆ. ಆರಂಭಿಕ ವೈದಿಕ ವಸಾಹತುಗಳು ಇದರ ದಡದಲ್ಲಿಯೇ ಬೆಳೆದವೆಂದು ನಂಬಲಾಗಿದ್ದು, ಇದು ಭಾರತೀಯ ನಾಗರಿಕತೆಯ ಅಡಿಪಾಯವಾಗಿದೆ.",
       hi: "वैदिक साहित्य में सरस्वती का ज्ञान, पवित्रता और बुद्धिमत्ता के प्रतीक के रूप में अत्यधिक महत्व है। यह शिक्षा और कला की देवी सरस्वती से जुड़ी हुई है। माना जाता है कि कई प्रारंभिक वैदिक बस्तियाँ इसके तट पर विकसित हुई थीं।"
-    },
-    image: "/place-images/rivers/saraswati.jpg"
+    }
   },
   yamuna: {
     id: "yamuna",
@@ -132,8 +128,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       en: "The Yamuna holds deep spiritual significance, especially in relation to Lord Krishna, whose life and legends are closely associated with Mathura and Vrindavan along its banks. The river is also central to the Triveni Sangam at Prayag, where it meets the Ganga and the mythical Saraswati, forming one of the holiest pilgrimage sites in India.",
       kn: "ಯಮುನಾ ನದಿ ಶ್ರೀಕೃಷ್ಣನ ಜೀವನ ಮತ್ತು ಕಥೆಗಳೊಂದಿಗೆ ಸಂಬಂಧ ಹೊಂದಿದೆ, ವಿಶೇಷವಾಗಿ ಮಥುರಾ ಮತ್ತು ವೃಂದಾವನ ಪ್ರದೇಶಗಳಲ್ಲಿ. ಪ್ರಯಾಗದಲ್ಲಿ ಗಂಗಾ ಮತ್ತು ಸರಸ್ವತಿಯೊಂದಿಗೆ ಸೇರುವ ತ್ರಿವೇಣಿ ಸಂಗಮವು ಅತ್ಯಂತ ಪವಿತ್ರ ತೀರ್ಥವಾಗಿದೆ.",
       hi: "यमुना नदी भगवान कृष्ण की कथाओं से जुड़ी हुई है, विशेषकर मथुरा और वृंदावन में। प्रयाग में गंगा और सरस्वती के साथ इसका संगम त्रिवेणी संगम कहलाता है, जो अत्यंत पवित्र स्थल है।"
-    },
-    image: "/place-images/rivers/yamuna.jpg"
+    }
   },
   brahmaputra: {
     id: "brahmaputra",
@@ -158,8 +153,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       en: "The Brahmaputra is deeply embedded in the cultural life of northeastern Bharat. It is associated with fertility, seasonal cycles, and local traditions. Unlike many rivers, it is often referred to in masculine form, symbolizing strength and power. The river also shapes festivals, agriculture, and livelihoods in Assam and surrounding regions.",
       kn: "ಬ್ರಹ್ಮಪುತ್ರ ನದಿ ಉತ್ತರ ಪೂರ್ವ ಭಾರತದ ಸಂಸ್ಕೃತಿಯ ಭಾಗವಾಗಿದೆ. ಇದು ಫಲವತ್ತತೆ ಮತ್ತು ಜೀವನ ಚಕ್ರಗಳೊಂದಿಗೆ ಸಂಬಂಧ ಹೊಂದಿದೆ. ಅಸ್ಸಾಂ ಪ್ರದೇಶದಲ್ಲಿ ಇದು ಕೃಷಿ ಮತ್ತು ಜೀವನೋಪಾಯದ ಪ್ರಮುಖ ಮೂಲವಾಗಿದೆ.",
       hi: "ब्रह्मपुत्र नदी उत्तर-पूर्व भारत की संस्कृति में गहराई से जुड़ी हुई है। यह उर्वरता और जीवन चक्र का प्रतीक है। असम में यह कृषि और जीवन का आधार है।"
-    },
-    image: "/place-images/rivers/brahmaputra.webp"
+    }
   },
   gandaki: {
     id: "gandaki",
@@ -184,8 +178,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       en: "The Gandaki River holds deep religious importance, especially in Hindu traditions. It is associated with the sacred Shaligram stones, which are found in its riverbed and worshipped as manifestations of Lord Vishnu. The river is considered spiritually pure and plays a role in pilgrimage traditions across Nepal and northern India.",
       kn: "ಗಂಡಕಿ ನದಿ ಧಾರ್ಮಿಕವಾಗಿ ಮಹತ್ವದ್ದಾಗಿದೆ, ವಿಶೇಷವಾಗಿ ಶಾಲಿಗ್ರಾಮ ಶಿಲೆಗಳಿಗಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ. ಈ ಕಲ್ಲುಗಳನ್ನು ವಿಷ್ಣುವಿನ ರೂಪವೆಂದು ಪೂಜಿಸಲಾಗುತ್ತದೆ.",
       hi: "गंडकी नदी धार्मिक दृष्टि से अत्यंत महत्वपूर्ण है। इसके तट पर पाए जाने वाले शालिग्राम पत्थर भगवान विष्णु के रूप में पूजे जाते हैं।"
-    },
-    image: "/place-images/rivers/gandaki.webp"
+    }
   },
   narmada: {
     id: "narmada",
@@ -210,8 +203,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       en: "The Narmada is considered one of the holiest rivers in India, often regarded as equal in sanctity to the Ganga. The tradition of Narmada Parikrama, where devotees walk along the entire river course, reflects its deep spiritual significance. The river is believed to have the power to purify without the need for ritual immersion.",
       kn: "ನರ್ಮದಾ ನದಿ ಭಾರತದಲ್ಲಿ ಅತ್ಯಂತ ಪವಿತ್ರ ನದಿಗಳಲ್ಲೊಂದು ಎಂದು ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ. ನರ್ಮದಾ ಪರಿಕ್ರಮೆಯಂತಹ ಆಚರಣೆಗಳು ಇದರ ಆಧ್ಯಾತ್ಮಿಕ ಮಹತ್ವವನ್ನು ತೋರಿಸುತ್ತವೆ.",
       hi: "नर्मदा नदी को भारत की सबसे पवित्र नदियों में से एक माना जाता है। नर्मदा परिक्रमा इसकी आध्यात्मिक महत्ता को दर्शाती है।"
-    },
-    image: "/place-images/rivers/Narmada.jpg"
+    }
   },
   godavari: {
     id: "godavari",
@@ -236,8 +228,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       en: "The Godavari is often referred to as the \"Dakshin Ganga\" due to its cultural and spiritual significance in southern India. It is associated with numerous pilgrimage sites and festivals, including the Kumbh Mela held at Nashik. The river has played a vital role in shaping the cultural and agricultural life of the Deccan region.",
       kn: "ಗೋದಾವರಿಯನ್ನು ದಕ್ಷಿಣ ಭಾರತದ \"ದಕ್ಷಿಣ ಗಂಗಾ\" ಎಂದು ಕರೆಯಲಾಗುತ್ತದೆ. ನಾಸಿಕ್ನಲ್ಲಿ ನಡೆಯುವ ಕುಂಭಮೇಳ ಸೇರಿದಂತೆ ಅನೇಕ ಧಾರ್ಮಿಕ ಆಚರಣೆಗಳಿಗೆ ಇದು ಸಂಬಂಧಿಸಿದೆ.",
       hi: "गोदावरी को दक्षिण भारत में \"दक्षिण गंगा\" कहा जाता है। यह नासिक के कुंभ मेले सहित कई धार्मिक परंपराओं से जुड़ी हुई है।"
-    },
-    image: "/place-images/rivers/Godavari.jpg"
+    }
   },
   mahanadi: {
     id: "mahanadi",
@@ -255,15 +246,14 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
     },
     description: {
       en: "The Mahanadi originates in the highlands of central India and flows eastward through Odisha before forming a large delta as it enters the Bay of Bengal. It is known for its seasonal variations and has historically been both a source of fertile soil and devastating floods, shaping the agricultural patterns of eastern India.",
-      kn: "ಮಹಾನದಿ ಮಧ್ಯ ಭಾರತದ ಪೀಠಭೂಮಿಯಲ್ಲಿ ಉಗಮವಾಗಿ ಒಡಿಶಾದ ಮೂಲಕ ಹರಿದು ಬೆಂಗಾಳ ಕೊಲ್ಲಿಯಲ್ಲಿ ದೊಡ್ಡ ಡೆಲ್ಟಾವನ್ನು ನಿರ್ಮಿಸುತ್ತದೆ. ಇದು ಕೃಷಿಗೆ ಅನುಕೂಲಕರವಾದ ಮಣ್ಣು ಮತ್ತು ಪ್ರವಾಹಗಳಿಗಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
-      hi: "महानदी मध्य भारत के उच्च भूभाग से निकलकर ओडिशा से होकर बहती है और बंगाल की खाड़ी में एक बड़ा डेल्टा बनाती है। यह उर्वरता और बाढ़ दोनों के लिए जानी जाती है।"
+      kn: "ಮಹಾನದಿ ಮಧ್ಯ ಭಾರತದ ಪೀಠಭೂಮಿಯಲ್ಲಿ ಉಗಮವಾಗಿ ಒಡಿಶಾದ ಮೂಲಕ ಹರಿದು ಬೆಂಗಾಳ ಕೊಲ್ಲಿಯನ್ನು ಸೇರುತ್ತದೆ. ಇದು ಕೃಷಿಗೆ ಪೂರಕವಾದ ಮಣ್ಣು ಮತ್ತು ಪ್ರವಾಹಗಳಿಗಾಗಿ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.",
+      hi: "महानदी मध्य भारत के उच्च भूभाग से निकलकर ओडिशा से होकर बहती है और बंगाल की खाड़ी में एक बड़ा डेल्टा बनाती है।"
     },
     cultural: {
       en: "The Mahanadi has supported ancient settlements and agricultural communities for centuries. Its delta region is one of the most fertile areas in eastern India, sustaining rice cultivation and local economies. The river is deeply connected with regional traditions, festivals, and livelihoods in Odisha.",
       kn: "ಮಹಾನದಿ ನದಿ ಶತಮಾನಗಳಿಂದ ಕೃಷಿ ಮತ್ತು ವಸತಿಗಳನ್ನು ಬೆಂಬಲಿಸಿದೆ. ಇದರ ಡೆಲ್ಟಾ ಪ್ರದೇಶವು ಅತ್ಯಂತ ಫಲವತ್ತಾದ ಪ್ರದೇಶಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ.",
       hi: "महानदी ने सदियों से कृषि और बस्तियों को समर्थन दिया है। इसका डेल्टा क्षेत्र अत्यंत उपजाऊ है और ओडिशा की अर्थव्यवस्था का आधार है।"
-    },
-    image: "/place-images/rivers/Mahanadi.jpg"
+    }
   },
   krishna: {
     id: "krishna",
@@ -288,8 +278,7 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
       en: "The Krishna River has been central to the development of civilizations in the Deccan region. Its basin is dotted with ancient temples, historical cities, and cultural centers. The river supports livelihoods, irrigation, and regional traditions, making it a vital part of southern India's socio-economic fabric.",
       kn: "ಕೃಷ್ಣಾ ನದಿ ದಕ್ಕನ್ ಪ್ರದೇಶದ ಸಂಸ್ಕೃತಿ ಮತ್ತು ನಾಗರಿಕತೆಯ ಬೆಳವಣಿಗೆಯಲ್ಲಿ ಪ್ರಮುಖ ಪಾತ್ರವಹಿಸಿದೆ. ಇದರ ತೀರದಲ್ಲಿ ಅನೇಕ ದೇವಾಲಯಗಳು ಮತ್ತು ಇತಿಹಾಸ ಪ್ರಸಿದ್ಧ ಸ್ಥಳಗಳು ಇವೆ.",
       hi: "कृष्णा नदी दक्कन क्षेत्र की सभ्यता और संस्कृति के विकास में महत्वपूर्ण रही है। इसके तट पर अनेक मंदिर और ऐतिहासिक नगर स्थित हैं।"
-    },
-    image: "/place-images/rivers/krishna.jpg"
+    }
   },
   kaveri: {
     id: "kaveri",
@@ -313,9 +302,8 @@ export const riverKnowledge: Record<string, RiverKnowledge> = {
     cultural: {
       en: "The Kaveri is one of the most sacred rivers of southern Bharat and is deeply intertwined with temple culture and traditions. The river basin is home to numerous ancient temples, pilgrimage routes, and cultural centers, especially in Tamil Nadu. It represents prosperity, devotion, and continuity of southern Indian civilization.",
       kn: "ಕಾವೇರಿ ನದಿ ದಕ್ಷಿಣ ಭಾರತದ ಅತ್ಯಂತ ಪವಿತ್ರ ನದಿಗಳಲ್ಲೊಂದು. ಇದರ ತೀರದಲ್ಲಿ ಅನೇಕ ಪುರಾತನ ದೇವಾಲಯಗಳು ಮತ್ತು ತೀರ್ಥಕ್ಷೇತ್ರಗಳು ಇವೆ.",
-      hi: "कावेरी नदी दक्षिण भारत की सबसे पवित्र नदियों में से एक है। इसके तट पर अनेक प्राचीन मंदिर and तीर्थ स्थल स्थित हैं।"
-    },
-    image: "/place-images/rivers/kaveri.jpg"
+      hi: "कावेरी नदी दक्षिण भारत की सबसे पवित्र नदियों में से एक है। इसके तट पर अनेक प्राचीन मंदिर और तीर्थ स्थल स्थित हैं।"
+    }
   }
 };
 

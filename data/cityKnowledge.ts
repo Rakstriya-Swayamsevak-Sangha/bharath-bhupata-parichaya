@@ -37,7 +37,6 @@ export interface CityKnowledge {
     kn: string;
     hi: string;
   };
-  image: string;
 }
 
 export const cityKnowledge: Record<string, CityKnowledge> = {
@@ -90,9 +89,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಅಯೋಧ್ಯಾ ಇಂದು ಸಹ ಪ್ರಮುಖ ತೀರ್ಥಕ್ಷೇತ್ರವಾಗಿದೆ. ರಾಮನವಮಿ ಮತ್ತು ದೀಪೋತ್ಸವದಂತಹ ಹಬ್ಬಗಳು ಸಾವಿರಾರು ಭಕ್ತರನ್ನು ಆಕರ್ಷಿಸುತ್ತವೆ.`,
 
       hi: `अयोध्या आज भी एक प्रमुख तीर्थ स्थल है। राम नवमी और दीपोत्सव जैसे त्योहार हजारों श्रद्धालुओं को आकर्षित करते हैं।`
-    },
-
-    image: "/place-images/sacred-cities/ayodhya.jpg"
+    }
   },
 
   takshashila: {
@@ -144,9 +141,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಇಂದು ತಕ್ಷಶಿಲಾ ಪುರಾತತ್ವ ಸ್ಥಳವಾಗಿ ಉಳಿದಿದ್ದು, ಪ್ರಾಚೀನ ವಿಶ್ವವಿದ್ಯಾಲಯಗಳ ಅವಶೇಷಗಳನ್ನು ಸಂರಕ್ಷಿಸುತ್ತದೆ.`,
   
       hi: `आज तक्षशिला एक पुरातात्विक स्थल के रूप में विद्यमान है, जहाँ प्राचीन विश्वविद्यालयों के अवशेष संरक्षित हैं।`
-    },
-  
-    image: "/place-images/sacred-cities/takshashila.jpg"
+    }
   },
 
   amritsar: {
@@ -198,9 +193,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಅಮೃತಸರದಲ್ಲಿ ಲಂಗರ್ ಪರಂಪರೆ ಸಾವಿರಾರು ಜನರಿಗೆ ಪ್ರತಿದಿನ ಉಚಿತ ಆಹಾರವನ್ನು ಒದಗಿಸುತ್ತದೆ, ಇದು ಸಮಾನತೆ ಮತ್ತು ಸೇವೆಯ ಸಂಕೇತವಾಗಿದೆ.`,
   
       hi: `अमृतसर में लंगर की परंपरा प्रतिदिन हजारों लोगों को भोजन प्रदान करती है, जो सेवा और समानता का प्रतीक है।`
-    },
-  
-    image: "/place-images/sacred-cities/amritsar.jpg"
+    }
   },
 
   mathura: {
@@ -252,9 +245,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಮಥುರಾದಲ್ಲಿ ಜನ್ಮಾಷ್ಟಮಿ ಮತ್ತು ಹೋಳಿ ಹಬ್ಬಗಳನ್ನು ಭವ್ಯವಾಗಿ ಆಚರಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ಸಾವಿರಾರು ಭಕ್ತರನ್ನು ಆಕರ್ಷಿಸುತ್ತದೆ.`,
   
       hi: `मथुरा में जन्माष्टमी और होली जैसे त्योहार अत्यंत उत्साह के साथ मनाये जाते हैं और हजारों श्रद्धालुओं को आकर्षित करते हैं।`
-    },
-  
-    image: "/place-images/sacred-cities/mathura.jpg"
+    }
   },
 
   indraprastha: {
@@ -275,7 +266,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Yamuna River",
         kn: "ಯಮುನಾ ನದಿ",
-        hi: "यमुना नदी"
+        hi: "ಯಮುನಾ ನದಿ"
       },
       era: {
         en: "Mahabharata Period",
@@ -306,9 +297,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಇಂದ್ರಪ್ರಸ್ಥ ಇಂದು ದೃಶ್ಯವಾಗಿ ಇಲ್ಲದಿದ್ದರೂ, ಅದರ ಪರಂಪರೆ ದೆಹಲಿ ನಗರದ ಇತಿಹಾಸದಲ್ಲಿ ಜೀವಂತವಾಗಿದೆ.`,
   
       hi: `इंद्रप्रस्थ आज भौतिक रूप में मौजूद नहीं है, लेकिन इसकी परंपरा दिल्ली की ऐतिहासिक पहचान में जीवित है।`
-    },
-  
-    image: "/place-images/sacred-cities/indraprastha.jpg"
+    }
   },
 
   prayag: {
@@ -360,9 +349,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಪ್ರಯಾಗದಲ್ಲಿ ಲಕ್ಷಾಂತರ ಭಕ್ತರು ಸಂಗಮದಲ್ಲಿ ಸ್ನಾನ ಮಾಡಲು ಬರುತ್ತಾರೆ, ವಿಶೇಷವಾಗಿ ಕುಂಭಮೇಳದ ಸಮಯದಲ್ಲಿ.`,
   
       hi: `प्रयाग में लाखों श्रद्धालु संगम में स्नान करने आते हैं, विशेषकर कुंभ मेले के दौरान।`
-    },
-  
-    image: "/place-images/sacred-cities/prayag.webp"
+    }
   },
 
   vaishali: {
@@ -413,10 +400,8 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
   
       kn: `ವೈಶಾಲಿ ಇಂದು ಪುರಾತತ್ವ ಮತ್ತು ತೀರ್ಥಕ್ಷೇತ್ರವಾಗಿ ಉಳಿದಿದ್ದು, ಅದರ ಇತಿಹಾಸವನ್ನು ಪ್ರತಿಬಿಂಬಿಸುತ್ತದೆ.`,
   
-      hi: `वैशाली आज एक महत्वपूर्ण पुरातात्विक और तीर्थ स्थल है, जो अपने ऐतिहासिक महत्व को दर्शाता है।`
-    },
-  
-    image: "/place-images/sacred-cities/vaishali.jpg"
+      hi: `आज वैशाली एक महत्वपूर्ण पुरातात्विक और तीर्थ स्थल है, जो अपने ऐतिहासिक महत्व को दर्शाता है।`
+    }
   },
 
   patliputra: {
@@ -468,9 +453,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಇಂದು ಪಾಟಲಿಪುತ್ರದ ಪರಂಪರೆ ಪಾಟ್ನಾ ನಗರದಲ್ಲಿ ಮುಂದುವರಿಯುತ್ತದೆ.`,
   
       hi: `आज पाटलिपुत्र की विरासत पटना शहर के माध्यम से जीवित है।`
-    },
-  
-    image: "/place-images/sacred-cities/patliputra.jpg"
+    }
   },
 
   gaya: {
@@ -491,7 +474,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Phalgu River",
         kn: "ಫಲ್ಗು ನದಿ",
-        hi: "फल्गु नदी"
+        hi: "ಫಲ್ಗು ನದಿ"
       },
       era: {
         en: "Ancient",
@@ -522,9 +505,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಗಯಾ ಇಂದು ಸಹ ಸಾವಿರಾರು ಭಕ್ತರನ್ನು ಆಕರ್ಷಿಸುತ್ತದೆ ಮತ್ತು ಧಾರ್ಮಿಕ ಆಚರಣೆಗಳು ನಿರಂತರವಾಗಿ ನಡೆಯುತ್ತವೆ.`,
   
       hi: `गया आज भी एक जीवंत तीर्थ स्थल है, जहाँ श्रद्धालु निरंतर आते हैं और धार्मिक अनुष्ठान करते हैं।`
-    },
-  
-    image: "/place-images/sacred-cities/gaya.jpg"
+    }
   },
 
   dwarka: {
@@ -576,9 +557,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ದ್ವಾರಕಾ ಇಂದು ಸಹ ಪ್ರಮುಖ ತೀರ್ಥಕ್ಷೇತ್ರವಾಗಿದ್ದು, ಭಕ್ತರು ನಿರಂತರವಾಗಿ ಭೇಟಿ ನೀಡುತ್ತಾರೆ.`,
   
       hi: `द्वारका आज भी एक प्रमुख तीर्थ स्थल है, जहाँ श्रद्धालु निरंतर आते हैं।`
-    },
-  
-    image: "/place-images/sacred-cities/dwarka.jpg"
+    }
   },
 
   somnath: {
@@ -630,9 +609,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಸೋಮನಾಥ ಇಂದು ಸಹ ಪ್ರಮುಖ ತೀರ್ಥಕ್ಷೇತ್ರವಾಗಿದ್ದು, ಸಾವಿರಾರು ಭಕ್ತರನ್ನು ಆಕರ್ಷಿಸುತ್ತದೆ.`,
   
       hi: `सोमनाथ आज भी एक प्रमुख तीर्थ स्थल है, जहाँ हजारों श्रद्धालु आते हैं।`
-    },
-  
-    image: "/place-images/sacred-cities/somnath.jpg"
+    }
   },
 
   avanthika: {
@@ -684,9 +661,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಉಜ್ಜಯಿನಿಯಲ್ಲಿ ಕುಂಭಮೇಳ ಮತ್ತು ಇತರ ಹಬ್ಬಗಳು ಭಕ್ತರನ್ನು ಆಕರ್ಷಿಸುತ್ತವೆ.`,
   
       hi: `उज्जैन में कुंभ मेला और अन्य धार्मिक उत्सव बड़ी संख्या में श्रद्धालुओं को आकर्षित करते हैं।`
-    },
-  
-    image: "/place-images/sacred-cities/ujjain.webp"
+    }
   },
 
   nagpur: {
@@ -707,7 +682,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Nag River",
         kn: "ನಾಗ ನದಿ",
-        hi: "ನಾಗ नदी"
+        hi: "ನಾಗ ನದಿ"
       },
       era: {
         en: "Modern Nationalist Era",
@@ -738,9 +713,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಇಂದು ನಾಗಪುರವು ಮಹತ್ವದ ಸಾಂಸ್ಕೃತಿಕ ಮತ್ತು ಸಂಘಟನಾ ಕೇಂದ್ರವಾಗಿದ್ದು, ಮೊಹಿತೇವಾಡಿ ಮೊದಲ ಶಾಖೆಯ ಸ್ಮರಣೆಯನ್ನು ಉಳಿಸಿಕೊಂಡಿದೆ. ಈ ನಗರವು ಇತಿಹಾಸ ಮತ್ತು ವರ್ತಮಾನವನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ.`,
 
       hi: `आज नागपुर एक महत्वपूर्ण सांस्कृतिक और संगठनात्मक केंद्र बना हुआ है, जहाँ मोहिटेवाड़ी जैसे स्थान इस विरासत को संरक्षित रखते हैं। यह शहर अतीत और वर्तमान के बीच एक सेतु है।`
-    },
-  
-    image: "/place-images/sacred-cities/nagpur.jpg"
+    }
   },
 
   kanchi: {
@@ -792,9 +765,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಕಾಂಚಿ ದೇವಾಲಯಗಳು ಮತ್ತು ರೇಷ್ಮೆ ನೆಯುವಿಕೆಗೆ ಪ್ರಸಿದ್ಧವಾಗಿದೆ.`,
   
       hi: `कांची मंदिरों और रेशम बुनाई के लिए प्रसिद्ध है।`
-    },
-  
-    image: "/place-images/sacred-cities/Kanchi.jpg"
+    }
   },
 
   puri: {
@@ -803,7 +774,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
     title: {
       en: "Puri",
       kn: "ಪುರಿ",
-      hi: "पुरी"
+      hi: "ಪ್ರಿ"
     },
   
     identity: {
@@ -846,9 +817,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಪುರಿ ಇಂದು ಸಹ ಪ್ರಮುಖ ತೀರ್ಥಕ್ಷೇತ್ರವಾಗಿದ್ದು ಲಕ್ಷಾಂತರ ಭಕ್ತರನ್ನು ಆಕರ್ಷಿಸುತ್ತದೆ.`,
   
       hi: `पुरी आज भी एक जीवंत तीर्थ स्थल है।`
-    },
-  
-    image: "/place-images/sacred-cities/puri.jpg"
+    }
   },
 
   vijayanagar: {
@@ -864,7 +833,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       region: {
         en: "Karnataka",
         kn: "ಕರ್ನಾಟಕ",
-        hi: "कर्नाटक"
+        hi: "ಕರ್ನಾಟಕ"
       },
       river: {
         en: "Tungabhadra River",
@@ -900,8 +869,6 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       kn: `ಹಂಪಿ ಇಂದು ಪುರಾತನ ಅವಶೇಷಗಳಾಗಿ ಉಳಿದಿದ್ದು ವಿಶ್ವ ಪರಂಪರೆ ತಾಣವಾಗಿದೆ.`,
   
       hi: `हम्पी आज एक विश्व धरोहर स्थल है और प्राचीन साम्राज्य की याद दिलाता है।`
-    },
-  
-    image: "/place-images/sacred-cities/vijaynagar.jpg"
+    }
   }
 };

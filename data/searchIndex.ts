@@ -53,13 +53,13 @@ const mountains: SearchItem[] = Object.values(mountainKnowledge).map((m) => ({
   keywords: [
     m.id,
     ...m.title.en.toLowerCase().split(" "),
-    ...m.subtitle.en.toLowerCase().split(" "),
     ...(m.id === "himalaya" ? ["snow", "shiva", "everest", "highest", "range", "north", "himavat"] : []),
     ...(m.id === "sahyadri" ? ["western ghats", "coastal", "monsoon", "shivaji", "maratha"] : []),
     ...(m.id === "aravalli" ? ["ancient", "rajasthan", "desert", "hills", "guru shikhar"] : []),
     ...(m.id === "vindhya" ? ["central", "divide", "barrier", "forest", "agastya"] : []),
     ...(m.id === "malaya" ? ["south", "sandalwood", "hills", "fragrant", "breeze"] : []),
     ...(m.id === "mahendra" ? ["eastern ghats", "parashurama", "odisha", "mahendragiri"] : []),
+    ...(m.id === "raivataka" ? ["girnar", "gujarat", "junagadh", "sacred", "krishna", "yadava", "jain", "nath"] : []),
   ],
   importance: m.id === "himalaya" ? 10 : 7,
 }));
@@ -93,7 +93,6 @@ const regions: SearchItem[] = Object.values(regionKnowledge).map((reg) => ({
   keywords: [
     reg.id,
     ...reg.title.en.toLowerCase().split(" "),
-    ...reg.subtitle.en.toLowerCase().split(" "),
     ...(reg.id === "gandhara" ? ["pakistan", "afghanistan", "taxila", "buddhism", "sculpture"] : []),
     ...(reg.id === "sindhu_desha" ? ["pakistan", "sindh", "lowland", "sapta sindhu"] : []),
     ...(reg.id === "sinhala" ? ["sri lanka", "ceylon", "island", "ravana", "ramayana"] : []),

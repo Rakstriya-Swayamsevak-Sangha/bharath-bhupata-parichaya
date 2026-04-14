@@ -41,7 +41,7 @@ export default function PreloadSystem() {
       for (const url of CRITICAL_DATA) {
         try {
           await fetch(url, { priority: 'high' as any });
-        } catch (e) {}
+        } catch (e) { }
       }
 
       // ─── Phase 2: Tier 3 Background Queue (Batch/Idle) ───────────────
@@ -50,7 +50,7 @@ export default function PreloadSystem() {
         for (const url of EXTENDED_DATA) {
           try {
             await fetch(url, { priority: 'low' as any });
-          } catch (e) {}
+          } catch (e) { }
         }
 
         // Then all remaining images in slow batches
@@ -58,7 +58,7 @@ export default function PreloadSystem() {
         for (let i = 0; i < PRELOAD_IMAGES.length; i += batchSize) {
           const batch = PRELOAD_IMAGES.slice(i, i + batchSize);
           await Promise.allSettled(
-            batch.map(url => fetch(url, { priority: 'low' as any }).catch(() => {}))
+            batch.map(url => fetch(url, { priority: 'low' as any }).catch(() => { }))
           );
           await new Promise(r => setTimeout(r, 400)); // Be extremely gentle
         }

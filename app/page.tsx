@@ -15,7 +15,7 @@ const shlokaLines = [
 
 const englishMeaning = "The country that lies north of the ocean and south of the snowy mountains (Himalaya) is called Bhāratam there dwells the descendants of Bharata.";
 
-export default function Home() {
+export default function RootPage() {
   const router = useRouter();
   const [phase, setPhase] = useState(0);
   const [journeyState, setJourneyState] = useState("idle"); // "idle", "activating", "navigating"
@@ -163,17 +163,17 @@ export default function Home() {
                     <motion.span
                       key={i}
                       initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-                      animate={journeyState !== "idle" ? { 
-                        opacity: 1, 
-                        y: 0, 
-                        filter: 'blur(0px)' 
+                      animate={journeyState !== "idle" ? {
+                        opacity: 1,
+                        y: 0,
+                        filter: 'blur(0px)'
                       } : { opacity: 0 }}
-                      transition={{ 
-                        delay: i * 0.03, 
-                        duration: 0.5, 
-                        ease: "easeOut" 
+                      transition={{
+                        delay: i * 0.03,
+                        duration: 0.5,
+                        ease: "easeOut"
                       }}
-                      style={{ 
+                      style={{
                         display: 'inline-block',
                         minWidth: char === ' ' ? '0.3em' : 'auto'
                       }}
@@ -195,7 +195,7 @@ export default function Home() {
         animate={{ opacity: phase >= 3 && journeyState === "idle" ? 1 : 0 }}
         transition={{ duration: 2, delay: 1 }}
       >
-        Bharath Bhupata Parichaya
+        Bharata Bhupata Parichaya
       </motion.div>
     </motion.main>
   );

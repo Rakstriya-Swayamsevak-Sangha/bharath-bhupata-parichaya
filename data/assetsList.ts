@@ -1,6 +1,7 @@
-export const PRELOAD_IMAGES = [
-  '/place-images/mountains/aravalli.webp', '/place-images/mountains/himalaya.avif', '/place-images/mountains/mahendra.jpg', '/place-images/mountains/malaya.jpg', '/place-images/mountains/sahyadri.jpg', '/place-images/mountains/vindhya.webp',
-  '/place-images/rivers/brahmaputra.webp', '/place-images/rivers/gandaki.webp', '/place-images/rivers/ganga.jpg', '/place-images/rivers/Godavari.jpg', '/place-images/rivers/kaveri.jpg', '/place-images/rivers/krishna.jpg', '/place-images/rivers/Mahanadi.jpg', '/place-images/rivers/Narmada.jpg', '/place-images/rivers/saraswati.jpg', '/place-images/rivers/sindhu.jpg', '/place-images/rivers/yamuna.jpg',
-  '/place-images/sacred-cities/amritsar.jpg', '/place-images/sacred-cities/ayodhya.jpg', '/place-images/sacred-cities/dwarka.jpg', '/place-images/sacred-cities/gaya.jpg', '/place-images/sacred-cities/indraprastha.jpg', '/place-images/sacred-cities/Kanchi.jpg', '/place-images/sacred-cities/mathura.jpg', '/place-images/sacred-cities/nagpur.jpg', '/place-images/sacred-cities/patliputra.jpg', '/place-images/sacred-cities/prayag.webp', '/place-images/sacred-cities/puri.jpg', '/place-images/sacred-cities/somnath.jpg', '/place-images/sacred-cities/takshashila.jpg', '/place-images/sacred-cities/ujjain.webp', '/place-images/sacred-cities/vaishali.jpg', '/place-images/sacred-cities/vijaynagar.jpg',
-  '/place-images/regions/afghanistan.jpg', '/place-images/regions/bangladesh.jpg', '/place-images/regions/bhutan.jpg', '/place-images/regions/china.jpg', '/place-images/regions/myanmar.jpg', '/place-images/regions/nepal.jpg', '/place-images/regions/pakistan.png', '/place-images/regions/srilanka.jpg'
-];
+import { IMAGE_MANIFEST } from './imageManifest';
+
+/**
+ * PRELOAD_IMAGES is now derived directly from the IMAGE_MANIFEST
+ * to ensure 100% consistency across the application and PWA cache.
+ */
+export const PRELOAD_IMAGES = Object.values(IMAGE_MANIFEST);

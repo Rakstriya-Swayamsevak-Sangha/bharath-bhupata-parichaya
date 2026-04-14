@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import './stage2.css';
 import ServiceWorkerManager from '@/components/PWA/ServiceWorkerManager';
 import PreloadSystem from '@/components/PWA/PreloadSystem';
-import { Analytics } from '@vercel/analytics/react';
+import ViewportStabilizer from '@/components/ui/ViewportStabilizer';
+import AssetGuard from '@/components/AssetGuard';
 
 export const viewport = {
   themeColor: '#FF9933',
@@ -15,13 +15,13 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Bharatha Bhupata Parichaya',
+  title: 'Bharata Bhupata Parichaya',
   description: 'Cultural Atlas of Akhand Bharat',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Bharath Bhupata',
+    title: 'Bharata Bhupata Parichaya',
   },
   icons: {
     apple: '/icons/icon-192x192.png',
@@ -43,9 +43,10 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body className="antialiased">
+        <AssetGuard />
+        <ViewportStabilizer />
         <ServiceWorkerManager />
         <PreloadSystem />
-        <Analytics />
         {children}
       </body>
     </html>

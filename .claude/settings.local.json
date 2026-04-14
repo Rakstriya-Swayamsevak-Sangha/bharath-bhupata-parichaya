@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsx:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(echo \"const fs = require\\('fs'\\);\")",
+      "Bash(echo \"const path = require\\('path'\\);\")"
+    ]
+  }
+}

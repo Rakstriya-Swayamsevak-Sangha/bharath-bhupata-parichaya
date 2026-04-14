@@ -10,12 +10,12 @@ import { citiesGeometry } from '@/data/citiesGeometry';
 import { useLanguageStore } from '@/store/languageStore';
 import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
 import { useNetwork } from '@/hooks/useNetwork';
+import { getAssetPath } from '@/data/imageManifest';
 
 // Use ssr:false and loading to prevent SSR issues
 const Search = dynamic(() => import('@/components/Search/Search').then(mod => mod.Search), { ssr: false, loading: () => null });
 const MobileFilters = dynamic(() => import('@/components/FilterControls/MobileFilters').then(mod => mod.MobileFilters), { ssr: false, loading: () => null });
 const KnowledgePanel = dynamic(() => import('@/components/KnowledgePanel/KnowledgePanel').then(mod => mod.KnowledgePanel), { ssr: false, loading: () => null });
-const Sidebar = dynamic(() => import('@/components/Sidebar/Sidebar').then(mod => mod.Sidebar), { ssr: false, loading: () => null });
 const CulturalMap = dynamic(() => import('@/components/Map/Map').then(mod => mod.CulturalMap), { ssr: false, loading: () => null });
 
 import { PageSkeleton } from './PageSkeleton';
@@ -23,24 +23,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 const easing: any = [0.16, 1, 0.3, 1];
 
-function NetworkStatusBanner() {
-  const { isOnline, wasOffline } = useNetwork();
-  
-  if (isOnline && !wasOffline) return null;
-  
-  return (
-    <div className="network-banner">
-      {!isOnline ? (
-        <span>You are offline. Some features may be limited.</span>
-      ) : wasOffline && isOnline ? (
-        <span>Back online</span>
-      ) : null}
-    </div>
-  );
-}
-
 function MapContent() {
-  const { closeSidebar, setSelectedLocation, setIsNavigating, openSidebar } = useMap();
+  const { setSelectedLocation, setIsNavigating } = useMap();
   const { lang } = useLanguageStore();
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,11 +39,11 @@ function MapContent() {
           fetch('/data/mountains.json').then((r) => {
             if (!r.ok) throw new Error('Failed to load mountains');
             return r.json();
-          }).catch(() => ({ features: [] })),
+          }).catch(() => []),
           fetch('/data/rivers.json').then((r) => {
             if (!r.ok) throw new Error('Failed to load rivers');
             return r.json();
-          }).catch(() => ({ features: [] })),
+          }).catch(() => []),
         ]);
 
         const cityLocations: Location[] = citiesGeometry.map(city => ({
@@ -71,22 +55,22 @@ function MapContent() {
           description: "",
         }));
 
-        const mountainLocations: Location[] = (mountains?.features || []).map((mt: any) => ({
+        const mountainLocations: Location[] = (mountains || []).map((mt: any) => ({
           id: mt.id ?? '',
-          name: mt.title ?? { en: mt.id, kn: mt.id, hi: mt.id },
+          name: typeof mt.name === 'object' ? mt.name : { en: mt.name || mt.id, kn: mt.name || mt.id, hi: mt.name || mt.id },
           category: 'mountain' as const,
-          latitude: mt.coords?.[0] ?? 0,
-          longitude: mt.coords?.[1] ?? 0,
-          description: "",
+          latitude: mt.latitude ?? 0,
+          longitude: mt.longitude ?? 0,
+          description: mt.description || "",
         }));
 
-        const riverLocations: Location[] = (rivers?.features || []).map((rv: any) => ({
+        const riverLocations: Location[] = (rivers || []).map((rv: any) => ({
           id: rv.id ?? '',
-          name: rv.title ?? { en: rv.id, kn: rv.id, hi: rv.id },
+          name: typeof rv.name === 'object' ? rv.name : { en: rv.name || rv.id, kn: rv.name || rv.id, hi: rv.name || rv.id },
           category: 'river' as const,
-          latitude: rv.coords?.[0] ?? 0,
-          longitude: rv.coords?.[1] ?? 0,
-          description: "",
+          latitude: rv.latitude ?? 0,
+          longitude: rv.longitude ?? 0,
+          description: rv.description || "",
         }));
 
         setLocations([...mountainLocations, ...riverLocations, ...cityLocations]);
@@ -131,36 +115,19 @@ function MapContent() {
     (location: Location) => {
       if (!location?.id) return;
       
-      const isArchival = ['mountain', 'river', 'city', 'region'].includes(location.category);
-      if (isArchival) {
-        closeSidebar();
-        setIsNavigating(true);
-        setSelectedLocation(location);
+      setIsNavigating(true);
+      setSelectedLocation(location);
 
-        const categoryExt = location.category === 'city' ? 'sacred-cities' : location.category + 's';
-        const id = location.id;
-        // Try all common image extensions AND case variations for mixed-case filenames (Mahanadi, Godavari, Narmada)
-        const variants = [
-          `/place-images/${categoryExt}/${id}.webp`,
-          `/place-images/${categoryExt}/${id}.avif`,
-          `/place-images/${categoryExt}/${id}.jpg`,
-          `/place-images/${categoryExt}/${id}.png`,
-          // Case variations for mixed-case filenames
-          `/place-images/${categoryExt}/${id.charAt(0).toUpperCase() + id.slice(1)}.jpg`,
-          `/place-images/${categoryExt}/${id.charAt(0).toUpperCase() + id.slice(1)}.webp`,
-        ];
+      const id = location.id;
+      const assetPath = getAssetPath(id);
 
-        import('@/components/PWA/PreloadSystem').then(mod => {
-          if (mod?.cacheInteractionAssets) {
-            mod.cacheInteractionAssets(variants);
-          }
-        }).catch(() => {});
-      } else {
-        setShowKnowledge(false);
-        openSidebar(location);
-      }
+      import('@/components/PWA/PreloadSystem').then(mod => {
+        if (mod?.cacheInteractionAssets) {
+          mod.cacheInteractionAssets([assetPath]);
+        }
+      }).catch(() => {});
     },
-    [openSidebar, closeSidebar, setSelectedLocation, setIsNavigating]
+    [setSelectedLocation, setIsNavigating]
   );
 
   if (loadError && !locations.length) {
@@ -183,16 +150,9 @@ function MapContent() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <NetworkStatusBanner />
       <Header />
 
       <div className="main-content-area">
-        {/* Desktop Sidebar */}
-        <div className="sidebar-desktop desktop-only">
-          <ErrorBoundary componentName="Sidebar">
-            <Sidebar />
-          </ErrorBoundary>
-        </div>
 
         {/* Map Canvas (Dominant Full-Bleed) */}
         <div className="map-canvas-container map-canvas-container-desktop">
@@ -238,7 +198,7 @@ function MapContent() {
   );
 }
 
-export default function MapPage() {
+export default function BharatvarshaPage() {
   return (
     <MapProvider>
       <FilterProvider>

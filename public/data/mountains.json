@@ -1,11 +1,11 @@
 [
   {
-    "id": "mt-001",
+    "id": "himalaya",
     "name": "Himalaya Range",
     "category": "mountain",
     "latitude": 30.5,
     "longitude": 78.5,
-    "description": "The formidable northern mountain range.",
+    "description": "",
     "coords": [
       [
         34.5,
@@ -58,13 +58,12 @@
     ]
   },
   {
-    "id": "mt-002",
+    "id": "sahyadri",
     "name": "Sahyadri",
-    "nameHindi": "सह्याद्रि",
     "category": "mountain",
     "latitude": 20.0,
     "longitude": 73.0,
-    "description": "The Western Ghats.",
+    "description": "",
     "coords": [
       [
         20.5,
@@ -97,13 +96,12 @@
     ]
   },
   {
-    "id": "mt-003",
+    "id": "malaya",
     "name": "Malaya",
-    "nameHindi": "मलय",
     "category": "mountain",
     "latitude": 11.0,
     "longitude": 76.0,
-    "description": "Southern Western Ghats extension.",
+    "description": "",
     "coords": [
       [
         11.0,
@@ -120,13 +118,12 @@
     ]
   },
   {
-    "id": "mt-004",
+    "id": "mahendra",
     "name": "Mahendra",
-    "nameHindi": "महेन्द्र",
     "category": "mountain",
     "latitude": 19.8,
     "longitude": 84.9,
-    "description": "Odisha–Andhra coastal belt / Eastern Ghats — elongated coastal arc.",
+    "description": "",
     "coords": [
       [
         18.5,
@@ -151,13 +148,12 @@
     ]
   },
   {
-    "id": "mt-006",
+    "id": "aravalli",
     "name": "Aravalli",
-    "nameHindi": "अरावली",
     "category": "mountain",
     "latitude": 27.0,
     "longitude": 74.2,
-    "description": "Northwestern range — curved diagonal with eastward drift.",
+    "description": "",
     "coords": [
       [
         24.8,
@@ -182,13 +178,12 @@
     ]
   },
   {
-    "id": "mt-007",
+    "id": "vindhya",
     "name": "Vindhya",
-    "nameHindi": "विन्ध्य",
     "category": "mountain",
     "latitude": 22.0,
     "longitude": 78.0,
-    "description": "Central Indian range running parallel to Vindhya.",
+    "description": "",
     "coords": [
       [
         22.5,
@@ -209,6 +204,32 @@
       [
         21.8,
         82.0
+      ]
+    ]
+  },
+  {
+    "id": "raivataka",
+    "name": "Raivataka",
+    "category": "mountain",
+    "latitude": 21.55,
+    "longitude": 70.85,
+    "description": "",
+    "coords": [
+      [
+        21.62,
+        70.30
+      ],
+      [
+        21.60,
+        70.55
+      ],
+      [
+        21.55,
+        70.85
+      ],
+      [
+        21.50,
+        71.10
       ]
     ]
   }

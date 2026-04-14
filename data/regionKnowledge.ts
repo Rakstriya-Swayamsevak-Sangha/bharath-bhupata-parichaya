@@ -1,7 +1,6 @@
 export const regionKnowledge: Record<string, any> = {
   gandhara: {
     id: 'gandhara',
-    image: '/place-images/regions/afghanistan.jpg',
     title: {
       en: 'GANDHARA',
       kn: 'ಗಾಂಧಾರ',
@@ -56,7 +55,6 @@ export const regionKnowledge: Record<string, any> = {
   },
   sindhu_desha: {
     id: 'sindhu_desha',
-    image: '/place-images/regions/pakistan.png',
     title: {
       en: 'SINDHU DESHA',
       kn: 'ಸಿಂಧು ದೇಶ',
@@ -110,7 +108,7 @@ export const regionKnowledge: Record<string, any> = {
   },
   sinhala: {
     id: 'sinhala',
-    image: '/place-images/regions/srilanka.jpg',
+    image: '/place-images/regions/sri-lanka.jpg',
     title: {
       en: 'SINHALA',
       kn: 'ಸಿಂಹಳ',

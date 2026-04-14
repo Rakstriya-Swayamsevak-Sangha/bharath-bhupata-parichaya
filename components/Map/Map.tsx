@@ -29,6 +29,17 @@ import { REGION_BOUNDS } from '@/utils/mapBounds';
 import { adjustCoords, getPreciseZoom } from '@/utils/geo';
 import 'leaflet/dist/leaflet.css';
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// LEAFLET ASSET CONTRACT — Explicit absolute path mapping for marker icons
+// ═══════════════════════════════════════════════════════════════════════════════
+/** @ts-ignore */
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: '/leaflet/marker-icon-2x.png',
+  iconUrl: '/leaflet/marker-icon.png',
+  shadowUrl: '/leaflet/marker-shadow.png',
+});
+
 // ════════════════════════════════════════════════════
 // SACRED CITIES MARKERS — Copper engraving aesthetic
 // ════════════════════════════════════════════════════
@@ -94,7 +105,7 @@ const distort = ([lat, lng]: [number, number]): [number, number] => [
 ];
 
 // ─── Subdued Cartographic Mountain Strokes ─────────────────────────────────────
-function MountainLinesLayer() {
+const MountainLinesLayer = React.memo(function MountainLinesLayer() {
   const { activeFilters } = useFilter();
 
   if (!activeFilters.mountain) return null;
@@ -103,12 +114,9 @@ function MountainLinesLayer() {
     <>
       {mountainsGeometry.map((mt) => {
         const coords = mt.path;
-
-        // Controlled, precise structural bend (zig-zag) instead of random chaos
-        // Alternates slightly on the axis to create a stable, beautiful hand-drawn wave
         const path = coords.map(([lat, lng], i) => {
-          const bendX = i % 2 === 0 ? 0.04 : -0.04;
-          const bendY = i % 2 === 0 ? -0.04 : 0.04;
+          const bendX = i % 2 === 0 ? 0.01 : -0.01;
+          const bendY = i % 2 === 0 ? -0.01 : 0.01;
           return [lat + bendX, lng + bendY] as [number, number];
         });
 
@@ -139,7 +147,7 @@ function MountainLinesLayer() {
                 opacity: 0.12,
                 lineCap: 'round',
                 lineJoin: 'round',
-                className: 'terrain-polygon-blur', // softness
+                className: 'terrain-polygon-blur',
               }}
               interactive={false}
             />
@@ -177,7 +185,7 @@ function MountainLinesLayer() {
       })}
     </>
   );
-}
+});
 
 // ─── Interaction & Labelling ─────────────────────────────────────────────────
 function MountainLabelsLayer({ onMountainClick }: { onMountainClick: (loc: Location) => void }) {
@@ -267,7 +275,7 @@ const createRiverLabelIcon = (name: string, isSelected = false) =>
 // RIVER LAYER — Cultural soft dashed rendering
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void }) {
+const RiverLayer = React.memo(function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void }) {
   const { lang } = useLanguageStore();
   const { activeFilters } = useFilter();
   const { selectedLocation } = useMap();
@@ -275,7 +283,7 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
   if (!activeFilters.river) return null;
 
   const safeRivers = Array.isArray(riversGeometry) ? riversGeometry : [];
-  
+
   const PALETTE = {
     glowColor: '#8AB8DC',
     glowOpacity: 0.18,
@@ -301,7 +309,7 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
         const isSelected = selectedLocation?.id === river.id;
         const path = Array.isArray(river.path) ? river.path : [];
         if (path.length === 0) return null;
-        
+
         const labelIdx = Math.floor(path.length * 0.4);
         const labelPoint = path[labelIdx] || path[0];
         const label = river.title?.[lang] || river.id;
@@ -402,7 +410,7 @@ function RiverLayer({ onRiverClick }: { onRiverClick: (loc: Location) => void })
       })}
     </>
   );
-}
+});
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SACRED CITIES LAYER (High-Priority Cultural Centers)
@@ -414,7 +422,7 @@ const POILayer = React.memo(({ onItemClick, locations }: { onItemClick: (loc: Lo
   const { lang } = useLanguageStore();
 
   const safeLocations = Array.isArray(locations) ? locations : [];
-  
+
   const filteredLocations = useMemo(() =>
     safeLocations.filter(loc => loc?.category === 'city' && activeFilters.city),
     [safeLocations, activeFilters.city]);
@@ -596,7 +604,7 @@ function FlyToLocation() {
   useEffect(() => {
     if (selectedLocation && selectedLocation.latitude && selectedLocation.longitude) {
       const zoom = getPreciseZoom(selectedLocation.category);
-      
+
       const handleMoveEnd = () => {
         setIsNavigating(false);
         map.off('zoomend', handleMoveEnd);
@@ -652,9 +660,20 @@ function MapViewController() {
   }, [map, applyViewport]);
 
   useEffect(() => {
-    const onResize = () => applyViewport();
+    let timeoutId: NodeJS.Timeout;
+    const onResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        applyViewport();
+      }, 150);
+    };
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+      clearTimeout(timeoutId);
+    };
   }, [applyViewport]);
 
   return null;
@@ -689,14 +708,14 @@ export function CulturalMap({ onMarkerClick, onRegionClick, locations }: Cultura
         return r.json();
       })
       .then(setBordersData)
-      .catch(() => {});
+      .catch(() => { });
     fetch('/india_states.geojson')
       .then(r => {
         if (!r.ok) throw new Error('Failed to load states');
         return r.json();
       })
       .then(setStateBorders)
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   if (!isMapMounted) return (
