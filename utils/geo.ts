@@ -26,16 +26,18 @@ export function adjustCoords(id: string, lat: number, lng: number): [number, num
  * Used for "precise" fly-to actions from search results.
  */
 export function getPreciseZoom(category: string, id?: string): number {
-  if (id === 'raivataka') return 7.5; // Raivataka is a smaller range, needs closer zoom
+  if (id === 'raivataka') return 8.0; // Raivataka is a smaller range, needs closer zoom
 
   switch (category) {
     case 'city':
-      return 8.5; // High zoom for cities/temples
+      return 10.0; // High zoom for cities/temples
     case 'river':
-      return 6.5; // Moderate zoom for rivers
+      return 8.0; // Moderate zoom for rivers
     case 'mountain':
-      return 5.5; // Wider zoom for mountain ranges
+      return 7.5; // Wider zoom for mountain ranges
+    case 'region':
+      return 6.0; // Very wide zoom for large regions
     default:
-      return 6.5;
+      return 7.5;
   }
 }

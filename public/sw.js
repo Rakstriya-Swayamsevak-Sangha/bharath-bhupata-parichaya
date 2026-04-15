@@ -66,12 +66,13 @@ const TRUSTED_PATH_PREFIXES = [
 const TRUSTED_EXACT_PATHS = [
   '/',
   '/bharatvarsha',
+  '/bharatvarsha.txt',
   '/manifest.json',
   '/favicon.png',
   '/parchment-texture.png',
   '/countries.geojson',
   '/india_states.geojson',
-  '/fallback.svg', // Fallback image for failed asset loads
+  '/fallback.svg', 
 ];
 
 // Trusted external domains (ONLY Google Fonts — nothing else)
@@ -206,7 +207,7 @@ function isTrustedPath(url) {
 
   // Check if it's a known file extension in root (JS/CSS bundles)
   if (/^\/_next\//.test(pathname)) return true;
-  if (/\.(js|css)$/i.test(pathname) && !pathname.includes('..')) return true;
+  if (/\.(js|css|txt)$/i.test(pathname) && !pathname.includes('..')) return true;
 
   return false;
 }

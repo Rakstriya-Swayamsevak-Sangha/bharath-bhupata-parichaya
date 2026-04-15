@@ -215,6 +215,12 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
     ? (knowledge?.culturalSignificance?.[lang] ? knowledge.culturalSignificance[lang].join('\n\n') : '')
     : (!isCity ? resolveText(knowledge?.cultural, lang) : '');
 
+  const meta = resolveText(knowledge?.meta, lang);
+  const type = resolveText(knowledge?.type, lang);
+  const scale = resolveText(knowledge?.scale, lang);
+  const importance = resolveText(knowledge?.importance, lang);
+  const relation = resolveText(knowledge?.relation, lang);
+
   const contextStrip = resolveText(knowledge?.contextStrip, lang);
 
   // Map timeline to facts for standard UI display
@@ -352,20 +358,20 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
 
                     {!isCity && (
                       <div className="kp-tag-container">
-                        {knowledge.meta?.[lang] && (
-                          <span className="kp-meta-badge">{knowledge.meta[lang]}</span>
+                        {meta && (
+                          <span className="kp-meta-badge">{meta}</span>
                         )}
-                        {knowledge.type?.[lang] && (
-                          <span className="kp-type-tag">{knowledge.type[lang]}</span>
+                        {type && (
+                          <span className="kp-type-tag">{type}</span>
                         )}
-                        {knowledge.scale?.[lang] && (
-                          <span className="kp-scale-tag">{knowledge.scale[lang]}</span>
+                        {scale && (
+                          <span className="kp-scale-tag">{scale}</span>
                         )}
-                        {knowledge.importance?.[lang] && (
-                          <span className="kp-importance-tag">{knowledge.importance[lang]}</span>
+                        {importance && (
+                          <span className="kp-importance-tag">{importance}</span>
                         )}
-                        {knowledge.relation?.[lang] && (
-                          <p className="kp-relation">{knowledge.relation[lang]}</p>
+                        {relation && (
+                          <p className="kp-relation">{relation}</p>
                         )}
                         {subtitle && <p className="kp-subtitle">{subtitle}</p>}
                       </div>

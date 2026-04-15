@@ -45,10 +45,9 @@
     }
   ],
   "rewrites": [
-    { "source": "/bharatvarsha/__next.bharatvarsha.__PAGE__.txt", "destination": "/bharatvarsha.txt" },
-    { "source": "/bharatvarsha/__next.bharatvarsha.txt", "destination": "/bharatvarsha.txt" },
-    { "source": "/:page/__next.:page.__PAGE__.txt", "destination": "/:page.txt" },
-    { "source": "/:page/__next.:page.txt", "destination": "/:page.txt" },
-    { "source": "/bharatvarsha/", "destination": "/bharatvarsha" }
+    { "source": "/bharatvarsha/__next.bharatvarsha.__PAGE__.txt", "destination": "/bharatvarsha/__next.bharatvarsha/__PAGE__.txt" },
+    { "source": "/bharatvarsha/__next.bharatvarsha.txt", "destination": "/bharatvarsha/__next.bharatvarsha.txt" },
+    { "source": "/:page/__next.:rest*", "destination": "/:page/__next.:rest*" },
+    { "source": "/:page/__next/:rest*", "destination": "/:page/__next/:rest*" }
   ]
 }

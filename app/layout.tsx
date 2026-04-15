@@ -50,8 +50,8 @@ export default function RootLayout({
         <ServiceWorkerManager />
         <PreloadSystem />
         {children}
-        <Analytics />
-        <SpeedInsights />
+        {process.env.VERCEL && <Analytics />}
+        {process.env.VERCEL && <SpeedInsights />}
       </body>
     </html>
   );

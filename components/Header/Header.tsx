@@ -1,54 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import React, { useState } from 'react';
 import { useLanguageStore } from '@/store/languageStore';
 import { Search } from '@/components/Search/Search';
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
-import { useInstallPrompt } from '@/components/PWA/useInstallPrompt';
-import { IOSInstallGuidance } from '@/components/PWA/IOSInstallGuidance';
-import { Download } from 'lucide-react';
+import { Info, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function Header() {
   const { lang } = useLanguageStore();
-  const pathname = usePathname();
-
-  // ─── Install UX State System ─────────────────────────────────
-  const { status, triggerInstall, isInstalled } = useInstallPrompt();
-  const [showIOSGuide, setShowIOSGuide] = useState(false);
-  const [isReadyToDisplay, setIsReadyToDisplay] = useState(false);
-
-  // Entrance Control: Wait for museum atmosphere to settle (2s)
-  useEffect(() => {
-    const timer = setTimeout(() => setIsReadyToDisplay(true), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleInstallClick = () => {
-    if (status === 'READY') {
-      triggerInstall();
-    } else if (status === 'IOS_GUIDE') {
-      setShowIOSGuide(true);
-    }
-  };
-
-  // Determine Label based on State (Desktop Only)
-  const getInstallLabel = () => {
-    if (status === 'PREPARING') return 'Preparing...';
-    if (status === 'READY') return 'Install';
-    if (status === 'IOS_GUIDE') return 'Save Darshan';
-    return '';
-  };
-
-  // Determine Accessibility Label
-  const getAriaLabel = () => {
-    if (status === 'PREPARING') return 'Preparing installation system';
-    if (status === 'READY') return 'Install Bharatvarsha App';
-    return 'Installation Options';
-  };
-
-  // Visibility Logic
-  const shouldShow = isReadyToDisplay && !isInstalled && status !== 'INSTALLED';
+  const [showHelp, setShowHelp] = useState(false);
 
   return (
     <header className="header">
@@ -63,30 +24,36 @@ export function Header() {
         </div>
 
         <div className="header-actions flex-shrink-0">
-          {shouldShow && (
-            <button
-              className={`install-button-header state-${status.toLowerCase()}`}
-              onClick={handleInstallClick}
-              aria-label={getAriaLabel()}
-              aria-disabled={status === 'PREPARING'}
-              style={{
-                opacity: status === 'PREPARING' ? 0.6 : 1,
-                cursor: status === 'READY' || status === 'IOS_GUIDE' ? 'pointer' : 'default',
-                pointerEvents: status === 'PREPARING' ? 'none' : 'auto'
-              }}
-            >
-              <Download size={14} strokeWidth={2.5} />
-              <span className="label-text">{getInstallLabel()}</span>
-            </button>
-          )}
+          <button 
+            className="help-trigger"
+            onClick={() => setShowHelp(!showHelp)}
+            title="Help & About"
+            aria-label="Help and About"
+          >
+            {showHelp ? <X size={18} /> : <Info size={18} />}
+          </button>
           <LanguageSwitcher />
         </div>
       </div>
 
-      <IOSInstallGuidance
-        visible={showIOSGuide}
-        onDismiss={() => setShowIOSGuide(false)}
-      />
+      <AnimatePresence>
+        {showHelp && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="help-dropdown"
+          >
+            <div className="help-content">
+              <h3>Darshan Guidance</h3>
+              <p>Explore the cultural geography of Akhand Bharat through sacred mountains, rivers, and cities.</p>
+              <div className="install-hint">
+                <strong>Offline Access:</strong> Use browser menu → Install App for full offline experience.
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

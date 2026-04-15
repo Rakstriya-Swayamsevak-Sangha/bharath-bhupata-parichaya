@@ -615,11 +615,24 @@ function FlyToLocation() {
       map.on('zoomend', handleMoveEnd);
       map.on('moveend', handleMoveEnd);
 
+      // Animation fallback: ensure UI isn't locked if Leaflet events don't fire
+      const timeoutId = setTimeout(() => {
+        setIsNavigating(false);
+        map.off('zoomend', handleMoveEnd);
+        map.off('moveend', handleMoveEnd);
+      }, 2000); 
+
       map.flyTo([selectedLocation.latitude, selectedLocation.longitude], zoom, {
         duration: 1.2,
         easeLinearity: 0.25,
         noMoveStart: true
       });
+
+      return () => {
+        clearTimeout(timeoutId);
+        map.off('zoomend', handleMoveEnd);
+        map.off('moveend', handleMoveEnd);
+      };
     }
   }, [selectedLocation, map, setIsNavigating]);
 
