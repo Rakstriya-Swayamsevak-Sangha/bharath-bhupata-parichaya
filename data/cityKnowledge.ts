@@ -774,7 +774,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
     title: {
       en: "Puri",
       kn: "ಪುರಿ",
-      hi: "ಪ್ರಿ"
+      hi: "पुरी"
     },
   
     identity: {
