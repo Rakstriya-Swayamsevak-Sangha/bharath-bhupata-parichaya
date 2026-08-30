@@ -20,6 +20,7 @@ function FilterButton({ category, isActive, onToggle }: FilterButtonProps) {
   else if (category === 'river') label = UI_TEXT.filterRivers[lang];
   else if (category === 'city') label = UI_TEXT.filterSacredCities[lang];
   else if (category === 'region') label = UI_TEXT.filterRegions[lang];
+  else if (category === 'mahapurusha') label = UI_TEXT.filterMahapurushas[lang];
 
   return (
     <motion.button
@@ -39,7 +40,7 @@ export function FilterBar() {
 
   return (
     <>
-      {(['mountain', 'river', 'city', 'region'] as Category[]).map(category => (
+      {(['region', 'mahapurusha', 'mountain', 'river', 'city'] as Category[]).map(category => (
         <FilterButton
           key={category}
           category={category}

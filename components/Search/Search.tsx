@@ -10,6 +10,7 @@ import { UI_TEXT } from '@/data/uiText';
 import { citiesGeometry } from '@/data/citiesGeometry';
 import { mountainsGeometry } from '@/data/mountainsGeometry';
 import { riversGeometry } from '@/data/riversGeometry';
+import { mahapurushasGeometry } from '@/data/mahapurushasGeometry';
 import { COUNTRY_LABELS } from '@/data/regionsGeometry';
 import { adjustCoords } from '@/utils/geo';
 import { Location } from '@/types/location';
@@ -81,6 +82,12 @@ export const Search = React.memo(function Search() {
       if (reg) {
         lat = reg.coords[0];
         lng = reg.coords[1];
+      }
+    } else if (item.type === 'mahapurusha') {
+      const per = mahapurushasGeometry.find(p => p.id === item.id);
+      if (per) {
+        lat = per.coords[0];
+        lng = per.coords[1];
       }
     }
 
@@ -161,6 +168,7 @@ export const Search = React.memo(function Search() {
                   {result.type === 'mountain' ? UI_TEXT.filterMountains[lang] : 
                    result.type === 'river' ? UI_TEXT.filterRivers[lang] : 
                    result.type === 'region' ? UI_TEXT.filterRegions[lang] :
+                   result.type === 'mahapurusha' ? UI_TEXT.filterMahapurushas[lang] :
                    UI_TEXT.filterSacredCities[lang]}
                 </span>
               </motion.div>

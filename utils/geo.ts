@@ -31,6 +31,8 @@ export function getPreciseZoom(category: string, id?: string): number {
   switch (category) {
     case 'city':
       return 10.0; // High zoom for cities/temples
+    case 'mahapurusha':
+      return 8.5; // Focused zoom for biographical geographic association
     case 'river':
       return 8.0; // Moderate zoom for rivers
     case 'mountain':

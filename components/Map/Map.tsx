@@ -20,6 +20,7 @@ import { useLanguageStore } from '@/store/languageStore';
 import { mountainsGeometry } from '@/data/mountainsGeometry';
 import { riversGeometry } from '@/data/riversGeometry';
 import { COUNTRY_LABELS } from '@/data/regionsGeometry';
+import { mahapurushasGeometry } from '@/data/mahapurushasGeometry';
 import { Location } from '@/types/location';
 import {
   MAP_CONFIG,
@@ -53,6 +54,34 @@ const createSacredMarker = (isSelected = false) => {
           <div class="marker-glow"></div>
           <div class="marker-core">
             <div class="marker-symbol">ॐ</div>
+          </div>
+        </div>
+      </div>
+    `,
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+  });
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAHAPURUSHA MARKERS — Akhanda Jyoti (Eternal Flame of Sacrifice & Wisdom)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const createMahapurushaMarker = (isSelected = false) => {
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `
+      <div class="marker-touch-target" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+        <div class="marker-wrapper mahapurusha-wrapper ${isSelected ? 'mahapurusha-active' : ''}">
+          <div class="marker-glow mahapurusha-glow"></div>
+          <div class="marker-core mahapurusha-core">
+            <div class="mahapurusha-icon-inner">
+              <svg class="mahapurusha-flame-icon" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#FDE8B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2c0 4.5-3.5 6.5-3.5 10a5 5 0 0 0 10 0c0-3.5-3.5-5.5-3.5-10z" fill="rgba(253, 232, 179, 0.4)" stroke="#FDE8B3"/>
+                <path d="M12 14c-.9 0-1.4-.7-1.4-1.6 0-1 1.4-1.9 1.4-2.8 0 .9 1.4 1.8 1.4 2.8 0 .9-.5 1.6-1.4 1.6z" fill="#FDE8B3"/>
+                <path d="M7 21h10" stroke="#FDE8B3" stroke-width="2.2"/>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
@@ -463,6 +492,57 @@ const POILayer = React.memo(({ onItemClick, locations }: { onItemClick: (loc: Lo
 
 POILayer.displayName = 'POILayer';
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAHAPURUSHA LAYER (Biographical Geographic Associations)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const MahapurushaLayer = React.memo(({ onItemClick }: { onItemClick: (loc: Location) => void }) => {
+  const { selectedLocation } = useMap();
+  const { activeFilters } = useFilter();
+  const { lang } = useLanguageStore();
+
+  if (!activeFilters.mahapurusha) return null;
+
+  return (
+    <>
+      {mahapurushasGeometry.map((person) => {
+        const title = person.name[lang] || person.name.en;
+        const isSelected = selectedLocation?.id === person.id;
+
+        return (
+          <Marker
+            key={`mahapurusha-${person.id}`}
+            position={person.coords}
+            icon={createMahapurushaMarker(isSelected)}
+            eventHandlers={{
+              click: () => onItemClick({
+                id: person.id,
+                category: 'mahapurusha',
+                name: person.name,
+                latitude: person.coords[0],
+                longitude: person.coords[1],
+                description: "",
+              } as Location)
+            }}
+          >
+            <Tooltip
+              permanent
+              direction="bottom"
+              offset={[0, 8]}
+              className="sacred-label mahapurusha-label"
+              opacity={0.9}
+            >
+              {title}
+            </Tooltip>
+          </Marker>
+        );
+      })}
+    </>
+  );
+});
+
+MahapurushaLayer.displayName = 'MahapurushaLayer';
+
 function formatLabel(name: string) {
   if (name.includes("\n")) {
     const [primary, secondary] = name.split("\n");
@@ -837,9 +917,14 @@ export function CulturalMap({ onMarkerClick, onRegionClick, locations }: Cultura
         <MountainLabelsLayer onMountainClick={onMarkerClick} />
       </Pane>
 
-      {/* ── Layer 6: Dynamic POIs (Temples & Cities) (highest z-order) ───────── */}
+      {/* ── Layer 6: Dynamic POIs (Temples & Cities) ───────── */}
       <Pane name="poiPane" style={{ zIndex: 600 }}>
         <POILayer onItemClick={onMarkerClick} locations={locations} />
+      </Pane>
+
+      {/* ── Layer 7: Mahapurushas (Biographical Association Medallions) ───────── */}
+      <Pane name="mahapurushaPane" style={{ zIndex: 700 }}>
+        <MahapurushaLayer onItemClick={onMarkerClick} />
       </Pane>
 
       {/* ── Final Mask Layer: Hides everything completely outside defined bounds ───────── */}

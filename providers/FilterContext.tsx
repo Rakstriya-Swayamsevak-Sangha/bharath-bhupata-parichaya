@@ -12,10 +12,11 @@ interface FilterContextType {
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 const DEFAULT_FILTERS: Record<Category, boolean> = {
-  mountain: true,
-  river: true,
-  city: true,
   region: true,
+  mahapurusha: false,
+  mountain: false,
+  river: false,
+  city: false,
 };
 
 export function FilterProvider({ children }: { children: ReactNode }) {
@@ -23,23 +24,12 @@ export function FilterProvider({ children }: { children: ReactNode }) {
 
   const toggleFilter = useCallback((category: Category) => {
     setActiveFilters(prev => {
-      const isAllActive = Object.values(prev).every(v => v);
-      
-      if (isAllActive) {
-        return {
-          mountain: category === 'mountain',
-          river: category === 'river',
-          city: category === 'city',
-          region: category === 'region',
-        };
-      }
-      
       const next = {
         ...prev,
         [category]: !prev[category],
       };
 
-      // Ensure at least one filter remains active
+      // Ensure at least one filter remains active; if none active, reset to default (Regions)
       if (Object.values(next).every(v => !v)) {
         return DEFAULT_FILTERS;
       }

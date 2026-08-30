@@ -14,6 +14,7 @@ function MobileFilterButton({ category, isActive, onToggle }: { category: Catego
   else if (category === 'river') label = UI_TEXT.filterRivers[lang];
   else if (category === 'city') label = UI_TEXT.filterSacredCities[lang];
   else if (category === 'region') label = UI_TEXT.filterRegions[lang];
+  else if (category === 'mahapurusha') label = UI_TEXT.filterMahapurushas[lang];
   
   return (
     <motion.button
@@ -34,7 +35,7 @@ export function MobileFilters() {
   return (
     <div className="filters-mobile-overlay">
       <div className="mobile-pill-bar">
-        {(['mountain', 'river', 'city', 'region'] as Category[]).map(category => (
+        {(['region', 'mahapurusha', 'mountain', 'river', 'city'] as Category[]).map(category => (
           <MobileFilterButton
             key={category}
             category={category}

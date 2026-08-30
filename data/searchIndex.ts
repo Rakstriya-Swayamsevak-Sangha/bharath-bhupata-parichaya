@@ -2,11 +2,12 @@ import { cityKnowledge } from "./cityKnowledge";
 import { mountainKnowledge } from "./mountainKnowledge";
 import { riverKnowledge } from "./riverKnowledge";
 import { regionKnowledge } from "./regionKnowledge";
+import { mahapurushaKnowledge } from "./mahapurushaKnowledge";
 import { COUNTRY_LABELS } from "./regionsGeometry";
 
 export type SearchItem = {
   id: string;
-  type: "mountain" | "river" | "city" | "region";
+  type: "mountain" | "river" | "city" | "region" | "mahapurusha";
   title: {
     en: string;
     kn: string;
@@ -105,4 +106,19 @@ const regions: SearchItem[] = Object.values(regionKnowledge).map((reg) => ({
   importance: 9,
 }));
 
-export const SEARCH_INDEX: SearchItem[] = [...cities, ...mountains, ...rivers, ...regions];
+const mahapurushas: SearchItem[] = Object.values(mahapurushaKnowledge).map((p) => ({
+  id: p.id,
+  type: "mahapurusha",
+  title: p.title,
+  keywords: [
+    p.id,
+    ...p.title.en.toLowerCase().split(" "),
+    ...p.title.kn.toLowerCase().split(" "),
+    ...p.title.hi.toLowerCase().split(" "),
+    ...(p.identity.alsoKnownAs.en.toLowerCase().split(/[ /]+/)),
+    ...(p.id === "chanakya" ? ["kautilya", "vishnugupta", "arthashastra", "taxila", "takshashila", "maurya", "statecraft", "advisor", "minister", "chankya", "chanky"] : []),
+  ],
+  importance: 10,
+}));
+
+export const SEARCH_INDEX: SearchItem[] = [...cities, ...mountains, ...rivers, ...regions, ...mahapurushas];

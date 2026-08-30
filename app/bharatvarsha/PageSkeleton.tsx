@@ -36,7 +36,7 @@ export function PageSkeleton() {
         {/* Filter Capsule Skeleton */}
         <div className="filters-mobile-overlay">
           <div className="mobile-pill-bar">
-            {[1, 2, 3, 4].map((i) => (
+            {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="skeleton-base skeleton-capsule">
                 <div className="skeleton-capsule-text" />
               </div>

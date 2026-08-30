@@ -55,6 +55,9 @@ export const IMAGE_MANIFEST: Record<string, string> = {
   nepal: '/place-images/regions/nepal.jpg',
   sindhu_desha: '/place-images/regions/pakistan.png',
   sinhala: '/place-images/regions/sri-lanka.jpg',
+
+  // Mahapurushas
+  chanakya: '/place-images/mahapurushas/chanakya.webp',
 };
 
 export type ImageManifestKey = keyof typeof IMAGE_MANIFEST;

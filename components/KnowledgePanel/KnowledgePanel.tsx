@@ -91,7 +91,7 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
     let isMounted = true;
 
     // 1. Handle Closing
-    if (!selectedLocation || !['mountain', 'river', 'city', 'region'].includes(selectedLocation.category)) {
+    if (!selectedLocation || !['mountain', 'river', 'city', 'region', 'mahapurusha'].includes(selectedLocation.category)) {
       setIsVisible(false);
       const timer = setTimeout(() => {
         if (isMounted) {
@@ -133,6 +133,9 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
           } else if (category === 'region') {
             const mod = await import('@/data/regionKnowledge').catch(() => null);
             data = mod?.regionKnowledge?.[id];
+          } else if (category === 'mahapurusha') {
+            const mod = await import('@/data/mahapurushaKnowledge').catch(() => null);
+            data = mod?.mahapurushaKnowledge?.[id];
           }
 
           if (!isMounted) return;
@@ -202,6 +205,7 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
   const isRiver = localLocation.category === 'river';
   const isCity = localLocation.category === 'city';
   const isRegion = localLocation.category === 'region';
+  const isMahapurusha = localLocation.category === 'mahapurusha';
   const isLoadingState = loading || !knowledge;
 
   const title = resolveText(knowledge?.title || localLocation?.name, lang);
@@ -213,7 +217,7 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
   // Harmonized content mapping for Regions
   const cultural = isRegion
     ? (knowledge?.culturalSignificance?.[lang] ? knowledge.culturalSignificance[lang].join('\n\n') : '')
-    : (!isCity ? resolveText(knowledge?.cultural, lang) : '');
+    : (!isCity && !isMahapurusha ? resolveText(knowledge?.cultural, lang) : '');
 
   const meta = resolveText(knowledge?.meta, lang);
   const type = resolveText(knowledge?.type, lang);
@@ -301,7 +305,7 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
       </AnimatePresence>
 
       <motion.div
-        className={`kp-panel-v2 ${isVisible ? 'open' : ''} ${isRiver ? 'river-theme' : isCity ? 'city-theme' : isRegion ? 'region-theme' : 'mountain-theme'}`}
+        className={`kp-panel-v2 ${isVisible ? 'open' : ''} ${isRiver ? 'river-theme' : (isCity || isMahapurusha) ? 'city-theme' : isRegion ? 'region-theme' : 'mountain-theme'}`}
         initial={false}
       >
         <AnimatePresence>
@@ -347,16 +351,22 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
               {isLoadingState ? (
                 <>
                   {isRegion && <RegionSkeleton />}
-                  {isCity && <CitySkeleton />}
+                  {(isCity || isMahapurusha) && <CitySkeleton />}
                   {isRiver && <RiverSkeleton />}
-                  {!isRegion && !isCity && !isRiver && <MountainSkeleton />}
+                  {!isRegion && !isCity && !isRiver && !isMahapurusha && <MountainSkeleton />}
                 </>
               ) : (
                 <div className="kp-content">
                   <motion.div className="kp-header" variants={itemVariants}>
                     <h1 className="kp-title">{title}</h1>
 
-                    {!isCity && (
+                    {isMahapurusha && subtitle && (
+                      <div className="kp-tag-container">
+                        <p className="kp-subtitle" style={{ color: '#D6B96B', fontWeight: 600, fontSize: '13px' }}>{subtitle}</p>
+                      </div>
+                    )}
+
+                    {!isCity && !isMahapurusha && (
                       <div className="kp-tag-container">
                         {meta && (
                           <span className="kp-meta-badge">{meta}</span>
@@ -405,7 +415,38 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
                     </motion.div>
                   )}
 
-                  {!isCity && (
+                  {isMahapurusha && (
+                    <motion.div className="kp-hero-container" variants={itemVariants}>
+                      <SafeImage
+                        src={getAssetPath(knowledge.id || localLocation.id)}
+                        alt={String(title)}
+                        className="kp-hero city-hero"
+                        fallbackColor="#3A2F24"
+                      />
+                      {knowledge.identity && (
+                        <div className="kp-identity-strip" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+                          <div className="identity-item">
+                            <span className="identity-label">{UI_TEXT.period[lang]}</span>
+                            <span className="identity-value">{resolveText(knowledge.identity.period, lang)}</span>
+                          </div>
+                          <div className="identity-item">
+                            <span className="identity-label">{UI_TEXT.birthDate[lang]}</span>
+                            <span className="identity-value">{resolveText(knowledge.identity.birthDate, lang)}</span>
+                          </div>
+                          <div className="identity-item" style={{ gridColumn: 'span 2' }}>
+                            <span className="identity-label">{UI_TEXT.birthPlace[lang]}</span>
+                            <span className="identity-value">{resolveText(knowledge.identity.birthPlace, lang)}</span>
+                          </div>
+                          <div className="identity-item" style={{ gridColumn: 'span 2' }}>
+                            <span className="identity-label">{UI_TEXT.alsoKnownAs[lang]}</span>
+                            <span className="identity-value">{resolveText(knowledge.identity.alsoKnownAs, lang)}</span>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {!isCity && !isMahapurusha && (
                     <>
                       {isRiver && knowledge.flow && (
                         <motion.div className="kp-flow-cards" variants={itemVariants}>
@@ -461,32 +502,34 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
                     </>
                   )}
 
-                  <motion.div className="kp-section" variants={itemVariants}>
-                    <h3 className="kp-section-label">
-                      {isCity
-                        ? UI_TEXT.historicalContext[lang]
-                        : (isRiver
-                          ? UI_TEXT.courseDescription[lang]
-                          : (isRegion ? (UI_TEXT as any).regionHistory[lang] : UI_TEXT.mountainDescription[lang])
-                        )
-                      }
-                    </h3>
+                  {!isMahapurusha && (
+                    <motion.div className="kp-section" variants={itemVariants}>
+                      <h3 className="kp-section-label">
+                        {isCity
+                          ? UI_TEXT.historicalContext[lang]
+                          : (isRiver
+                            ? UI_TEXT.courseDescription[lang]
+                            : (isRegion ? (UI_TEXT as any).regionHistory[lang] : UI_TEXT.mountainDescription[lang])
+                          )
+                        }
+                      </h3>
 
-                    {contextStrip && (
-                      <div className="kp-context-highlight" style={{
-                        fontStyle: 'italic',
-                        color: '#8B7355',
-                        marginBottom: '16px',
-                        padding: '12px',
-                        backgroundColor: 'rgba(139, 115, 85, 0.05)',
-                        borderLeft: '2px solid #8B7355'
-                      }}>
-                        {contextStrip}
-                      </div>
-                    )}
+                      {contextStrip && (
+                        <div className="kp-context-highlight" style={{
+                          fontStyle: 'italic',
+                          color: '#8B7355',
+                          marginBottom: '16px',
+                          padding: '12px',
+                          backgroundColor: 'rgba(139, 115, 85, 0.05)',
+                          borderLeft: '2px solid #8B7355'
+                        }}>
+                          {contextStrip}
+                        </div>
+                      )}
 
-                    <p className="kp-description">{String(description)}</p>
-                  </motion.div>
+                      <p className="kp-description">{String(description)}</p>
+                    </motion.div>
+                  )}
 
                   {isCity && (
                     <>
@@ -507,7 +550,104 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
                     </>
                   )}
 
-                  {!isCity && (
+                  {isMahapurusha && (
+                    <>
+                      {/* 1. Historical Context */}
+                      <motion.div className="kp-section" variants={itemVariants}>
+                        <h3 className="kp-section-label">
+                          {UI_TEXT.historicalContext[lang]}
+                        </h3>
+                        <p className="kp-description" style={{ lineHeight: '1.7' }}>
+                          {resolveText(knowledge.historicalContext, lang)}
+                        </p>
+                      </motion.div>
+
+                      {/* 2. Actual Contributions */}
+                      {knowledge.contributions && (
+                        <motion.div className="kp-section" variants={itemVariants}>
+                          <div className="kp-divider" />
+                          <h3 className="kp-section-label">
+                            {UI_TEXT.contributions[lang]}
+                          </h3>
+                          <div className="flex flex-col gap-3 mt-3">
+                            {knowledge.contributions.map((c: any, idx: number) => (
+                              <div key={idx} className="p-3 rounded bg-white/5 border border-[rgba(198,168,90,0.15)]">
+                                <h4 className="text-xs font-semibold text-[#D6B96B] mb-1 font-serif">
+                                  {resolveText(c.title, lang)}
+                                </h4>
+                                <p className="kp-description text-xs opacity-90 leading-relaxed">
+                                  {resolveText(c.description, lang)}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {/* 3. Textual & Historical Caveat */}
+                      {knowledge.historicalCaveat && (
+                        <motion.div className="kp-section" variants={itemVariants}>
+                          <div className="kp-divider" />
+                          <h3 className="kp-section-label">
+                            {UI_TEXT.textualTradition[lang]}
+                          </h3>
+                          <div className="kp-context-highlight" style={{
+                            fontStyle: 'normal',
+                            color: '#CFAE7B',
+                            padding: '12px',
+                            backgroundColor: 'rgba(139, 115, 85, 0.08)',
+                            borderLeft: '2px solid #D6B96B',
+                            fontSize: '12px',
+                            lineHeight: '1.6'
+                          }}>
+                            {resolveText(knowledge.historicalCaveat, lang)}
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {/* 4. Civilizational Significance */}
+                      {knowledge.civilizationalSignificance && (
+                        <motion.div className="kp-section kp-cultural" variants={itemVariants}>
+                          <div className="kp-divider" />
+                          <h3 className="kp-section-label">
+                            {UI_TEXT.regionCulture[lang]}
+                          </h3>
+                          <p className="kp-description" style={{ lineHeight: '1.7' }}>
+                            {resolveText(knowledge.civilizationalSignificance, lang)}
+                          </p>
+                        </motion.div>
+                      )}
+
+                      {/* 5. Structured Sources & Exploration */}
+                      {knowledge.sources && knowledge.sources.length > 0 && (
+                        <motion.div className="kp-section" variants={itemVariants}>
+                          <div className="kp-divider" />
+                          <h3 className="kp-section-label">
+                            {UI_TEXT.sourcesHeading[lang]}
+                          </h3>
+                          <div className="flex flex-col gap-2 mt-2">
+                            {knowledge.sources.map((s: any, idx: number) => (
+                              <div key={idx} className="text-xs text-[var(--color-text-secondary)] border-b border-white/5 pb-2">
+                                <div className="text-[#D6B96B] font-medium">
+                                  {s.url ? (
+                                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1">
+                                      <span>{s.title}</span>
+                                      <span className="text-[10px] opacity-70">↗</span>
+                                    </a>
+                                  ) : (
+                                    <span>{s.title}</span>
+                                  )}
+                                </div>
+                                <div className="text-[11px] opacity-80">{s.publisher}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </>
+                  )}
+
+                  {!isCity && !isMahapurusha && (
                     <motion.div className="kp-section kp-cultural" variants={itemVariants}>
                       <div className="kp-divider" />
                       <h3 className="kp-section-label">

@@ -63,6 +63,15 @@ export const CATEGORY_CONFIG = {
     color: '#8B7355',
     markerBg: '#6D5B45',
   },
+  mahapurusha: {
+    label: 'Mahapurusha',
+    labelEn: 'Mahapurushas',
+    labelKn: 'ಮಹಾಪುರುಷರು',
+    labelHi: 'महापुरुष',
+    icon: '👤',
+    color: '#D6B96B',
+    markerBg: '#8B5E34',
+  },
 } as const;
 
 // ─── Theme Colors — Ancient Manuscript Palette ──────────────────────────────

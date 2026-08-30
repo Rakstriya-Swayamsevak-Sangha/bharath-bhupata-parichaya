@@ -29,6 +29,11 @@ export const UI_TEXT = {
     kn: "ಪ್ರದೇಶಗಳು",
     hi: "क्षेत्र"
   },
+  filterMahapurushas: {
+    en: "Mahapurushas",
+    kn: "ಮಹಾಪುರುಷರು",
+    hi: "महापुरुष"
+  },
   loadingAtlas: {
     en: "Preparing atlas...",
     kn: "ನಕ್ಷೆಯನ್ನು ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...",
@@ -118,5 +123,40 @@ export const UI_TEXT = {
     en: "Civilizational Significance",
     kn: "ನಾಗರಿಕತೆಯ ಮಹತ್ವ",
     hi: "सभ्यता का महत्व"
+  },
+  period: {
+    en: "Period",
+    kn: "ಕಾಲ",
+    hi: "काल"
+  },
+  birthDate: {
+    en: "Birth Date",
+    kn: "ಜನ್ಮ ದಿನಾಂಕ",
+    hi: "जन्म तिथि"
+  },
+  birthPlace: {
+    en: "Birthplace",
+    kn: "ಜನ್ಮಸ್ಥಳ",
+    hi: "जन्मस्थान"
+  },
+  alsoKnownAs: {
+    en: "Also Known As",
+    kn: "ಇತರ ಹೆಸರುಗಳು",
+    hi: "अन्य नाम"
+  },
+  contributions: {
+    en: "Contributions & Statecraft",
+    kn: "ಕೊಡುಗೆಗಳು ಮತ್ತು ರಾಜ್ಯಶಾಸ್ತ್ರ",
+    hi: "प्रमुख योगदान"
+  },
+  textualTradition: {
+    en: "Textual & Historical Tradition",
+    kn: "ಗ್ರಂಥ ಮತ್ತು ಐತಿಹಾಸಿಕ ಪರಂಪರೆ",
+    hi: "ग्रंथ एवं ऐतिहासिक परंपरा"
+  },
+  sourcesHeading: {
+    en: "Sources & Exploration",
+    kn: "ಆಕರಗಳು ಮತ್ತು ಹೆಚ್ಚಿನ ವಿವರಗಳು",
+    hi: "स्रोत एवं अध्ययन"
   }
 };
