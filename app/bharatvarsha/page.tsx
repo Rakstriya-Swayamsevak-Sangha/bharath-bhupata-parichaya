@@ -36,11 +36,11 @@ function MapContent() {
       const startTime = Date.now();
       try {
         const [mountains, rivers] = await Promise.all([
-          fetch('/data/mountains.json').then((r) => {
+          fetch('/data/coords/mountains.json').then((r) => {
             if (!r.ok) throw new Error('Failed to load mountains');
             return r.json();
           }).catch(() => []),
-          fetch('/data/rivers.json').then((r) => {
+          fetch('/data/coords/rivers.json').then((r) => {
             if (!r.ok) throw new Error('Failed to load rivers');
             return r.json();
           }).catch(() => []),

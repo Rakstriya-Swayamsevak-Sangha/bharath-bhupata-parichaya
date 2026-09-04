@@ -195,7 +195,7 @@ export default function RootPage() {
         animate={{ opacity: phase >= 3 && journeyState === "idle" ? 1 : 0 }}
         transition={{ duration: 2, delay: 1 }}
       >
-        Bharata Bhupata Parichaya
+        Akhand Bharat Darshana
       </motion.div>
     </motion.main>
   );

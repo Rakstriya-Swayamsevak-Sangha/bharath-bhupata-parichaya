@@ -17,13 +17,13 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Bharata Bhupata Parichaya',
+  title: 'Akhand Bharat Darshana',
   description: 'Cultural Atlas of Akhand Bharat',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Bharata Bhupata Parichaya',
+    title: 'Akhand Bharat Darshana',
   },
   icons: {
     apple: '/icons/icon-192x192.png',

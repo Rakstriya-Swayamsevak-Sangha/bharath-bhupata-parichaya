@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useLanguageStore } from '@/store/languageStore';
 import { Search } from '@/components/Search/Search';
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
+import { UI_TEXT } from '@/data/uiText';
 import { Info, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,8 +16,8 @@ export function Header() {
     <header className="header">
       <div className="header-container">
         <h1 className="title-standard">
-          <span className="title-line">Bharata Bhupata</span>
-          <span className="title-line">Parichaya</span>
+          <span className="title-line">{UI_TEXT.headerTitleLine1[lang]}</span>
+          <span className="title-line">{UI_TEXT.headerTitleLine2[lang]}</span>
         </h1>
 
         <div className="header-center flex-grow">

@@ -37,7 +37,16 @@ export default function ServiceWorkerManager() {
           scope: '/',
         });
 
-        // ─── Handle updates silently ──────────────────────────────
+        // ─── Handle updates seamlessly ────────────────────────────
+        let refreshing = false;
+        const hadController = Boolean(navigator.serviceWorker.controller);
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (hadController && !refreshing) {
+            refreshing = true;
+            window.location.reload();
+          }
+        });
+
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           if (!newWorker) return;
@@ -78,6 +87,12 @@ export default function ServiceWorkerManager() {
           });
         }
 
+        // ─── Proactively check for SW updates on load & focus ───
+        registration.update().catch(() => {});
+        window.addEventListener('focus', () => {
+          registration.update().catch(() => {});
+        });
+
       } catch (err) {
         console.warn('[SW] Registration failed:', err);
       }
@@ -113,16 +128,20 @@ function scheduleBackgroundPrecache(worker: ServiceWorker) {
       ...PRELOAD_IMAGES,
       '/countries.geojson',
       '/india_states.geojson',
-      '/data/mountains.json',
-      '/data/rivers.json',
-      '/data/external_borders.json',
-      '/data/internal_borders.json',
+      '/data/coords/mountains.json',
+      '/data/coords/rivers.json',
+      '/data/coords/external_borders.json',
+      '/data/coords/internal_borders.json',
       '/parchment-texture.png',
       '/textures/noise.png',
       '/textures/paper.png',
       '/textures/mountain-texture.png',
+      '/icons/icon-192x192.png',
+      '/icons/icon-512x512.png',
+      '/fallback.svg',
       '/manifest.json',
       '/favicon.png',
+      '/favicon.ico',
     ];
 
     // Send to service worker for background caching

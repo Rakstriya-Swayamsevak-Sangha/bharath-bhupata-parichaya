@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { PRELOAD_IMAGES } from '@/data/assetsList';
@@ -20,13 +20,13 @@ import { PRELOAD_IMAGES } from '@/data/assetsList';
 const CRITICAL_DATA = [
   '/countries.geojson',
   '/india_states.geojson',
-  '/data/external_borders.json',
-  '/data/internal_borders.json',
+  '/data/coords/external_borders.json',
+  '/data/coords/internal_borders.json',
 ];
 
 const EXTENDED_DATA = [
-  '/data/mountains.json',
-  '/data/rivers.json',
+  '/data/coords/mountains.json',
+  '/data/coords/rivers.json',
 ];
 
 export default function PreloadSystem() {

@@ -117,6 +117,12 @@ const mahapurushas: SearchItem[] = Object.values(mahapurushaKnowledge).map((p) =
     ...p.title.hi.toLowerCase().split(" "),
     ...(p.identity.alsoKnownAs.en.toLowerCase().split(/[ /]+/)),
     ...(p.id === "chanakya" ? ["kautilya", "vishnugupta", "arthashastra", "taxila", "takshashila", "maurya", "statecraft", "advisor", "minister", "chankya", "chanky"] : []),
+    ...(p.id === "chandragupta_maurya" ? [
+      "chandragupta", "chandragupta maurya", "chandra gupta", "maurya", "maurya empire",
+      "maurya empire founder", "pataliputra", "magadha", "bindusara", "seleucus", "seleucus i",
+      "ಚಂದ್ರಗುಪ್ತ", "ಚಂದ್ರಗುಪ್ತ ಮೌರ್ಯ", "ಮೌರ್ಯ", "ಮೌರ್ಯ ಸಾಮ್ರಾಜ್ಯ", "ಪಾಟಲಿಪುತ್ರ", "ಮಗಧ",
+      "चंद्रगुप्त", "चंद्रगुप्त मौर्य", "मौर्य", "मौर्य साम्राज्य", "पाटलिपुत्र", "मगध"
+    ] : []),
   ],
   importance: 10,
 }));

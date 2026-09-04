@@ -41,22 +41,21 @@ function validateManifest(): void {
     const relativePath = assetPath.startsWith('/') ? assetPath.substring(1) : assetPath;
     const fullPath = path.join(PUBLIC_DIR, relativePath);
 
-    if (!fs.existsSync(fullPath)) {
-      // Check for case mismatch
-      const dir = path.dirname(fullPath);
-      const basename = path.basename(fullPath);
-      
-      if (fs.existsSync(dir)) {
-        const files = fs.readdirSync(dir);
-        const similar = files.find(f => f.toLowerCase() === basename.toLowerCase());
-        if (similar) {
-          caseMismatches.push(`${assetPath} (Found actual file: ${similar})`);
+    const dir = path.dirname(fullPath);
+    const basename = path.basename(fullPath);
+    
+    if (fs.existsSync(dir)) {
+      const files = fs.readdirSync(dir);
+      if (!files.includes(basename)) {
+        const caseMatch = files.find(f => f.toLowerCase() === basename.toLowerCase());
+        if (caseMatch) {
+          caseMismatches.push(`${assetPath} (Found actual file: ${caseMatch})`);
         } else {
           missing.push(assetPath);
         }
-      } else {
-        missing.push(assetPath);
       }
+    } else {
+      missing.push(assetPath);
     }
   }
 

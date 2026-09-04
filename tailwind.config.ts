@@ -8,7 +8,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // ─── Bharath Bhupata Parichaya Cultural Palette ─────────────────────────────
+        // ─── Akhand Bharat Darshana Cultural Palette ─────────────────────────────
         background: '#1C1A17',       // dark earthy tone
         surface: '#2A2520',          // warm dark surface
         surfaceHover: '#362F28',     // hover: slightly lighter

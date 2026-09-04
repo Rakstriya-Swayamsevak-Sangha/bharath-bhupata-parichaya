@@ -1,6 +1,6 @@
 import L from 'leaflet';
 
-// ─── Bharath Bhupata Parichaya Geographic Bounds ────────────────────────────────────────
+// ─── Akhand Bharat Darshana Geographic Bounds ────────────────────────────────────────
 // Southwest: [5°N, 60°E]  Northeast: [37°N, 100°E]
 // This file is client-only — Leaflet requires `window` and cannot
 // be imported during SSR. Import this only from client components.

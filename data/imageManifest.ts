@@ -19,11 +19,11 @@ export const IMAGE_MANIFEST: Record<string, string> = {
   brahmaputra: '/place-images/rivers/brahmaputra.webp',
   gandaki: '/place-images/rivers/gandaki.webp',
   ganga: '/place-images/rivers/ganga.jpg',
-  godavari: '/place-images/rivers/Godavari.jpg',
+  godavari: '/place-images/rivers/godavari.jpg',
   kaveri: '/place-images/rivers/kaveri.jpg',
   krishna: '/place-images/rivers/krishna.jpg',
-  mahanadi: '/place-images/rivers/Mahanadi.jpg',
-  narmada: '/place-images/rivers/Narmada.jpg',
+  mahanadi: '/place-images/rivers/mahanadi.jpg',
+  narmada: '/place-images/rivers/narmada.jpg',
   saraswati: '/place-images/rivers/saraswati.jpg',
   sindhu: '/place-images/rivers/sindhu.jpg',
   yamuna: '/place-images/rivers/yamuna.jpg',
@@ -34,7 +34,7 @@ export const IMAGE_MANIFEST: Record<string, string> = {
   dwarka: '/place-images/sacred-cities/dwarka.jpg',
   gaya: '/place-images/sacred-cities/gaya.jpg',
   indraprastha: '/place-images/sacred-cities/indraprastha.jpg',
-  kanchi: '/place-images/sacred-cities/Kanchi.jpg',
+  kanchi: '/place-images/sacred-cities/kanchi.jpg',
   mathura: '/place-images/sacred-cities/mathura.jpg',
   nagpur: '/place-images/sacred-cities/nagpur.jpg',
   pataliputra: '/place-images/sacred-cities/pataliputra.jpg',
@@ -58,6 +58,7 @@ export const IMAGE_MANIFEST: Record<string, string> = {
 
   // Mahapurushas
   chanakya: '/place-images/mahapurushas/chanakya.webp',
+  chandragupta_maurya: '/place-images/mahapurushas/chandragupta_maurya.webp',
 };
 
 export type ImageManifestKey = keyof typeof IMAGE_MANIFEST;

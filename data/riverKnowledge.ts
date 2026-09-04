@@ -32,7 +32,7 @@ export interface RiverKnowledge {
 export const riverKnowledge: Record<string, RiverKnowledge> = {
   sindhu: {
     id: "sindhu",
-    title: { en: "Sindhu", kn: "ಸಿಂಧು", hi: "सिंधು" },
+    title: { en: "Sindhu", kn: "ಸಿಂಧು", hi: "सिंधु" },
     facts: {
       length: "3,180 km",
       origin: "Tibetan Plateau",

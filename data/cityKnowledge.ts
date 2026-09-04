@@ -58,7 +58,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Sarayu River",
         kn: "ಸರಯು ನದಿ",
-        hi: "ಸರಯು ನದಿ"
+        hi: "सरयू नदी"
       },
       era: {
         en: "Ancient Epic Period",
@@ -110,7 +110,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Indus Region",
         kn: "ಸಿಂಧು ಪ್ರದೇಶ",
-        hi: "ಸಿಂಧು ಪ್ರದೇಶ"
+        hi: "सिंधु क्षेत्र"
       },
       era: {
         en: "Ancient (c. 5th century BCE)",
@@ -162,7 +162,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Beas River Region",
         kn: "ಬಿಯಾಸ್ ನದಿ ಪ್ರದೇಶ",
-        hi: "ಬಿಯಾಸ್ ನದಿ ಪ್ರದೇಶ"
+        hi: "ब्यास नदी क्षेत्र"
       },
       era: {
         en: "Medieval (16th century CE)",
@@ -266,7 +266,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Yamuna River",
         kn: "ಯಮುನಾ ನದಿ",
-        hi: "ಯಮುನಾ ನದಿ"
+        hi: "यमुना नदी"
       },
       era: {
         en: "Mahabharata Period",
@@ -474,7 +474,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Phalgu River",
         kn: "ಫಲ್ಗು ನದಿ",
-        hi: "ಫಲ್ಗು ನದಿ"
+        hi: "फल्गु नदी"
       },
       era: {
         en: "Ancient",
@@ -630,7 +630,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Shipra River",
         kn: "ಶಿಪ್ರಾ ನದಿ",
-        hi: "ಶಿಪ್ರಾ ನದಿ"
+        hi: "शिप्रा नदी"
       },
       era: {
         en: "Ancient",
@@ -682,7 +682,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Nag River",
         kn: "ನಾಗ ನದಿ",
-        hi: "ನಾಗ ನದಿ"
+        hi: "नाग नदी"
       },
       era: {
         en: "Modern Nationalist Era",
@@ -734,7 +734,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       river: {
         en: "Palar River Region",
         kn: "ಪಾಲಾರ್ ನದಿ ಪ್ರದೇಶ",
-        hi: "ಪಾಲಾರ್ ನದಿ ಪ್ರದೇಶ"
+        hi: "पालार नदी क्षेत्र"
       },
       era: {
         en: "Ancient to Medieval",
@@ -774,7 +774,7 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
     title: {
       en: "Puri",
       kn: "ಪುರಿ",
-      hi: "ಪ್ರಿ"
+      hi: "पुरी"
     },
   
     identity: {
@@ -833,12 +833,12 @@ export const cityKnowledge: Record<string, CityKnowledge> = {
       region: {
         en: "Karnataka",
         kn: "ಕರ್ನಾಟಕ",
-        hi: "ಕರ್ನಾಟಕ"
+        hi: "कर्नाटक"
       },
       river: {
         en: "Tungabhadra River",
         kn: "ತುಂಗಭದ್ರಾ ನದಿ",
-        hi: "ತುಂಗಭದ್ರಾ ನದಿ"
+        hi: "तुंगभद्रा नदी"
       },
       era: {
         en: "Medieval (14th–16th century)",

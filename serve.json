@@ -45,9 +45,9 @@
     }
   ],
   "rewrites": [
-    { "source": "/bharatvarsha/__next.bharatvarsha.__PAGE__.txt", "destination": "/bharatvarsha/__next.bharatvarsha/__PAGE__.txt" },
-    { "source": "/bharatvarsha/__next.bharatvarsha.txt", "destination": "/bharatvarsha/__next.bharatvarsha.txt" },
-    { "source": "/:page/__next.:rest*", "destination": "/:page/__next.:rest*" },
-    { "source": "/:page/__next/:rest*", "destination": "/:page/__next/:rest*" }
+    { "source": "/data/mountains.json", "destination": "/data/coords/mountains.json" },
+    { "source": "/data/rivers.json", "destination": "/data/coords/rivers.json" },
+    { "source": "/data/external_borders.json", "destination": "/data/coords/external_borders.json" },
+    { "source": "/data/internal_borders.json", "destination": "/data/coords/internal_borders.json" }
   ]
 }

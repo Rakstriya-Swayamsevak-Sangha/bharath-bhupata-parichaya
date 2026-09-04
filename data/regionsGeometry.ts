@@ -13,7 +13,7 @@ export const COUNTRY_LABELS = [
     name: {
       en: "SINDHU DESHA (Pakistan)",
       kn: "ಸಿಂಧು ದೇಶ (ಪಾಕಿಸ್ತಾನ)",
-      hi: "सिंधು ದೇಶ (पाकिस्तान)"
+      hi: "सिंधु देश (पाकिस्तान)"
     },
     coords: [28.5, 70.0] as [number, number]
   },

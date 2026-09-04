@@ -31,5 +31,21 @@ export const mahapurushasGeometry: MahapurushaAnchor[] = [
       kn: "ಪರಂಪರೆಯ ಪ್ರಕಾರ ತಕ್ಷಶಿಲೆಯೊಂದಿಗೆ ಸಂಬಂಧಿಸಲಾಗಿದೆ",
       hi: "परंपरागत रूप से तक्षशिला से संबद्ध"
     }
+  },
+  {
+    id: "chandragupta_maurya",
+    name: {
+      en: "Chandragupta Maurya",
+      kn: "ಚಂದ್ರಗುಪ್ತ ಮೌರ್ಯ",
+      hi: "चंद्रगुप्त मौर्य"
+    },
+    category: "mahapurusha",
+    coords: [25.61, 85.14],
+    associationType: "verified",
+    associationWording: {
+      en: "Pataliputra, the Mauryan capital",
+      kn: "ಮೌರ್ಯರ ರಾಜಧಾನಿಯಾದ ಪಾಟಲಿಪುತ್ರ",
+      hi: "मौर्य राजधानी पाटलिपुत्र"
+    }
   }
 ];

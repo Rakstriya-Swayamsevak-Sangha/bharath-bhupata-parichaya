@@ -26,6 +26,18 @@ export default function AssetGuard() {
         if (url.includes('_vercel/insights')) return;
         if (url.includes('favicon.ico')) return;
         
+        // Handle Next.js static chunk version mismatches across deployments
+        if (target instanceof HTMLScriptElement && url.includes('/_next/static/chunks/')) {
+          console.warn(`[CHUNK_LOAD_ERROR] Outdated chunk requested after new build: ${url}`);
+          const lastReload = sessionStorage.getItem('chunk_reload_ts');
+          const now = Date.now();
+          if (!lastReload || now - parseInt(lastReload, 10) > 8000) {
+            sessionStorage.setItem('chunk_reload_ts', now.toString());
+            window.location.reload();
+            return;
+          }
+        }
+
         // Log actual asset failures
         console.warn(`[ASSET_OFFLINE] Resource not in cache or missing: ${url}`);
         
@@ -38,11 +50,30 @@ export default function AssetGuard() {
       }
     };
 
+    // Capture unhandled promise rejections from dynamic chunk imports
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      const errorMsg = event.reason?.message || String(event.reason || '');
+      if (
+        errorMsg.includes('Loading chunk') ||
+        errorMsg.includes('ChunkLoadError') ||
+        errorMsg.includes('Failed to fetch dynamically imported module')
+      ) {
+        const lastReload = sessionStorage.getItem('chunk_reload_ts');
+        const now = Date.now();
+        if (!lastReload || now - parseInt(lastReload, 10) > 8000) {
+          sessionStorage.setItem('chunk_reload_ts', now.toString());
+          window.location.reload();
+        }
+      }
+    };
+
     // Capture: true ensures we catch the event as it bubbles up from the target
     window.addEventListener('error', handleAssetError, true);
+    window.addEventListener('unhandledrejection', handleRejection);
     
     return () => {
       window.removeEventListener('error', handleAssetError, true);
+      window.removeEventListener('unhandledrejection', handleRejection);
     };
   }, []);
 

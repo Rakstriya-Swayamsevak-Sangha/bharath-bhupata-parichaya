@@ -1,8 +1,18 @@
 export const UI_TEXT = {
   headerTitle: {
-    en: "Bharath Bhupata Parichaya",
-    kn: "ಭಾರತ ಭೂಪಟ ಪರಿಚಯ",
-    hi: "भारत मानचित्र परिचय"
+    en: "Akhand Bharat Darshana",
+    kn: "ಅಖಂಡ ಭಾರತ ದರ್ಶನ",
+    hi: "अखंड भारत दर्शन"
+  },
+  headerTitleLine1: {
+    en: "Akhand Bharat",
+    kn: "ಅಖಂಡ ಭಾರತ",
+    hi: "अखंड भारत"
+  },
+  headerTitleLine2: {
+    en: "Darshana",
+    kn: "ದರ್ಶನ",
+    hi: "दर्शन"
   },
   searchPlaceholder: {
     en: "Search cities, rivers, mountains...",
@@ -154,9 +164,24 @@ export const UI_TEXT = {
     kn: "ಗ್ರಂಥ ಮತ್ತು ಐತಿಹಾಸಿಕ ಪರಂಪರೆ",
     hi: "ग्रंथ एवं ऐतिहासिक परंपरा"
   },
-  sourcesHeading: {
-    en: "Sources & Exploration",
-    kn: "ಆಕರಗಳು ಮತ್ತು ಹೆಚ್ಚಿನ ವಿವರಗಳು",
-    hi: "स्रोत एवं अध्ययन"
+  viewPdf: {
+    en: "View PDF",
+    kn: "ಪಿಡಿಎಫ್ ವೀಕ್ಷಿಸಿ",
+    hi: "पीडीएफ देखें"
+  },
+  downloadPdf: {
+    en: "Download PDF",
+    kn: "ಪಿಡಿಎಫ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+    hi: "पीडीएफ डाउनलोड करें"
+  },
+  readPdf: {
+    en: "Read Document",
+    kn: "ದಾಖಲೆ ಓದಿ",
+    hi: "दस्तावेज़ पढ़ें"
+  },
+  historicalDocument: {
+    en: "Historical Document",
+    kn: "ಐತಿಹಾಸಿಕ ದಾಖಲೆ",
+    hi: "ऐतिहासिक दस्तावेज़"
   }
 };

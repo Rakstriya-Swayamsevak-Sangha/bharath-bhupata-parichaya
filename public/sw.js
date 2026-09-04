@@ -22,7 +22,7 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'v2.1.0';
+const CACHE_VERSION = 'v-ovwcGqRaxlP2X0yG-3RzF';
 
 const CACHE_NAMES = {
   shell:  `app-shell-${CACHE_VERSION}`,
@@ -60,6 +60,8 @@ const TRUSTED_PATH_PREFIXES = [
   '/textures/',     // Map textures
   '/icons/',        // PWA icons
   '/fonts/',        // Local fonts (if any)
+  '/chanakya/',     // Chanakya documents
+  '/chandragupta-maurya/', // Chandragupta Maurya documents
 ];
 
 // Exact-match trusted paths (root-level assets)
@@ -69,6 +71,7 @@ const TRUSTED_EXACT_PATHS = [
   '/bharatvarsha.txt',
   '/manifest.json',
   '/favicon.png',
+  '/favicon.ico',
   '/parchment-texture.png',
   '/countries.geojson',
   '/india_states.geojson',
@@ -86,6 +89,7 @@ const TRUSTED_EXTERNAL_DOMAINS = [
 const APP_SHELL_URLS = [
   '/',
   '/bharatvarsha',
+  '/bharatvarsha.txt',
   '/manifest.json',
   '/favicon.png',
   '/parchment-texture.png', // Background texture is critical for shell feel
@@ -96,13 +100,13 @@ const APP_SHELL_URLS = [
 const CRITICAL_DATA_URLS = [
   '/countries.geojson',
   '/india_states.geojson',
-  '/data/external_borders.json',
-  '/data/internal_borders.json',
+  '/data/coords/external_borders.json',
+  '/data/coords/internal_borders.json',
 ];
 
 const EXTENDED_DATA_URLS = [
-  '/data/mountains.json',
-  '/data/rivers.json',
+  '/data/coords/mountains.json',
+  '/data/coords/rivers.json',
 ];
 
 // All images: moved to background/Interaction caching
@@ -156,10 +160,14 @@ const ASSET_URLS = [
   '/place-images/regions/nepal.jpg',
   '/place-images/regions/pakistan.png',
   '/place-images/regions/sri-lanka.jpg',
+  '/place-images/mahapurushas/chanakya.webp',
+  '/place-images/mahapurushas/chandragupta_maurya.webp',
 ];
 
 // Data files that return arrays when parsed (used for context-aware fallbacks)
 const ARRAY_DATA_PATHS = [
+  '/data/coords/mountains.json',
+  '/data/coords/rivers.json',
   '/data/mountains.json',
   '/data/rivers.json',
 ];
@@ -168,6 +176,8 @@ const ARRAY_DATA_PATHS = [
 const GEOJSON_PATHS = [
   '/countries.geojson',
   '/india_states.geojson',
+  '/data/coords/external_borders.json',
+  '/data/coords/internal_borders.json',
   '/data/external_borders.json',
   '/data/internal_borders.json',
 ];
@@ -197,13 +207,17 @@ function isTrustedExternalDomain(url) {
  * Returns true ONLY if the path matches a trusted prefix or exact path.
  */
 function isTrustedPath(url) {
-  const pathname = new URL(url).pathname;
+  const parsed = new URL(url);
+  const pathname = parsed.pathname;
 
   // Check exact matches first
   if (TRUSTED_EXACT_PATHS.includes(pathname)) return true;
 
   // Check prefix matches
   if (TRUSTED_PATH_PREFIXES.some(prefix => pathname.startsWith(prefix))) return true;
+
+  // Next.js RSC Flight paths & page text
+  if (pathname.includes('/__next.') || pathname.endsWith('.txt') || parsed.searchParams.has('_rsc')) return true;
 
   // Check if it's a known file extension in root (JS/CSS bundles)
   if (/^\/_next\//.test(pathname)) return true;
@@ -223,8 +237,9 @@ function isUrlCacheable(url) {
     // Block non-HTTP(S) protocols
     if (!parsed.protocol.startsWith('http')) return false;
 
-    // Block URLs with query strings (prevents cache poisoning via query manipulation)
-    if (parsed.search && parsed.search.length > 0) return false;
+    // Block URLs with unexpected query strings (except Next.js RSC query)
+    const hasOnlyRscQuery = parsed.searchParams.has('_rsc');
+    if (parsed.search && parsed.search.length > 0 && !hasOnlyRscQuery) return false;
 
     // Same-origin: check against whitelist
     if (isSameOrigin(url)) return isTrustedPath(url);
@@ -375,6 +390,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // ─── Strategy 6: Next.js RSC Flight Payloads & Page Data ─────────────
+  if (url.searchParams.has('_rsc') || url.pathname.includes('/__next.') || url.pathname.endsWith('.txt')) {
+    event.respondWith(rscStrategy(request));
+    return;
+  }
+
   // ─── SECURITY: No fallback for unrecognized file types ────────────────
   // Unknown same-origin asset types pass through to network without caching
 });
@@ -394,23 +415,26 @@ self.addEventListener('fetch', (event) => {
 async function navigationStrategy(request) {
   const cache = await caches.open(CACHE_NAMES.shell);
   
-  // Try cache first
-  const cached = await cache.match(request, { ignoreSearch: true });
-  if (cached) {
-    // Background refresh (non-blocking) — with validation
-    safeBackgroundUpdate(request, cache);
-    return cached;
-  }
-  
-  // Network with cache fallback
+  // Try network first (with quick timeout) so fresh HTML with matching chunk hashes is always served when online
   try {
-    const response = await fetch(request);
-    if (isResponseStrictCacheable(response)) {
-      cache.put(request, response.clone());
-    }
-    return response;
+    const networkPromise = fetch(request).then((response) => {
+      if (isResponseStrictCacheable(response)) {
+        cache.put(request, response.clone());
+      }
+      return response;
+    });
+
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Network timeout')), 1500)
+    );
+
+    return await Promise.race([networkPromise, timeoutPromise]);
   } catch (err) {
-    // Ultimate fallback: serve the root page from cache (SPA-style)
+    // Offline / timeout fallback: serve cached route
+    const cached = await cache.match(request, { ignoreSearch: true });
+    if (cached) return cached;
+    
+    // Fallback to cached root
     const fallback = await cache.match('/');
     if (fallback) return fallback;
     
@@ -444,6 +468,78 @@ async function shellStrategy(request) {
 }
 
 /**
+ * RSC Strategy: Cache-first with smart path aliasing for Next.js App Router RSC Flight payloads.
+ * Handles both dot-notation and directory-notation paths, with resilient fallback.
+ */
+async function rscStrategy(request) {
+  const cache = await caches.open(CACHE_NAMES.shell);
+  const url = new URL(request.url);
+
+  // 1. Try network FIRST (with quick timeout race) so fresh RSC Flight payloads matching current build chunks are received when online
+  try {
+    const networkPromise = fetch(request).then((response) => {
+      if (response && response.ok) {
+        cache.put(request, response.clone());
+      }
+      return response;
+    });
+
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Network timeout')), 1500)
+    );
+
+    const result = await Promise.race([networkPromise, timeoutPromise]);
+    if (result && result.ok) return result;
+  } catch (err) {
+    // Network failed, slow, or offline: continue to cache and resilient fallbacks
+  }
+
+  // 2. Try cache (matching both exact and ignoring search query like ?_rsc=...)
+  const cached = await cache.match(request, { ignoreSearch: true });
+  if (cached) return cached;
+
+  // 3. Fallback: If requested as dot notation (e.g. __next.bharatvarsha.__PAGE__.txt)
+  // try fetching directory notation (e.g. __next.bharatvarsha/__PAGE__.txt)
+  if (url.pathname.includes('.__PAGE__.txt')) {
+    const altPath = url.pathname.replace(/\.__PAGE__\.txt$/, '/__PAGE__.txt');
+    const altUrl = new URL(altPath, url.origin);
+    try {
+      const altCached = await cache.match(altUrl, { ignoreSearch: true });
+      if (altCached) return altCached;
+
+      const altResponse = await fetch(altUrl);
+      if (altResponse && altResponse.ok) {
+        cache.put(request, altResponse.clone());
+        return altResponse;
+      }
+    } catch (e) {}
+  }
+
+  // 4. Fallback to route-level text file if present (e.g. /bharatvarsha.txt)
+  const segments = url.pathname.split('/').filter(Boolean);
+  const routeSegment = segments[0] || '';
+  if (routeSegment && routeSegment !== '_next') {
+    const routeTxtUrl = new URL(`/${routeSegment}.txt`, url.origin);
+    const cachedRouteTxt = await cache.match(routeTxtUrl, { ignoreSearch: true });
+    if (cachedRouteTxt) return cachedRouteTxt;
+
+    try {
+      const routeTxtResponse = await fetch(routeTxtUrl);
+      if (routeTxtResponse && routeTxtResponse.ok) {
+        cache.put(request, routeTxtResponse.clone());
+        return routeTxtResponse;
+      }
+    } catch (e) {}
+  }
+
+  // 5. Final fallback: return clean 200 stream so Next.js router transitions cleanly without 404
+  return new Response('', {
+    status: 200,
+    headers: { 'Content-Type': 'text/x-component; charset=utf-8' }
+  });
+}
+
+/**
  * Data Strategy: Cache-first with context-aware offline fallbacks.
  * 
  * SECURITY: Validates response before caching. Returns structurally valid 
@@ -451,18 +547,31 @@ async function shellStrategy(request) {
  */
 async function dataStrategy(request) {
   const cache = await caches.open(CACHE_NAMES.data);
-  const cached = await cache.match(request);
+  const url = new URL(request.url);
+
+  // Map /data/<file>.json -> /data/coords/<file>.json for coordinate files
+  let targetUrl = request.url;
+  const legacyFiles = ['mountains.json', 'rivers.json', 'external_borders.json', 'internal_borders.json'];
+  const fileName = url.pathname.split('/').pop();
+  if (url.pathname.startsWith('/data/') && !url.pathname.includes('/coords/') && legacyFiles.includes(fileName)) {
+    targetUrl = new URL(`/data/coords/${fileName}`, url.origin).toString();
+  }
+
+  const cached = (await cache.match(request)) || (targetUrl !== request.url ? await cache.match(targetUrl) : null);
   
   if (cached) {
     // Stale-while-revalidate: serve cached, refresh in background with validation
-    safeBackgroundUpdate(request, cache);
+    safeBackgroundUpdate(targetUrl !== request.url ? new Request(targetUrl) : request, cache);
     return cached;
   }
   
   try {
-    const response = await fetch(request);
+    const response = await fetch(targetUrl !== request.url ? targetUrl : request);
     if (isResponseStrictCacheable(response)) {
       cache.put(request, response.clone());
+      if (targetUrl !== request.url) {
+        cache.put(targetUrl, response.clone());
+      }
     }
     return response;
   } catch (err) {

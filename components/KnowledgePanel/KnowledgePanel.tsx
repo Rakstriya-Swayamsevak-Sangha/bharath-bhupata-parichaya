@@ -247,6 +247,24 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
     }, delay);
   };
 
+  const handlePdfAction = (e: React.MouseEvent, url: string, fileName: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Trigger browser download
+    const link = document.createElement('a');
+    link.href = encodeURI(url);
+    link.download = fileName;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Also open in a new tab for reading
+    window.open(encodeURI(url), '_blank', 'noopener,noreferrer');
+  };
+
   // Mobile Bottom Sheet Snap Logic (Interaction Audit Fix)
   const handleDragEnd = (event: any, info: any) => {
     if (deviceMode !== 'mobile') return;
@@ -618,29 +636,54 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
                         </motion.div>
                       )}
 
-                      {/* 5. Structured Sources & Exploration */}
-                      {knowledge.sources && knowledge.sources.length > 0 && (
+                      {/* 5. Historical Document / PDF */}
+                      {knowledge.pdfDocument && (
                         <motion.div className="kp-section" variants={itemVariants}>
                           <div className="kp-divider" />
                           <h3 className="kp-section-label">
-                            {UI_TEXT.sourcesHeading[lang]}
+                            {UI_TEXT.historicalDocument?.[lang] || 'Historical Document'}
                           </h3>
-                          <div className="flex flex-col gap-2 mt-2">
-                            {knowledge.sources.map((s: any, idx: number) => (
-                              <div key={idx} className="text-xs text-[var(--color-text-secondary)] border-b border-white/5 pb-2">
-                                <div className="text-[#D6B96B] font-medium">
-                                  {s.url ? (
-                                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1">
-                                      <span>{s.title}</span>
-                                      <span className="text-[10px] opacity-70">↗</span>
-                                    </a>
-                                  ) : (
-                                    <span>{s.title}</span>
-                                  )}
-                                </div>
-                                <div className="text-[11px] opacity-80">{s.publisher}</div>
+                          <div className="mt-3 p-4 rounded-xl bg-gradient-to-br from-[#241E17] to-[#1A1612] border border-[rgba(214,185,107,0.25)] shadow-lg flex flex-col gap-3">
+                            <div className="flex items-start gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-[rgba(214,185,107,0.15)] text-[#D6B96B] border border-[rgba(214,185,107,0.3)] flex items-center justify-center shrink-0">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                  <polyline points="14 2 14 8 20 8"></polyline>
+                                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                                  <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
                               </div>
-                            ))}
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm font-semibold text-[#D6B96B] font-serif leading-tight">
+                                  {resolveText(knowledge.pdfDocument.title, lang) || knowledge.pdfDocument.fileName}
+                                </h4>
+                                <p className="text-xs text-stone-400 mt-1 flex items-center gap-1.5">
+                                  <span>{knowledge.pdfDocument.fileName}</span>
+                                  {knowledge.pdfDocument.fileSize && (
+                                    <>
+                                      <span>•</span>
+                                      <span className="text-[#C6A85A]/80 font-mono text-[11px]">{knowledge.pdfDocument.fileSize}</span>
+                                    </>
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 pt-1">
+                              <button
+                                type="button"
+                                onClick={(e) => handlePdfAction(e, knowledge.pdfDocument.url, knowledge.pdfDocument.fileName)}
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#D6B96B] to-[#C6A85A] text-[#1A1612] font-semibold text-xs tracking-wide shadow-md hover:brightness-110 active:scale-[0.98] transition cursor-pointer"
+                              >
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                  <polyline points="7 10 12 15 17 10"></polyline>
+                                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                <span>{UI_TEXT.viewPdf?.[lang] || 'View PDF'}</span>
+                              </button>
+                            </div>
                           </div>
                         </motion.div>
                       )}
