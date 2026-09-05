@@ -83,10 +83,10 @@ const createMahapurushaMarker = (isSelected = false, count = 1) => {
   ` : '';
 
   return L.divIcon({
-    className: 'custom-marker',
+    className: 'custom-marker mahapurusha-marker-icon',
     html: `
-      <div class="marker-touch-target" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; position: relative;">
-        <div class="marker-wrapper mahapurusha-wrapper ${isSelected ? 'mahapurusha-active' : ''}">
+      <div class="marker-touch-target" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; pointer-events: auto;">
+        <div class="marker-wrapper mahapurusha-wrapper ${isSelected ? 'mahapurusha-active' : ''}" style="cursor: pointer; pointer-events: auto;">
           <div class="marker-glow mahapurusha-glow"></div>
           <div class="marker-core mahapurusha-core">
             <div class="mahapurusha-icon-inner">
@@ -594,6 +594,8 @@ const MahapurushaLayer = React.memo(({ onItemClick }: { onItemClick: (loc: Locat
             key={`mahapurusha-group-${group.groupId}`}
             position={group.coords}
             icon={createMahapurushaMarker(isSelected, group.count)}
+            pane="mahapurushaPane"
+            zIndexOffset={isSelected ? 2000 : 1000}
             eventHandlers={{
               click: (e) => {
                 if (e?.originalEvent) {
@@ -1039,7 +1041,7 @@ export function CulturalMap({ onMarkerClick, onRegionClick, locations }: Cultura
       </Pane>
 
       {/* ── Layer 7: Mahapurushas (Biographical Association Medallions) ───────── */}
-      <Pane name="mahapurushaPane" style={{ zIndex: 700 }}>
+      <Pane name="mahapurushaPane" style={{ zIndex: 900 }}>
         <MahapurushaLayer onItemClick={onMarkerClick} />
       </Pane>
 

@@ -170,7 +170,7 @@ function MapContent() {
           </ErrorBoundary>
 
           {/* Knowledge Panel */}
-          <ErrorBoundary componentName="Knowledge Panel">
+          <ErrorBoundary componentName="Knowledge Panel" resetKeys={[selectedLocation?.id]}>
             <KnowledgePanel onClose={() => {
               setSelectedLocation(null);
               setShowKnowledge(false);

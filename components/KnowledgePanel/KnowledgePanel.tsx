@@ -11,6 +11,11 @@ import { safeGet, safeGetString, safeGetPath } from '@/utils/safeData';
 import { getAssetPath } from '@/data/imageManifest';
 import { resolveText } from '@/utils/resolveText';
 import { mahapurushasGeometry } from '@/data/mahapurushasGeometry';
+import { mahapurushaKnowledge } from '@/data/mahapurushaKnowledge';
+import { mountainKnowledge } from '@/data/mountainKnowledge';
+import { riverKnowledge } from '@/data/riverKnowledge';
+import { cityKnowledge } from '@/data/cityKnowledge';
+import { regionKnowledge } from '@/data/regionKnowledge';
 import { Location } from '@/types/location';
 
 interface KnowledgePanelProps {
@@ -28,16 +33,22 @@ interface SafeLocation {
   historicalSignificance?: string;
 }
 
+function lookupKnowledge(category: string, id: string): any {
+  if (category === 'mahapurusha') return mahapurushaKnowledge[id];
+  if (category === 'city') return cityKnowledge[id];
+  if (category === 'mountain') return mountainKnowledge[id];
+  if (category === 'river') return riverKnowledge[id];
+  if (category === 'region') return regionKnowledge[id];
+  return null;
+}
+
 export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: KnowledgePanelProps) {
   const { selectedLocation, setSelectedLocation, isNavigating } = useMap();
   const { lang, setLang } = useLanguageStore();
   const [isVisible, setIsVisible] = useState(false);
   const [deviceMode, setDeviceMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [sheetMode, setSheetMode] = useState<'collapsed' | 'half' | 'full'>('full');
-  const [localLocation, setLocalLocation] = useState<SafeLocation | null>(null);
-  const [knowledge, setKnowledge] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [loadError, setLoadError] = useState(false);
+  const [internalLocation, setInternalLocation] = useState<SafeLocation | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -89,124 +100,63 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
     },
   };
 
+  const localLocation = (selectedLocation || internalLocation) as SafeLocation | null;
+
+  const knowledge = useMemo(() => {
+    if (!localLocation?.id || !localLocation?.category) return null;
+    const cat = localLocation.category;
+    const id = localLocation.id;
+    const found = lookupKnowledge(cat, id);
+    if (found) return found;
+
+    const locationName = localLocation.name || { en: id, kn: id, hi: id };
+    return {
+      id: id,
+      title: locationName,
+      description: {
+        en: safeGetString(localLocation.description, ''),
+        kn: safeGetString(localLocation.description, ''),
+        hi: safeGetString(localLocation.description, '')
+      },
+      facts: localLocation.metadata || {},
+      cultural: {
+        en: safeGetString(localLocation.historicalSignificance, ''),
+        kn: safeGetString(localLocation.historicalSignificance, ''),
+        hi: safeGetString(localLocation.historicalSignificance, '')
+      }
+    };
+  }, [localLocation]);
+
   useEffect(() => {
-    let isMounted = true;
-
-    // 1. Handle Closing
-    if (!selectedLocation || !['mountain', 'river', 'city', 'region', 'mahapurusha'].includes(selectedLocation.category)) {
-      setIsVisible(false);
-      const timer = setTimeout(() => {
-        if (isMounted) {
-          setLocalLocation(null);
-          setKnowledge(null);
-        }
-      }, 400);
-      return () => {
-        isMounted = false;
-        clearTimeout(timer);
-      };
-    }
-
-    // 2. Handle Opening / Loading
-    // Only fetch if location changed or knowledge is missing
-    if (selectedLocation?.id && (selectedLocation.id !== localLocation?.id || !knowledge)) {
-      const category = selectedLocation?.category;
-      const id = selectedLocation?.id;
-
-      if (!category || !id) return;
-
-      setLoading(true);
-      setLocalLocation(selectedLocation as SafeLocation);
-      setLoadError(false);
-
-      const loadKnowledge = async () => {
-        const startTime = Date.now();
-        try {
-          let data;
-          if (category === 'mountain') {
-            const mod = await import('@/data/mountainKnowledge').catch(() => null);
-            data = mod?.mountainKnowledge?.[id];
-          } else if (category === 'river') {
-            const mod = await import('@/data/riverKnowledge').catch(() => null);
-            data = mod?.riverKnowledge?.[id];
-          } else if (category === 'city') {
-            const mod = await import('@/data/cityKnowledge').catch(() => null);
-            data = mod?.cityKnowledge?.[id];
-          } else if (category === 'region') {
-            const mod = await import('@/data/regionKnowledge').catch(() => null);
-            data = mod?.regionKnowledge?.[id];
-          } else if (category === 'mahapurusha') {
-            const mod = await import('@/data/mahapurushaKnowledge').catch(() => null);
-            data = mod?.mahapurushaKnowledge?.[id];
-          }
-
-          if (!isMounted) return;
-
-          if (data) {
-            setKnowledge(data);
-            const imagePath = getAssetPath(id);
-
-            import('@/components/PWA/PreloadSystem').then(mod => {
-              if (mod?.cacheInteractionAssets) {
-                mod.cacheInteractionAssets([imagePath]);
-              }
-            }).catch(() => { });
-          } else {
-            const locationName = selectedLocation?.name || { en: id, kn: id, hi: id };
-            setKnowledge({
-              id: id,
-              title: locationName,
-              description: { en: safeGetString(selectedLocation?.description, ''), kn: safeGetString(selectedLocation?.description, ''), hi: safeGetString(selectedLocation?.description, '') },
-              facts: selectedLocation?.metadata || {},
-              cultural: { en: safeGetString(selectedLocation?.historicalSignificance, ''), kn: safeGetString(selectedLocation?.historicalSignificance, ''), hi: safeGetString(selectedLocation?.historicalSignificance, '') }
-            });
-
-            const imagePath = getAssetPath(id);
-
-            import('@/components/PWA/PreloadSystem').then(mod => {
-              if (mod?.cacheInteractionAssets) {
-                mod.cacheInteractionAssets([imagePath]);
-              }
-            }).catch(() => { });
-          }
-        } catch (err) {
-          console.error('Failed to load knowledge data:', err);
-          setLoadError(true);
-        } finally {
-          if (isMounted) {
-            const elapsed = Date.now() - startTime;
-            const minTime = 200;
-            if (elapsed < minTime) {
-              setTimeout(() => setLoading(false), minTime - elapsed);
-            } else {
-              setLoading(false);
-            }
-          }
-        }
-      };
-
-      loadKnowledge();
-    }
-
-    // 3. Control Visibility: Open immediately whenever a location is selected!
-    if (isMounted && selectedLocation?.id) {
+    if (selectedLocation && ['mountain', 'river', 'city', 'region', 'mahapurusha'].includes(selectedLocation.category)) {
+      setInternalLocation(selectedLocation as SafeLocation);
       if (deviceMode === 'mobile') setSheetMode('half');
       else setSheetMode('full');
       setIsVisible(true);
+
+      const id = selectedLocation.id;
+      const imagePath = getAssetPath(id);
+      import('@/components/PWA/PreloadSystem').then(mod => {
+        if (mod?.cacheInteractionAssets) {
+          mod.cacheInteractionAssets([imagePath]);
+        }
+      }).catch(() => { });
+    } else if (!selectedLocation) {
+      setIsVisible(false);
+      const timer = setTimeout(() => {
+        setInternalLocation(null);
+      }, 400);
+      return () => clearTimeout(timer);
     }
+  }, [selectedLocation, deviceMode]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [selectedLocation, deviceMode, knowledge, localLocation?.id]);
-
-  if (!localLocation) return null;
+  if (!localLocation || !['mountain', 'river', 'city', 'region', 'mahapurusha'].includes(localLocation.category)) return null;
 
   const isRiver = localLocation.category === 'river';
   const isCity = localLocation.category === 'city';
   const isRegion = localLocation.category === 'region';
   const isMahapurusha = localLocation.category === 'mahapurusha';
-  const isLoadingState = loading || !knowledge;
+  const isLoadingState = !knowledge;
 
   const groupMembers = useMemo(() => {
     if (!localLocation || localLocation.category !== 'mahapurusha') return [];

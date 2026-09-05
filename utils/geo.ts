@@ -6,6 +6,7 @@ export function adjustCoords(id: string, lat: number, lng: number): [number, num
   const offsetMap: Record<string, [number, number]> = {
     "vaishali": [0.15, 0.2],
     "patliputra": [-0.1, 0.2],
+    "pataliputra": [-0.1, 0.2],
     "prayag": [-0.1, -0.3],
     "mathura": [0.1, -0.2],
     "indraprastha": [0.15, 0.15],
