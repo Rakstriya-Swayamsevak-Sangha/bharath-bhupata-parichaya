@@ -625,5 +625,142 @@ export const mahapurushaKnowledge: Record<string, MahapurushaKnowledge> = {
       fileName: "Samrat Shalivahana.pdf",
       fileSize: "613 KB"
     }
+  },
+
+  samudragupta: {
+    id: "samudragupta",
+    category: "mahapurusha",
+
+    title: {
+      en: "Samudragupta",
+      kn: "ಸಮುದ್ರಗುಪ್ತ",
+      hi: "समुद्रगुप्त"
+    },
+
+    subtitle: {
+      en: "Gupta emperor and architect of imperial expansion",
+      kn: "ಗುಪ್ತ ಸಾಮ್ರಾಜ್ಯದ ವಿಸ್ತರಣೆಯ ಪ್ರಮುಖ ಶಿಲ್ಪಿ",
+      hi: "गुप्त साम्राज्य के विस्तार के प्रमुख शिल्पकार"
+    },
+
+    researchStatus: {
+      birthplaceConfidence: "disputed",
+      birthDateConfidence: "approximate"
+    },
+
+    identity: {
+      period: {
+        en: "c. 4th century CE",
+        kn: "ಕ್ರಿ.ಶ. ಸುಮಾರು 4ನೇ ಶತಮಾನ",
+        hi: "लगभग 4वीं शताब्दी ईस्वी"
+      },
+      birthDate: {
+        en: "Unknown; exact date not established",
+        kn: "ತಿಳಿದಿಲ್ಲ; ನಿಖರ ದಿನಾಂಕ ಸ್ಥಾಪಿತವಾಗಿಲ್ಲ",
+        hi: "अज्ञात; सटीक तिथि स्थापित नहीं है"
+      },
+      birthPlace: {
+        en: "Uncertain; exact birthplace is not securely established",
+        kn: "ನಿಶ್ಚಿತವಲ್ಲ; ನಿಖರ ಜನ್ಮಸ್ಥಳ ದೃಢವಾಗಿ ಸ್ಥಾಪಿತವಾಗಿಲ್ಲ",
+        hi: "अनिश्चित; सटीक जन्मस्थान निश्चित रूप से स्थापित नहीं है"
+      },
+      alsoKnownAs: {
+        en: "Samudragupta; Gupta emperor",
+        kn: "ಸಮುದ್ರಗುಪ್ತ; ಗುಪ್ತ ಸಾಮ್ರಾಟ",
+        hi: "समुद्रगुप्त; गुप्त सम्राट"
+      }
+    },
+
+    historicalContext: {
+      en: "Samudragupta was a major Gupta emperor of the fourth century CE whose reign marked a significant phase in the expansion and consolidation of Gupta power. The Prayaga Prashasti, composed by his court poet Harishena and engraved on the Allahabad Pillar, records a series of military campaigns and political relationships. The inscription describes victories in northern India, expeditions toward the south and relationships with frontier and neighbouring rulers. Historians use this inscription together with coins and other evidence to reconstruct the political geography of his reign, while recognizing that the inscription is also a royal eulogy.",
+      kn: "ಸಮುದ್ರಗುಪ್ತರು ಕ್ರಿ.ಶ. ನಾಲ್ಕನೇ ಶತಮಾನದ ಪ್ರಮುಖ ಗುಪ್ತ ಸಾಮ್ರಾಟರಾಗಿದ್ದು, ಅವರ ಆಳ್ವಿಕೆಯು ಗುಪ್ತರ ರಾಜಕೀಯ ಶಕ್ತಿಯ ವಿಸ್ತರಣೆ ಮತ್ತು ಏಕೀಕರಣದ ಮಹತ್ವದ ಹಂತವಾಗಿತ್ತು. ಅವರ ಆಸ್ಥಾನದ ಕವಿ ಹರಿಷೇಣ ರಚಿಸಿದ ಪ್ರಯಾಗ ಪ್ರಶಸ್ತಿಯನ್ನು ಅಲಹಾಬಾದ್ ಸ್ತಂಭದಲ್ಲಿ ಕೆತ್ತಲಾಗಿದ್ದು, ಹಲವು ಸೈನಿಕ ಅಭಿಯಾನಗಳು ಮತ್ತು ರಾಜಕೀಯ ಸಂಬಂಧಗಳನ್ನು ದಾಖಲಿಸುತ್ತದೆ. ಈ ಶಾಸನವು ಉತ್ತರ ಭಾರತದಲ್ಲಿನ ವಿಜಯಗಳು, ದಕ್ಷಿಣದತ್ತ ನಡೆದ ಅಭಿಯಾನಗಳು ಮತ್ತು ಗಡಿಭಾಗ ಹಾಗೂ ನೆರೆಯ ರಾಜರೊಂದಿಗೆ ಇದ್ದ ಸಂಬಂಧಗಳನ್ನು ವಿವರಿಸುತ್ತದೆ. ಈ ಶಾಸನವನ್ನು ನಾಣ್ಯಗಳು ಮತ್ತು ಇತರ ಸಾಕ್ಷ್ಯಗಳೊಂದಿಗೆ ಪರಿಶೀಲಿಸುವ ಮೂಲಕ ಇತಿಹಾಸಕಾರರು ಅವರ ಕಾಲದ ರಾಜಕೀಯ ಭೂಗೋಳವನ್ನು ಪುನರ್ನಿರ್ಮಿಸುತ್ತಾರೆ; ಜೊತೆಗೆ ಇದು ರಾಜಪ್ರಶಂಸಾತ್ಮಕ ಶಾಸನವೂ ಆಗಿದೆ ಎಂಬುದನ್ನು ಗಮನದಲ್ಲಿಡುತ್ತಾರೆ.",
+      hi: "समुद्रगुप्त चौथी शताब्दी ईस्वी के एक प्रमुख गुप्त सम्राट थे, जिनके शासनकाल में गुप्त सत्ता के विस्तार और सुदृढ़ीकरण का महत्वपूर्ण चरण देखा गया। उनके दरबारी कवि हरिषेण द्वारा रचित प्रयाग प्रशस्ति इलाहाबाद स्तंभ पर उत्कीर्ण है और इसमें अनेक सैन्य अभियानों तथा राजनीतिक संबंधों का वर्णन मिलता है। यह अभिलेख उत्तर भारत में विजयों, दक्षिण की ओर अभियानों तथा सीमांत और पड़ोसी शासकों के साथ संबंधों का विवरण देता है। इतिहासकार इस अभिलेख को सिक्कों और अन्य साक्ष्यों के साथ मिलाकर उनके शासनकाल की राजनीतिक स्थिति का पुनर्निर्माण करते हैं, जबकि यह भी ध्यान रखते हैं कि यह एक राजकीय प्रशस्ति है।"
+    },
+
+    contributions: [
+      {
+        title: {
+          en: "1. Expansion of Gupta Power",
+          kn: "1. ಗುಪ್ತ ಸಾಮ್ರಾಜ್ಯದ ವಿಸ್ತರಣೆ",
+          hi: "1. गुप्त सत्ता का विस्तार"
+        },
+        description: {
+          en: "Samudragupta substantially expanded Gupta political influence through campaigns and political settlements, transforming the Gupta kingdom into a major imperial power in northern India.",
+          kn: "ಸಮುದ್ರಗುಪ್ತರು ಸೈನಿಕ ಅಭಿಯಾನಗಳು ಮತ್ತು ರಾಜಕೀಯ ಒಪ್ಪಂದಗಳ ಮೂಲಕ ಗುಪ್ತರ ರಾಜಕೀಯ ಪ್ರಭಾವವನ್ನು ಗಣನೀಯವಾಗಿ ವಿಸ್ತರಿಸಿ, ಉತ್ತರ ಭಾರತದಲ್ಲಿ ಗುಪ್ತ ರಾಜ್ಯವನ್ನು ಪ್ರಮುಖ ಸಾಮ್ರಾಜ್ಯಿಕ ಶಕ್ತಿಯಾಗಿ ರೂಪಿಸಿದರು.",
+          hi: "समुद्रगुप्त ने सैन्य अभियानों और राजनीतिक समझौतों के माध्यम से गुप्त राजनीतिक प्रभाव का काफी विस्तार किया और उत्तर भारत में गुप्त राज्य को एक प्रमुख साम्राज्यिक शक्ति में परिवर्तित किया।"
+        }
+      },
+      {
+        title: {
+          en: "2. Northern Indian Campaigns",
+          kn: "2. ಉತ್ತರ ಭಾರತದ ಸೈನಿಕ ಅಭಿಯಾನಗಳು",
+          hi: "2. उत्तर भारत के सैन्य अभियान"
+        },
+        description: {
+          en: "The Prayaga Prashasti records Samudragupta's campaigns against several rulers in northern India and provides important evidence for the expansion of Gupta authority in the Gangetic region.",
+          kn: "ಪ್ರಯಾಗ ಪ್ರಶಸ್ತಿಯು ಉತ್ತರ ಭಾರತದ ಹಲವು ರಾಜರ ವಿರುದ್ಧ ಸಮುದ್ರಗುಪ್ತರ ಅಭಿಯಾನಗಳನ್ನು ದಾಖಲಿಸುತ್ತದೆ ಮತ್ತು ಗಂಗಾ ಸಮತಟ ಪ್ರದೇಶದಲ್ಲಿ ಗುಪ್ತರ ಅಧಿಕಾರ ವಿಸ್ತರಣೆಗೆ ಪ್ರಮುಖ ಸಾಕ್ಷ್ಯವನ್ನು ಒದಗಿಸುತ್ತದೆ.",
+          hi: "प्रयाग प्रशस्ति उत्तर भारत के कई शासकों के विरुद्ध समुद्रगुप्त के अभियानों का उल्लेख करती है और गंगा क्षेत्र में गुप्त सत्ता के विस्तार के लिए महत्वपूर्ण साक्ष्य प्रदान करती है।"
+        }
+      },
+      {
+        title: {
+          en: "3. Southern Expedition",
+          kn: "3. ದಕ್ಷಿಣದತ್ತ ಸೈನಿಕ ಅಭಿಯಾನ",
+          hi: "3. दक्षिण की ओर अभियान"
+        },
+        description: {
+          en: "The Prayaga Prashasti describes a southern campaign involving several rulers. The inscription indicates that the political outcomes differed from direct annexation and included forms of submission, restoration or recognition of local rulers.",
+          kn: "ಪ್ರಯಾಗ ಪ್ರಶಸ್ತಿಯು ಹಲವು ರಾಜರನ್ನು ಒಳಗೊಂಡ ದಕ್ಷಿಣದ ಅಭಿಯಾನವನ್ನು ವಿವರಿಸುತ್ತದೆ. ಈ ಶಾಸನದ ಪ್ರಕಾರ ಅದರ ರಾಜಕೀಯ ಫಲಿತಾಂಶಗಳು ನೇರ ವಿಲೀನಕ್ಕಿಂತ ಭಿನ್ನವಾಗಿದ್ದು, ಸ್ಥಳೀಯ ರಾಜರ ಅಧೀನತೆ, ಪುನಃಸ್ಥಾಪನೆ ಅಥವಾ ಮಾನ್ಯತೆ ಮೊದಲಾದ ರೂಪಗಳನ್ನು ಒಳಗೊಂಡಿದ್ದವು.",
+          hi: "प्रयाग प्रशस्ति में अनेक शासकों से संबंधित दक्षिणी अभियान का वर्णन मिलता है। अभिलेख से संकेत मिलता है कि इसके राजनीतिक परिणाम सीधे विलय से अलग थे और इनमें स्थानीय शासकों की अधीनता, पुनर्स्थापन या मान्यता जैसे रूप शामिल थे।"
+        }
+      },
+      {
+        title: {
+          en: "4. Imperial Diplomacy and Frontier Relations",
+          kn: "4. ಸಾಮ್ರಾಜ್ಯಿಕ ರಾಜತಾಂತ್ರಿಕತೆ ಮತ್ತು ಗಡಿಭಾಗದ ಸಂಬಂಧಗಳು",
+          hi: "4. साम्राज्यिक कूटनीति और सीमांत संबंध"
+        },
+        description: {
+          en: "The Prayaga Prashasti records relationships with frontier kingdoms and neighbouring powers, showing that Gupta imperial influence operated through different forms of political relationship rather than uniform direct administration.",
+          kn: "ಪ್ರಯಾಗ ಪ್ರಶಸ್ತಿಯು ಗಡಿಭಾಗದ ರಾಜ್ಯಗಳು ಮತ್ತು ನೆರೆಯ ಶಕ್ತಿಗಳೊಂದಿಗೆ ಇದ್ದ ಸಂಬಂಧಗಳನ್ನು ದಾಖಲಿಸುತ್ತದೆ. ಇದರಿಂದ ಗುಪ್ತ ಸಾಮ್ರಾಜ್ಯಿಕ ಪ್ರಭಾವವು ಎಲ್ಲೆಡೆ ಒಂದೇ ರೀತಿಯ ನೇರ ಆಡಳಿತಕ್ಕಿಂತ ವಿಭಿನ್ನ ರಾಜಕೀಯ ಸಂಬಂಧಗಳ ಮೂಲಕ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದ್ದುದನ್ನು ಕಾಣಬಹುದು.",
+          hi: "प्रयाग प्रशस्ति सीमांत राज्यों और पड़ोसी शक्तियों के साथ संबंधों का उल्लेख करती है। इससे पता चलता है कि गुप्त साम्राज्यिक प्रभाव हर क्षेत्र में एक समान प्रत्यक्ष प्रशासन के बजाय विभिन्न प्रकार के राजनीतिक संबंधों के माध्यम से संचालित होता था।"
+        }
+      },
+      {
+        title: {
+          en: "5. Patronage of Learning and Culture",
+          kn: "5. ವಿದ್ಯೆ ಮತ್ತು ಸಂಸ್ಕೃತಿಯ ಪೋಷಣೆ",
+          hi: "5. विद्या और संस्कृति का संरक्षण"
+        },
+        description: {
+          en: "Samudragupta's coins and literary tradition associate him with learning, music and royal cultural patronage. His famous lyrist-type coins depict him playing a musical instrument, providing material evidence for the cultural image associated with his kingship.",
+          kn: "ಸಮುದ್ರಗುಪ್ತರ ನಾಣ್ಯಗಳು ಮತ್ತು ಸಾಹಿತ್ಯಿಕ ಪರಂಪರೆ ಅವರನ್ನು ವಿದ್ಯೆ, ಸಂಗೀತ ಮತ್ತು ರಾಜಕೀಯ ಸಾಂಸ್ಕೃತಿಕ ಪೋಷಣೆಯೊಂದಿಗೆ ಸಂಪರ್ಕಿಸುತ್ತವೆ. ಅವರ ಪ್ರಸಿದ್ಧ ವೀಣಾವಾದಕ ಮಾದರಿಯ ನಾಣ್ಯಗಳಲ್ಲಿ ಅವರು ವಾದ್ಯ ನುಡಿಸುತ್ತಿರುವುದು ಕಾಣಿಸುತ್ತದೆ. ಇದು ಅವರ ರಾಜತ್ವಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಸಾಂಸ್ಕೃತಿಕ ಚಿತ್ರಣಕ್ಕೆ ಭೌತಿಕ ಸಾಕ್ಷ್ಯ ಒದಗಿಸುತ್ತದೆ.",
+          hi: "समुद्रगुप्त के सिक्के और साहित्यिक परंपरा उन्हें विद्या, संगीत और राजकीय सांस्कृतिक संरक्षण से जोड़ते हैं। उनके प्रसिद्ध वीणावादक प्रकार के सिक्कों में उन्हें वाद्य बजाते हुए दिखाया गया है, जो उनके राजत्व से जुड़े सांस्कृतिक रूप की भौतिक पुष्टि प्रदान करते हैं।"
+        }
+      }
+    ],
+
+    historicalCaveat: {
+      en: "Much of the detailed narrative of Samudragupta's campaigns comes from the Prayaga Prashasti, a royal eulogy composed by Harishena. Its descriptions are therefore valuable historical evidence but also contain conventional praise of the ruler. The extent of political control described in the inscription should not automatically be interpreted as uniform direct administration over every territory mentioned.",
+      kn: "ಸಮುದ್ರಗುಪ್ತರ ಅಭಿಯಾನಗಳ ವಿವರವಾದ ನಿರೂಪಣೆಯ ಬಹುಪಾಲು ಹರಿಷೇಣ ರಚಿಸಿದ ರಾಜಪ್ರಶಂಸಾತ್ಮಕ ಶಾಸನವಾದ ಪ್ರಯಾಗ ಪ್ರಶಸ್ತಿಯಿಂದ ಬಂದಿದೆ. ಆದ್ದರಿಂದ ಇದು ಅಮೂಲ್ಯ ಐತಿಹಾಸಿಕ ಸಾಕ್ಷ್ಯವಾಗಿದ್ದರೂ, ರಾಜನ ಸಾಂಪ್ರದಾಯಿಕ ಪ್ರಶಂಸೆಯ ಅಂಶಗಳನ್ನೂ ಒಳಗೊಂಡಿದೆ. ಶಾಸನದಲ್ಲಿ ಉಲ್ಲೇಖಿಸಲಾದ ಪ್ರತಿಯೊಂದು ಪ್ರದೇಶವೂ ಒಂದೇ ರೀತಿಯ ನೇರ ಆಡಳಿತಕ್ಕೆ ಒಳಪಟ್ಟಿತ್ತು ಎಂದು ಅದರಲ್ಲಿನ ರಾಜಕೀಯ ನಿಯಂತ್ರಣದ ವ್ಯಾಪ್ತಿಯನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅರ್ಥೈಸಬಾರದು.",
+      hi: "समुद्रगुप्त के अभियानों का विस्तृत विवरण मुख्यतः हरिषेण द्वारा रचित राजकीय प्रशस्ति, प्रयाग प्रशस्ति, से मिलता है। इसलिए यह महत्वपूर्ण ऐतिहासिक साक्ष्य है, लेकिन इसमें शासक की परंपरागत प्रशंसा भी शामिल है। अभिलेख में उल्लिखित प्रत्येक क्षेत्र पर समान रूप से प्रत्यक्ष प्रशासन था, ऐसा उसके राजनीतिक नियंत्रण के विवरण से स्वतः निष्कर्ष नहीं निकाला जाना चाहिए।"
+    },
+
+    civilizationalSignificance: {
+      en: "Samudragupta is remembered as one of the major imperial rulers of ancient South Asia. His reign played an important role in the consolidation of Gupta power, while the surviving inscriptions, coins and cultural evidence provide a rich record of political organization, military expansion and royal culture during the fourth century CE.",
+      kn: "ಸಮುದ್ರಗುಪ್ತರು ಪ್ರಾಚೀನ ದಕ್ಷಿಣ ಏಷ್ಯಾದ ಪ್ರಮುಖ ಸಾಮ್ರಾಜ್ಯಿಕ ರಾಜರಲ್ಲಿ ಒಬ್ಬರಾಗಿ ಸ್ಮರಿಸಲ್ಪಡುತ್ತಾರೆ. ಅವರ ಆಳ್ವಿಕೆಯು ಗುಪ್ತರ ರಾಜಕೀಯ ಶಕ್ತಿಯ ಏಕೀಕರಣದಲ್ಲಿ ಮಹತ್ವದ ಪಾತ್ರ ವಹಿಸಿತು. ಉಳಿದಿರುವ ಶಾಸನಗಳು, ನಾಣ್ಯಗಳು ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಸಾಕ್ಷ್ಯಗಳು ಕ್ರಿ.ಶ. ನಾಲ್ಕನೇ ಶತಮಾನದ ರಾಜಕೀಯ ಸಂಘಟನೆ, ಸೈನಿಕ ವಿಸ್ತರಣೆ ಮತ್ತು ರಾಜಕೀಯ ಸಂಸ್ಕೃತಿಯ ಕುರಿತು ಸಮೃದ್ಧ ಮಾಹಿತಿಯನ್ನು ಒದಗಿಸುತ್ತವೆ.",
+      hi: "समुद्रगुप्त को प्राचीन दक्षिण एशिया के प्रमुख साम्राज्यिक शासकों में से एक के रूप में स्मरण किया जाता है। उनके शासन ने गुप्त सत्ता के सुदृढ़ीकरण में महत्वपूर्ण भूमिका निभाई, जबकि उपलब्ध अभिलेख, सिक्के और सांस्कृतिक साक्ष्य चौथी शताब्दी ईस्वी की राजनीतिक व्यवस्था, सैन्य विस्तार और राजकीय संस्कृति का समृद्ध विवरण प्रदान करते हैं।"
+    },
+
+    pdfDocument: {
+      title: {
+        en: "Samrat Samudragupta",
+        kn: "ಸಾಮ್ರಾಟ್ ಸಮುದ್ರಗುಪ್ತ",
+        hi: "सम्राट समुद्रगुप्त"
+      },
+      url: "/data/mahapurushas-pdfs/samudragupta/Samrat Samudragupta.pdf",
+      fileName: "Samrat Samudragupta.pdf",
+      fileSize: "14 KB"
+    }
   }
 };

@@ -7,7 +7,7 @@ export interface MahapurushaAnchor {
   };
   category: 'mahapurusha';
   coords: [number, number]; // [lat, lng]
-  associationType: 'traditional' | 'verified';
+  associationType: 'traditional' | 'verified' | 'historicalAssociation';
   associationWording: {
     en: string;
     kn: string;
@@ -78,6 +78,22 @@ export const mahapurushasGeometry: MahapurushaAnchor[] = [
       en: "Pratishthana (Paithan), traditionally associated with Shalivahana",
       kn: "ಶಾಲಿವಾಹನರೊಂದಿಗೆ ಪರಂಪರೆಯಿಂದ ಸಂಬಂಧಿಸಲ್ಪಟ್ಟ ಪ್ರತಿಷ್ಠಾನ (ಪೈಠಣ)",
       hi: "शालिवाहन से परंपरागत रूप से संबद्ध प्रतिष्ठान (पैठन)"
+    }
+  },
+  {
+    id: "samudragupta",
+    name: {
+      en: "Samudragupta",
+      kn: "ಸಮುದ್ರಗುಪ್ತ",
+      hi: "समुद्रगुप्त"
+    },
+    category: "mahapurusha",
+    coords: [25.61, 85.14],
+    associationType: "historicalAssociation",
+    associationWording: {
+      en: "Pataliputra, a major centre of Gupta imperial power",
+      kn: "ಗುಪ್ತ ಸಾಮ್ರಾಜ್ಯದ ಪ್ರಮುಖ ಕೇಂದ್ರವಾದ ಪಾಟಲಿಪುತ್ರ",
+      hi: "गुप्त साम्राज्य की प्रमुख सत्ता-केंद्र पाटलिपुत्र"
     }
   }
 ];
