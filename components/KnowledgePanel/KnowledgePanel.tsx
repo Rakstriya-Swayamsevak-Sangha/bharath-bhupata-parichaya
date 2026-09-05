@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useMap } from '@/providers/MapContext';
 import { useLanguageStore } from '@/store/languageStore';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +10,8 @@ import { SafeImage } from '@/components/SafeImage/SafeImage';
 import { safeGet, safeGetString, safeGetPath } from '@/utils/safeData';
 import { getAssetPath } from '@/data/imageManifest';
 import { resolveText } from '@/utils/resolveText';
+import { mahapurushasGeometry } from '@/data/mahapurushasGeometry';
+import { Location } from '@/types/location';
 
 interface KnowledgePanelProps {
   onClose: () => void;
@@ -27,7 +29,7 @@ interface SafeLocation {
 }
 
 export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: KnowledgePanelProps) {
-  const { selectedLocation, isNavigating } = useMap();
+  const { selectedLocation, setSelectedLocation, isNavigating } = useMap();
   const { lang, setLang } = useLanguageStore();
   const [isVisible, setIsVisible] = useState(false);
   const [deviceMode, setDeviceMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
@@ -107,7 +109,7 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
 
     // 2. Handle Opening / Loading
     // Only fetch if location changed or knowledge is missing
-    if (selectedLocation?.id && selectedLocation.id !== localLocation?.id || !knowledge) {
+    if (selectedLocation?.id && (selectedLocation.id !== localLocation?.id || !knowledge)) {
       const category = selectedLocation?.category;
       const id = selectedLocation?.id;
 
@@ -173,7 +175,7 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
         } finally {
           if (isMounted) {
             const elapsed = Date.now() - startTime;
-            const minTime = 300;
+            const minTime = 200;
             if (elapsed < minTime) {
               setTimeout(() => setLoading(false), minTime - elapsed);
             } else {
@@ -186,19 +188,17 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
       loadKnowledge();
     }
 
-    // 3. Control Visibility based on Navigation
-    if (isMounted && knowledge && !isNavigating) {
+    // 3. Control Visibility: Open immediately whenever a location is selected!
+    if (isMounted && selectedLocation?.id) {
       if (deviceMode === 'mobile') setSheetMode('half');
       else setSheetMode('full');
       setIsVisible(true);
-    } else if (isNavigating) {
-      setIsVisible(false); // Hide panel while moving
     }
 
     return () => {
       isMounted = false;
     };
-  }, [selectedLocation, isNavigating, deviceMode, knowledge, localLocation?.id]);
+  }, [selectedLocation, deviceMode, knowledge, localLocation?.id]);
 
   if (!localLocation) return null;
 
@@ -207,6 +207,38 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
   const isRegion = localLocation.category === 'region';
   const isMahapurusha = localLocation.category === 'mahapurusha';
   const isLoadingState = loading || !knowledge;
+
+  const groupMembers = useMemo(() => {
+    if (!localLocation || localLocation.category !== 'mahapurusha') return [];
+    const current = mahapurushasGeometry.find(p => p.id === localLocation.id);
+    if (!current) return [];
+    return mahapurushasGeometry.filter(p =>
+      Math.abs(p.coords[0] - current.coords[0]) < 0.001 &&
+      Math.abs(p.coords[1] - current.coords[1]) < 0.001
+    );
+  }, [localLocation?.id, localLocation?.category]);
+
+  const currentMemberIndex = useMemo(() => {
+    if (!localLocation || groupMembers.length <= 1) return 0;
+    const idx = groupMembers.findIndex(p => p.id === localLocation.id);
+    return idx !== -1 ? idx : 0;
+  }, [localLocation?.id, groupMembers]);
+
+  const handleCarouselNav = useCallback((dir: 'prev' | 'next') => {
+    if (groupMembers.length <= 1) return;
+    const nextIdx = dir === 'next'
+      ? (currentMemberIndex + 1) % groupMembers.length
+      : (currentMemberIndex - 1 + groupMembers.length) % groupMembers.length;
+    const nextPerson = groupMembers[nextIdx];
+    setSelectedLocation({
+      id: nextPerson.id,
+      category: 'mahapurusha',
+      name: nextPerson.name,
+      latitude: nextPerson.coords[0],
+      longitude: nextPerson.coords[1],
+      description: '',
+    } as Location);
+  }, [groupMembers, currentMemberIndex, setSelectedLocation]);
 
   const title = resolveText(knowledge?.title || localLocation?.name, lang);
   const subtitle = resolveText(knowledge?.subtitle, lang);
@@ -376,6 +408,29 @@ export const KnowledgePanel = React.memo(function KnowledgePanel({ onClose }: Kn
               ) : (
                 <div className="kp-content">
                   <motion.div className="kp-header" variants={itemVariants}>
+                    {isMahapurusha && groupMembers.length > 1 && (
+                      <div className="kp-carousel-bar">
+                        <button
+                          type="button"
+                          className="kp-carousel-btn"
+                          onClick={() => handleCarouselNav('prev')}
+                          aria-label="Previous Mahapurusha"
+                        >
+                          ‹
+                        </button>
+                        <span className="kp-carousel-indicator">
+                          {currentMemberIndex + 1} / {groupMembers.length}
+                        </span>
+                        <button
+                          type="button"
+                          className="kp-carousel-btn"
+                          onClick={() => handleCarouselNav('next')}
+                          aria-label="Next Mahapurusha"
+                        >
+                          ›
+                        </button>
+                      </div>
+                    )}
                     <h1 className="kp-title">{title}</h1>
 
                     {isMahapurusha && subtitle && (

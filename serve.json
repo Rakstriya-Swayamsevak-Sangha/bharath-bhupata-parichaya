@@ -45,6 +45,8 @@
     }
   ],
   "rewrites": [
+    { "source": "/bharatvarsha", "destination": "/bharatvarsha.html" },
+    { "source": "/bharatvarsha/", "destination": "/bharatvarsha.html" },
     { "source": "/data/mountains.json", "destination": "/data/coords/mountains.json" },
     { "source": "/data/rivers.json", "destination": "/data/coords/rivers.json" },
     { "source": "/data/external_borders.json", "destination": "/data/coords/external_borders.json" },

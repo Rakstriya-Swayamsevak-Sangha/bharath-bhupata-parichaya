@@ -1,27 +1,19 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════════
- * MAHAPURUSHA LABEL COLLISION MANAGER — Screen-Space Generalized Rendering Engine
+ * MAHAPURUSHA SCREEN-SPACE RENDERING & HISTORICAL HUB GROUPING ENGINE
  * ═══════════════════════════════════════════════════════════════════════════════
  * 
- * ARCHITECTURAL PRINCIPLE:
- * Historical Data (LatLng) is locked and authoritative.
- * Collision resolution occurs purely in screen-space container pixel coordinates.
- * No hardcoded person IDs, no coordinate jitter, no artificial displacement.
- * 
- * CANDIDATE ORDER:
- * 1. bottom-center (default)
- * 2. right
- * 3. left
- * 4. top-center
- * 5. bottom-right
- * 6. bottom-left
- * 7. top-right
- * 8. top-left
- * 
- * DETERMINISTIC PRIORITY:
- * 1. Currently selected Mahapurusha
- * 2. Stable data order in mahapurushasGeometry
- * 3. Deterministic ID tie-breaker
+ * ARCHITECTURAL PRINCIPLES:
+ * 1. Historical coordinates (LatLng) remain authoritative, locked, and unmutated.
+ * 2. Grouping & collision resolution occurs purely in screen-space container coordinates.
+ * 3. MAP'S UPPERCASE / CANONICAL SCRIPT IS LOCKED:
+ *    - English names are ALWAYS rendered uppercase (e.g. CHANDRAGUPTA MAURYA).
+ *    - Never title-case, lowercase, abbreviate, or truncate.
+ *    - Kannada & Hindi names preserve their canonical scripts.
+ *    - Information density is managed via VISIBILITY & GROUPING, not renaming.
+ * 4. UNSELECTED GROUPS: Render Golden Flame + count badge; NO long labels.
+ * 5. SELECTED GROUPS: Render Golden Flame + count badge + selected member's uppercase label.
+ * 6. ISOLATED MARKERS: Render standard Golden Flame + uppercase label.
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
@@ -42,6 +34,22 @@ export interface Rect {
 }
 
 /**
+ * Zoom-dependent screen-space grouping thresholds (in container pixels).
+ * Exact coordinate matches (screenDistance === 0) ALWAYS group at all zooms.
+ */
+export const MAHAPURUSHA_GROUP_THRESHOLDS = {
+  overview: 38, // zoom <= 5
+  medium: 24,   // zoom 6 - 8
+  high: 12,     // zoom >= 9
+} as const;
+
+export function getMahapurushaGroupThreshold(zoom: number): number {
+  if (zoom <= 5) return MAHAPURUSHA_GROUP_THRESHOLDS.overview;
+  if (zoom <= 8) return MAHAPURUSHA_GROUP_THRESHOLDS.medium;
+  return MAHAPURUSHA_GROUP_THRESHOLDS.high;
+}
+
+/**
  * Deterministic candidate placements in strictly preferred order.
  * Candidate 0 matches the exact existing Leaflet tooltip parameters: direction="bottom", offset=[0, 8].
  */
@@ -54,27 +62,34 @@ export const CANDIDATE_PLACEMENTS: CandidatePlacement[] = [
   { id: 'bottom-left',   direction: 'left',   offset: [-16, 16] },
   { id: 'top-right',     direction: 'right',  offset: [16, -20] },
   { id: 'top-left',      direction: 'left',   offset: [-16, -20] },
-  // Extended fallback tiers for pathological co-locations (9+ figures)
   { id: 'bottom-tier2',  direction: 'bottom', offset: [0, 26] },
   { id: 'top-tier2',     direction: 'top',    offset: [0, -28] },
 ];
 
 /**
- * Memoized dimension cache.
- * Keyed by text and container width to account for responsive styling context.
+ * Render group model for Mahapurushas at a given map view.
  */
+export interface MahapurushaRenderGroup {
+  groupId: string;
+  coords: [number, number];
+  members: MahapurushaAnchor[];
+  count: number;
+  isSelected: boolean;
+  selectedMember: MahapurushaAnchor | null;
+  activeMember: MahapurushaAnchor;
+  showLabel: boolean;
+  placement: CandidatePlacement;
+}
+
 const dimensionCache = new Map<string, { width: number; height: number }>();
 
-/**
- * Clear dimension cache (useful on window resize or breakpoint changes).
- */
 export function clearLabelDimensionCache(): void {
   dimensionCache.clear();
 }
 
 /**
  * Measure rendered label dimensions using actual DOM typography context.
- * Uses a singleton ruler element styled identically to .leaflet-tooltip.sacred-label.mahapurusha-label.
+ * Uses a singleton ruler styled identically to .leaflet-tooltip.sacred-label.mahapurusha-label.
  */
 export function getLabelDimensions(
   text: string,
@@ -117,18 +132,12 @@ export function getLabelDimensions(
     }
   }
 
-  // Fallback if measurement unavailable (SSR or pre-render)
-  const fallback = {
+  return {
     width: Math.max(50, text.length * 9),
     height: 16,
   };
-  return fallback;
 }
 
-/**
- * Calculate the bounding box for a candidate placement.
- * Faithfully mirrors Leaflet's native Tooltip _setPosition calculation.
- */
 export function computeLabelBox(
   cx: number,
   cy: number,
@@ -164,10 +173,6 @@ export function computeLabelBox(
   };
 }
 
-/**
- * Axis-Aligned Bounding Box (AABB) intersection check with safety padding.
- * Ensures a visual breathing margin between adjacent labels.
- */
 export function boxesIntersect(a: Rect, b: Rect, padX = 4, padY = 2): boolean {
   return !(
     a.right + padX <= b.left ||
@@ -177,9 +182,6 @@ export function boxesIntersect(a: Rect, b: Rect, padX = 4, padY = 2): boolean {
   );
 }
 
-/**
- * Check if bounding box fits comfortably within the map container viewport.
- */
 export function isBoxWithinBounds(box: Rect, containerWidth: number, containerHeight: number): boolean {
   return (
     box.left >= 0 &&
@@ -190,52 +192,20 @@ export function isBoxWithinBounds(box: Rect, containerWidth: number, containerHe
 }
 
 /**
- * Deterministic priority sorting:
- * 1. Currently selected Mahapurusha gets first pick of placement (priority 0)
- * 2. Stable data index in mahapurushasGeometry
- * 3. Deterministic Mahapurusha ID tie-breaker
+ * Generalized Screen-Space Grouping & Collision Engine.
+ * 
+ * 1. Clusters co-located (exact LatLng) and proximate Mahapurushas into MahapurushaRenderGroups.
+ * 2. Unselected groups (count > 1) display NO long label (discovery state).
+ * 3. Selected groups (count > 1) display the selected member's canonical uppercase label.
+ * 4. Isolated markers (count === 1) display their canonical uppercase label with collision avoidance.
  */
-export function sortMahapurushasForPlacement(
-  items: MahapurushaAnchor[],
-  selectedId: string | null | undefined
-): MahapurushaAnchor[] {
-  return [...items].sort((a, b) => {
-    // 1. Currently selected gets priority
-    const aSelected = a.id === selectedId;
-    const bSelected = b.id === selectedId;
-    if (aSelected && !bSelected) return -1;
-    if (!aSelected && bSelected) return 1;
-
-    // 2. Stable data order
-    const indexA = items.indexOf(a);
-    const indexB = items.indexOf(b);
-    if (indexA !== -1 && indexB !== -1 && indexA !== indexB) {
-      return indexA - indexB;
-    }
-
-    // 3. Deterministic tie-breaker
-    return a.id.localeCompare(b.id);
-  });
-}
-
-/**
- * Generalized Screen-Space Collision Resolution pass.
- * Projects visible markers into container coordinates, evaluates candidates in preferred order,
- * and assigns non-overlapping positions deterministically.
- */
-export function computeMahapurushaPlacements(
+export function computeMahapurushaRenderGroups(
   map: L.Map,
   items: MahapurushaAnchor[],
   lang: 'en' | 'kn' | 'hi',
   selectedId: string | null | undefined
-): Record<string, CandidatePlacement> {
-  const result: Record<string, CandidatePlacement> = {};
-  if (!map) {
-    for (const item of items) {
-      result[item.id] = CANDIDATE_PLACEMENTS[0];
-    }
-    return result;
-  }
+): MahapurushaRenderGroup[] {
+  if (!map || items.length === 0) return [];
 
   let container: HTMLElement | null = null;
   try {
@@ -246,58 +216,136 @@ export function computeMahapurushaPlacements(
 
   const containerW = container?.clientWidth || 800;
   const containerH = container?.clientHeight || 600;
+  const currentZoom = map.getZoom();
+  const threshold = getMahapurushaGroupThreshold(currentZoom);
 
-  const sortedItems = sortMahapurushasForPlacement(items, selectedId);
-  const placedBoxes: { id: string; box: Rect; candidate: CandidatePlacement }[] = [];
-
-  for (const person of sortedItems) {
-    let pt: L.Point;
+  // Project all items into screen coordinates
+  const projected: { person: MahapurushaAnchor; pt: L.Point }[] = [];
+  for (const person of items) {
     try {
-      pt = map.latLngToContainerPoint(L.latLng(person.coords[0], person.coords[1]));
+      const pt = map.latLngToContainerPoint(L.latLng(person.coords[0], person.coords[1]));
+      projected.push({ person, pt });
     } catch {
-      result[person.id] = CANDIDATE_PLACEMENTS[0];
-      continue;
+      // Fallback
     }
+  }
 
-    const title = person.name[lang] || person.name.en;
-    const { width, height } = getLabelDimensions(title, container);
+  // Step 1: Group items based on exact coordinate matching or screen distance <= threshold
+  const clusters: { members: MahapurushaAnchor[]; centerPt: L.Point; coords: [number, number] }[] = [];
+  const assigned = new Set<string>();
 
-    let chosenCandidate: CandidatePlacement | null = null;
-    let chosenBox: Rect | null = null;
+  for (let i = 0; i < projected.length; i++) {
+    const p1 = projected[i];
+    if (assigned.has(p1.person.id)) continue;
 
-    // Pass 1: first candidate that doesn't collide with already placed boxes AND is within viewport
-    for (const candidate of CANDIDATE_PLACEMENTS) {
-      const box = computeLabelBox(pt.x, pt.y, width, height, candidate);
-      const collides = placedBoxes.some(p => boxesIntersect(box, p.box));
-      if (!collides && isBoxWithinBounds(box, containerW, containerH)) {
-        chosenCandidate = candidate;
-        chosenBox = box;
-        break;
+    const clusterMembers: MahapurushaAnchor[] = [p1.person];
+    assigned.add(p1.person.id);
+
+    for (let j = i + 1; j < projected.length; j++) {
+      const p2 = projected[j];
+      if (assigned.has(p2.person.id)) continue;
+
+      // Exact coordinates ALWAYS group at all zoom levels
+      const isExactMatch =
+        Math.abs(p1.person.coords[0] - p2.person.coords[0]) < 0.0001 &&
+        Math.abs(p1.person.coords[1] - p2.person.coords[1]) < 0.0001;
+
+      const screenDist = Math.hypot(p1.pt.x - p2.pt.x, p1.pt.y - p2.pt.y);
+
+      if (isExactMatch || screenDist <= threshold) {
+        clusterMembers.push(p2.person);
+        assigned.add(p2.person.id);
       }
     }
 
-    // Pass 2: if viewport constraint couldn't be met, first candidate that doesn't collide
-    if (!chosenCandidate) {
+    clusters.push({
+      members: clusterMembers,
+      centerPt: p1.pt,
+      coords: p1.person.coords,
+    });
+  }
+
+  // Step 2: Build render groups and resolve deterministic placements
+  const placedBoxes: { id: string; box: Rect; candidate: CandidatePlacement }[] = [];
+
+  // Sort clusters deterministically: selected group first, then stable coordinate order
+  clusters.sort((a, b) => {
+    const aHasSelected = a.members.some(m => m.id === selectedId);
+    const bHasSelected = b.members.some(m => m.id === selectedId);
+    if (aHasSelected && !bHasSelected) return -1;
+    if (!aHasSelected && bHasSelected) return 1;
+    return a.members[0].id.localeCompare(b.members[0].id);
+  });
+
+  const renderGroups: MahapurushaRenderGroup[] = [];
+
+  for (const cluster of clusters) {
+    const count = cluster.members.length;
+    const isSelected = cluster.members.some(m => m.id === selectedId);
+    const selectedMember = isSelected
+      ? cluster.members.find(m => m.id === selectedId) || null
+      : null;
+    const activeMember = selectedMember || cluster.members[0];
+    const groupId = cluster.members.map(m => m.id).sort().join('-');
+
+    // Label visibility rule:
+    // - Count === 1 (isolated): ALWAYS shows label (subject to collision check)
+    // - Count > 1 (group): Only shows label if a member is currently selected!
+    const showLabel = count === 1 || isSelected;
+
+    let chosenCandidate: CandidatePlacement = CANDIDATE_PLACEMENTS[0];
+
+    if (showLabel) {
+      const title = activeMember.name[lang] || activeMember.name.en;
+      const { width, height } = getLabelDimensions(title, container);
+      let found = false;
+
+      // Pass 1: candidate that doesn't collide with placed boxes AND stays within viewport
       for (const candidate of CANDIDATE_PLACEMENTS) {
-        const box = computeLabelBox(pt.x, pt.y, width, height, candidate);
+        const box = computeLabelBox(cluster.centerPt.x, cluster.centerPt.y, width, height, candidate);
         const collides = placedBoxes.some(p => boxesIntersect(box, p.box));
-        if (!collides) {
+        if (!collides && isBoxWithinBounds(box, containerW, containerH)) {
           chosenCandidate = candidate;
-          chosenBox = box;
+          placedBoxes.push({ id: groupId, box, candidate });
+          found = true;
           break;
         }
       }
+
+      // Pass 2: candidate that doesn't collide regardless of viewport edge
+      if (!found) {
+        for (const candidate of CANDIDATE_PLACEMENTS) {
+          const box = computeLabelBox(cluster.centerPt.x, cluster.centerPt.y, width, height, candidate);
+          const collides = placedBoxes.some(p => boxesIntersect(box, p.box));
+          if (!collides) {
+            chosenCandidate = candidate;
+            placedBoxes.push({ id: groupId, box, candidate });
+            found = true;
+            break;
+          }
+        }
+      }
+
+      // Pass 3: least intrusive fallback
+      if (!found) {
+        chosenCandidate = CANDIDATE_PLACEMENTS[0];
+        const box = computeLabelBox(cluster.centerPt.x, cluster.centerPt.y, width, height, chosenCandidate);
+        placedBoxes.push({ id: groupId, box, candidate: chosenCandidate });
+      }
     }
 
-    // Pass 3: least intrusive fallback (Candidate 0)
-    if (!chosenCandidate || !chosenBox) {
-      chosenCandidate = CANDIDATE_PLACEMENTS[0];
-      chosenBox = computeLabelBox(pt.x, pt.y, width, height, chosenCandidate);
-    }
-
-    placedBoxes.push({ id: person.id, box: chosenBox, candidate: chosenCandidate });
-    result[person.id] = chosenCandidate;
+    renderGroups.push({
+      groupId,
+      coords: cluster.coords,
+      members: cluster.members,
+      count,
+      isSelected,
+      selectedMember,
+      activeMember,
+      showLabel,
+      placement: chosenCandidate,
+    });
   }
 
-  return result;
+  return renderGroups;
 }

@@ -43,21 +43,29 @@ export default function RootPage() {
     };
   }, []);
 
+  useEffect(() => {
+    try {
+      router.prefetch?.('/bharatvarsha');
+    } catch {}
+  }, [router]);
+
   const handleEnter = () => {
     if (journeyState !== "idle") return;
     setJourneyState("activating");
 
-    // 1. Activation Phase (0-1200ms) handles button feedback and text swap via CSS
-
-    // 2. Navigation State Trigger (at 1200ms)
     setTimeout(() => {
       setJourneyState("navigating");
-
-      // 3. Navigation Finalization (after 500ms exit animation)
-      setTimeout(() => {
+      try {
         router.push('/bharatvarsha');
-      }, 500);
-    }, 1200);
+      } catch {
+        window.location.href = '/bharatvarsha';
+      }
+      setTimeout(() => {
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('bharatvarsha')) {
+          window.location.href = '/bharatvarsha';
+        }
+      }, 250);
+    }, 200);
   };
 
   const easing: any = [0.16, 1, 0.3, 1];
@@ -70,8 +78,27 @@ export default function RootPage() {
       animate={{
         opacity: journeyState === "navigating" ? 0 : 1
       }}
-      transition={{ duration: 0.6, ease: "easeInOut" }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
     >
+      <button
+        type="button"
+        className={styles.skipBtn}
+        onClick={() => {
+          try {
+            router.push('/bharatvarsha');
+          } catch {
+            window.location.href = '/bharatvarsha';
+          }
+          setTimeout(() => {
+            if (typeof window !== 'undefined' && !window.location.pathname.includes('bharatvarsha')) {
+              window.location.href = '/bharatvarsha';
+            }
+          }, 150);
+        }}
+        aria-label="Skip to Darshana"
+      >
+        Enter Darshan →
+      </button>
       {/* ── Background Elements ─────────────────── */}
       <div className={styles.parchment} />
       <div className={styles.noise} />

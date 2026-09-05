@@ -716,6 +716,77 @@ body {
   cursor: pointer !important;
 }
 
+.mahapurusha-group-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 8px;
+  background: radial-gradient(circle at 35% 30%, #6E1F08 0%, #3D0E03 100%);
+  border: 1px solid #E5C378;
+  color: #FDE8B3;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), inset 0 0 2px rgba(253, 232, 179, 0.4);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.kp-carousel-bar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: fit-content;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 3px 10px;
+  background: rgba(36, 30, 23, 0.7);
+  border: 1px solid rgba(214, 185, 107, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.kp-carousel-btn {
+  background: transparent;
+  border: none;
+  color: #D6B96B;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kp-carousel-btn:hover {
+  color: #FFE194;
+  transform: scale(1.15);
+}
+
+.kp-carousel-btn:active {
+  transform: scale(0.95);
+}
+
+.kp-carousel-indicator {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #D6B96B;
+  user-select: none;
+}
+
 .sacred-label {
   font-family: "Cinzel", "Noto Serif Devanagari", serif !important;
   font-size: 11px !important;

@@ -22,7 +22,8 @@ import { riversGeometry } from '@/data/riversGeometry';
 import { COUNTRY_LABELS } from '@/data/regionsGeometry';
 import { mahapurushasGeometry } from '@/data/mahapurushasGeometry';
 import {
-  computeMahapurushaPlacements,
+  computeMahapurushaRenderGroups,
+  MahapurushaRenderGroup,
   CandidatePlacement,
   CANDIDATE_PLACEMENTS,
   clearLabelDimensionCache,
@@ -73,11 +74,18 @@ const createSacredMarker = (isSelected = false) => {
 // MAHAPURUSHA MARKERS — Akhanda Jyoti (Eternal Flame of Sacrifice & Wisdom)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const createMahapurushaMarker = (isSelected = false) => {
+const createMahapurushaMarker = (isSelected = false, count = 1) => {
+  const isGroup = count > 1;
+  const countBadgeHtml = isGroup ? `
+    <div class="mahapurusha-group-badge" aria-label="${count} Mahapurushas at this historical location">
+      ${count}
+    </div>
+  ` : '';
+
   return L.divIcon({
     className: 'custom-marker',
     html: `
-      <div class="marker-touch-target" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+      <div class="marker-touch-target" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; position: relative;">
         <div class="marker-wrapper mahapurusha-wrapper ${isSelected ? 'mahapurusha-active' : ''}">
           <div class="marker-glow mahapurusha-glow"></div>
           <div class="marker-core mahapurusha-core">
@@ -90,6 +98,7 @@ const createMahapurushaMarker = (isSelected = false) => {
             </div>
           </div>
         </div>
+        ${countBadgeHtml}
       </div>
     `,
     iconSize: [44, 44],
@@ -508,112 +517,127 @@ const MahapurushaLayer = React.memo(({ onItemClick }: { onItemClick: (loc: Locat
   const { lang } = useLanguageStore();
   const leafletMap = useLeafletMap();
 
-  const [placements, setPlacements] = useState<Record<string, CandidatePlacement>>(() => {
+  const [renderGroups, setRenderGroups] = useState<MahapurushaRenderGroup[]>(() => {
     if (typeof window !== 'undefined' && leafletMap) {
       try {
-        return computeMahapurushaPlacements(leafletMap, mahapurushasGeometry, lang, selectedLocation?.id);
+        return computeMahapurushaRenderGroups(leafletMap, mahapurushasGeometry, lang, selectedLocation?.id);
       } catch {
-        return {};
+        return [];
       }
     }
-    return {};
+    return [];
   });
 
-  const recalculatePlacements = useCallback(() => {
+  const recalculateGroups = useCallback(() => {
     if (!leafletMap || !activeFilters.mahapurusha) return;
-    const computed = computeMahapurushaPlacements(
+    const computed = computeMahapurushaRenderGroups(
       leafletMap,
       mahapurushasGeometry,
       lang,
       selectedLocation?.id
     );
-    setPlacements(prev => {
-      let changed = false;
-      const prevKeys = Object.keys(prev);
-      const compKeys = Object.keys(computed);
-      if (prevKeys.length !== compKeys.length) {
-        changed = true;
-      } else {
-        for (const key of compKeys) {
-          if (!prev[key] || prev[key].id !== computed[key].id) {
-            changed = true;
-            break;
-          }
+    setRenderGroups(prev => {
+      if (prev.length !== computed.length) return computed;
+      for (let i = 0; i < computed.length; i++) {
+        const p = prev[i];
+        const c = computed[i];
+        if (
+          p.groupId !== c.groupId ||
+          p.isSelected !== c.isSelected ||
+          p.activeMember.id !== c.activeMember.id ||
+          p.showLabel !== c.showLabel ||
+          p.placement.id !== c.placement.id
+        ) {
+          return computed;
         }
       }
-      return changed ? computed : prev;
+      return prev;
     });
   }, [leafletMap, activeFilters.mahapurusha, lang, selectedLocation?.id]);
 
   useEffect(() => {
-    recalculatePlacements();
+    recalculateGroups();
 
     const map = leafletMap;
     if (!map) return;
 
-    map.on('zoomend', recalculatePlacements);
-    map.on('moveend', recalculatePlacements);
-    map.on('resize', recalculatePlacements);
+    map.on('zoomend', recalculateGroups);
+    map.on('moveend', recalculateGroups);
+    map.on('resize', recalculateGroups);
 
     const handleWindowResize = () => {
       clearLabelDimensionCache();
-      recalculatePlacements();
+      recalculateGroups();
     };
     window.addEventListener('resize', handleWindowResize);
 
     return () => {
-      map.off('zoomend', recalculatePlacements);
-      map.off('moveend', recalculatePlacements);
-      map.off('resize', recalculatePlacements);
+      map.off('zoomend', recalculateGroups);
+      map.off('moveend', recalculateGroups);
+      map.off('resize', recalculateGroups);
       window.removeEventListener('resize', handleWindowResize);
     };
-  }, [leafletMap, recalculatePlacements]);
+  }, [leafletMap, recalculateGroups]);
 
   if (!activeFilters.mahapurusha) return null;
 
   return (
     <>
-      {mahapurushasGeometry.map((person) => {
-        const title = person.name[lang] || person.name.en;
-        const isSelected = selectedLocation?.id === person.id;
-        const placement = placements[person.id] || CANDIDATE_PLACEMENTS[0];
+      {renderGroups.map((group) => {
+        const isSelected = group.isSelected;
+        const activeMember = group.activeMember;
+        const title = activeMember.name[lang] || activeMember.name.en;
+        const placement = group.placement;
 
         return (
           <Marker
-            key={`mahapurusha-${person.id}`}
-            position={person.coords}
-            icon={createMahapurushaMarker(isSelected)}
+            key={`mahapurusha-group-${group.groupId}`}
+            position={group.coords}
+            icon={createMahapurushaMarker(isSelected, group.count)}
             eventHandlers={{
-              click: () => onItemClick({
-                id: person.id,
-                category: 'mahapurusha',
-                name: person.name,
-                latitude: person.coords[0],
-                longitude: person.coords[1],
-                description: "",
-              } as Location)
+              click: (e) => {
+                if (e?.originalEvent) {
+                  L.DomEvent.stopPropagation(e.originalEvent);
+                }
+                onItemClick({
+                  id: activeMember.id,
+                  category: 'mahapurusha',
+                  name: activeMember.name,
+                  latitude: group.coords[0],
+                  longitude: group.coords[1],
+                  description: "",
+                } as Location);
+              }
             }}
           >
-            <Tooltip
-              key={`${person.id}-${placement.id}-${lang}`}
-              permanent
-              direction={placement.direction}
-              offset={placement.offset}
-              className="sacred-label mahapurusha-label"
-              opacity={0.9}
-              eventHandlers={{
-                click: () => onItemClick({
-                  id: person.id,
-                  category: 'mahapurusha',
-                  name: person.name,
-                  latitude: person.coords[0],
-                  longitude: person.coords[1],
-                  description: "",
-                } as Location)
-              }}
-            >
-              {title}
-            </Tooltip>
+            {group.showLabel && (
+              <Tooltip
+                key={`${group.groupId}-${activeMember.id}-${placement.id}-${lang}`}
+                permanent
+                interactive={true}
+                direction={placement.direction}
+                offset={placement.offset}
+                className="sacred-label mahapurusha-label"
+                opacity={0.9}
+                eventHandlers={{
+                  click: (e) => {
+                    if (e?.originalEvent) {
+                      L.DomEvent.stopPropagation(e.originalEvent);
+                    }
+                    onItemClick({
+                      id: activeMember.id,
+                      category: 'mahapurusha',
+                      name: activeMember.name,
+                      latitude: group.coords[0],
+                      longitude: group.coords[1],
+                      description: "",
+                    } as Location);
+                  }
+                }}
+              >
+                {title}
+              </Tooltip>
+            )}
           </Marker>
         );
       })}
@@ -766,6 +790,18 @@ function FlyToLocation() {
     if (selectedLocation && selectedLocation.latitude && selectedLocation.longitude) {
       const zoom = getPreciseZoom(selectedLocation.category, selectedLocation.id);
 
+      const currentCenter = map.getCenter();
+      const currentZoom = map.getZoom();
+      const latDiff = Math.abs(currentCenter.lat - selectedLocation.latitude);
+      const lngDiff = Math.abs(currentCenter.lng - selectedLocation.longitude);
+      const zoomDiff = Math.abs(currentZoom - zoom);
+
+      // If already at or very close to destination, release navigation state immediately
+      if (latDiff < 0.01 && lngDiff < 0.01 && zoomDiff < 0.2) {
+        setIsNavigating(false);
+        return;
+      }
+
       const handleMoveEnd = () => {
         setIsNavigating(false);
         map.off('zoomend', handleMoveEnd);
@@ -780,10 +816,10 @@ function FlyToLocation() {
         setIsNavigating(false);
         map.off('zoomend', handleMoveEnd);
         map.off('moveend', handleMoveEnd);
-      }, 2000); 
+      }, 1200); 
 
       map.flyTo([selectedLocation.latitude, selectedLocation.longitude], zoom, {
-        duration: 1.2,
+        duration: 0.8,
         easeLinearity: 0.25,
         noMoveStart: true
       });
