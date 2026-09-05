@@ -63,5 +63,21 @@ export const mahapurushasGeometry: MahapurushaAnchor[] = [
       kn: "ವಿಕ್ರಮಾದಿತ್ಯರೊಂದಿಗೆ ಪರಂಪರೆಯಿಂದ ಸಂಬಂಧಿಸಲ್ಪಟ್ಟ ಉಜ್ಜಯಿನಿ",
       hi: "परंपरा में विक्रमादित्य से संबद्ध उज्जयिनी"
     }
+  },
+  {
+    id: "shalivahana",
+    name: {
+      en: "Shalivahana",
+      kn: "ಶಾಲಿವಾಹನ",
+      hi: "शालिवाहन"
+    },
+    category: "mahapurusha",
+    coords: [19.48, 75.38],
+    associationType: "traditional",
+    associationWording: {
+      en: "Pratishthana (Paithan), traditionally associated with Shalivahana",
+      kn: "ಶಾಲಿವಾಹನರೊಂದಿಗೆ ಪರಂಪರೆಯಿಂದ ಸಂಬಂಧಿಸಲ್ಪಟ್ಟ ಪ್ರತಿಷ್ಠಾನ (ಪೈಠಣ)",
+      hi: "शालिवाहन से परंपरागत रूप से संबद्ध प्रतिष्ठान (पैठन)"
+    }
   }
 ];

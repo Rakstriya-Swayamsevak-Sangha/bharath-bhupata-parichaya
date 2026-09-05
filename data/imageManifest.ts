@@ -60,6 +60,7 @@ export const IMAGE_MANIFEST: Record<string, string> = {
   chanakya: '/place-images/mahapurushas/chanakya.webp',
   chandragupta_maurya: '/place-images/mahapurushas/chandragupta_maurya.webp',
   vikramaditya: '/place-images/mahapurushas/vikramaditya.webp',
+  shalivahana: '/place-images/mahapurushas/shalivahana.webp',
 };
 
 export type ImageManifestKey = keyof typeof IMAGE_MANIFEST;

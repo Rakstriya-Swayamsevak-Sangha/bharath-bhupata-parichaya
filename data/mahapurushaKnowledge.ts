@@ -488,5 +488,142 @@ export const mahapurushaKnowledge: Record<string, MahapurushaKnowledge> = {
       fileName: "Samrat Vikramaditya.pdf",
       fileSize: "7.4 MB"
     }
+  },
+
+  shalivahana: {
+    id: "shalivahana",
+    category: "mahapurusha",
+
+    title: {
+      en: "Shalivahana",
+      kn: "ಶಾಲಿವಾಹನ",
+      hi: "शालिवाहन"
+    },
+
+    subtitle: {
+      en: "A celebrated ruler in the Shalivahana and Shaka-era tradition",
+      kn: "ಶಾಲಿವಾಹನ ಮತ್ತು ಶಕ ಕಾಲಗಣನಾ ಪರಂಪರೆಯಲ್ಲಿ ಪ್ರಸಿದ್ಧನಾದ ರಾಜ",
+      hi: "शालिवाहन और शक कालगणना परंपरा में प्रसिद्ध राजा"
+    },
+
+    researchStatus: {
+      birthplaceConfidence: "disputed",
+      birthDateConfidence: "unknown"
+    },
+
+    identity: {
+      period: {
+        en: "Historically uncertain; associated in later tradition with the Shaka era",
+        kn: "ಐತಿಹಾಸಿಕವಾಗಿ ಅನಿಶ್ಚಿತ; ನಂತರದ ಪರಂಪರೆಯಲ್ಲಿ ಶಕ ಕಾಲಗಣನೆಯೊಂದಿಗೆ ಸಂಬಂಧಿಸಲಾಗಿದೆ",
+        hi: "ऐतिहासिक रूप से अनिश्चित; बाद की परंपरा में शक युग से संबद्ध"
+      },
+      birthDate: {
+        en: "Unknown",
+        kn: "ತಿಳಿದಿಲ್ಲ",
+        hi: "अज्ञात"
+      },
+      birthPlace: {
+        en: "Uncertain; Pratishthana (Paithan) is a major traditional association",
+        kn: "ನಿಶ್ಚಿತವಲ್ಲ; ಪ್ರತಿಷ್ಠಾನ (ಪೈಠಣ) ಪ್ರಮುಖ ಪರಂಪರೆಯ ಸಂಬಂಧಿತ ಸ್ಥಳವಾಗಿದೆ",
+        hi: "अनिश्चित; प्रतिष्ठान (पैठन) एक प्रमुख पारंपरिक संबद्ध स्थान है"
+      },
+      alsoKnownAs: {
+        en: "Shalivahana; Salivahana",
+        kn: "ಶಾಲಿವಾಹನ; ಸಾಲಿವಾಹನ",
+        hi: "शालिवाहन; सालिवाहन"
+      }
+    },
+
+    historicalContext: {
+      en: "Shalivahana is remembered in later Indian historical and literary traditions as a celebrated ruler associated with the Shaka era, commonly known as the Shalivahana Shaka tradition. Traditions concerning Shalivahana connect the figure with the Deccan and particularly with Pratishthana (Paithan), an important ancient urban centre. However, the historical identity of Shalivahana and the precise relationship between the legendary ruler and the historical development of the Shaka era remain subjects of historical discussion.",
+      kn: "ಶಾಲಿವಾಹನರನ್ನು ನಂತರದ ಭಾರತೀಯ ಐತಿಹಾಸಿಕ ಮತ್ತು ಸಾಹಿತ್ಯಿಕ ಪರಂಪರೆಗಳಲ್ಲಿ ಶಕ ಕಾಲಗಣನೆಯೊಂದಿಗೆ, ವಿಶೇಷವಾಗಿ ಶಾಲಿವಾಹನ ಶಕ ಪರಂಪರೆಯೊಂದಿಗೆ ಸಂಬಂಧಿಸಿದ ಪ್ರಸಿದ್ಧ ರಾಜನಾಗಿ ಸ್ಮರಿಸಲಾಗುತ್ತದೆ. ಶಾಲಿವಾಹನರಿಗೆ ಸಂಬಂಧಿಸಿದ ಪರಂಪರೆಗಳು ಈ ವ್ಯಕ್ತಿಯನ್ನು ದಕ್ಷಿಣ ಭಾರತದ ಡೆಕ್ಕನ್ ಪ್ರದೇಶ ಮತ್ತು ವಿಶೇಷವಾಗಿ ಪ್ರಾಚೀನ ಪ್ರಮುಖ ನಗರಕೇಂದ್ರವಾದ ಪ್ರತಿಷ್ಠಾನ (ಪೈಠಣ)ದೊಂದಿಗೆ ಸಂಪರ್ಕಿಸುತ್ತವೆ. ಆದರೆ ಶಾಲಿವಾಹನರ ಐತಿಹಾಸಿಕ ಗುರುತು ಮತ್ತು ಪರಂಪರೆಯ ರಾಜನಿಗೂ ಶಕ ಕಾಲಗಣನೆಯ ಐತಿಹಾಸಿಕ ಬೆಳವಣಿಗೆಗೂ ಇರುವ ನಿಖರ ಸಂಬಂಧವು ಇತಿಹಾಸ ಚರ್ಚೆಯ ವಿಷಯವಾಗಿದೆ.",
+      hi: "शालिवाहन को बाद की भारतीय ऐतिहासिक और साहित्यिक परंपराओं में शक युग, विशेषकर शालिवाहन शक परंपरा, से जुड़े एक प्रसिद्ध राजा के रूप में स्मरण किया जाता है। शालिवाहन से संबंधित परंपराएँ इस व्यक्ति को दक्कन और विशेष रूप से प्राचीन महत्वपूर्ण नगर केंद्र प्रतिष्ठान (पैठन) से जोड़ती हैं। हालांकि शालिवाहन की ऐतिहासिक पहचान और पारंपरिक राजा तथा शक युग के ऐतिहासिक विकास के बीच सटीक संबंध इतिहास-विमर्श का विषय है।"
+    },
+
+    contributions: [
+      {
+        title: {
+          en: "1. Association with the Shalivahana Shaka Tradition",
+          kn: "1. ಶಾಲಿವಾಹನ ಶಕ ಪರಂಪರೆಯೊಂದಿಗೆ ಸಂಬಂಧ",
+          hi: "1. शालिवाहन शक परंपरा से संबंध"
+        },
+        description: {
+          en: "Shalivahana became strongly associated in later tradition with the Shaka era, which developed into an important calendrical tradition in India.",
+          kn: "ನಂತರದ ಪರಂಪರೆಯಲ್ಲಿ ಶಾಲಿವಾಹನರು ಶಕ ಕಾಲಗಣನೆಯೊಂದಿಗೆ ಬಲವಾಗಿ ಸಂಬಂಧಿಸಲ್ಪಟ್ಟರು. ಇದು ಭಾರತದಲ್ಲಿ ಪ್ರಮುಖ ಕಾಲಗಣನಾ ಪರಂಪರೆಯಾಗಿ ಬೆಳೆಯಿತು.",
+          hi: "बाद की परंपरा में शालिवाहन का संबंध शक युग से गहराई से जोड़ा गया, जो भारत की एक महत्वपूर्ण कालगणना परंपरा के रूप में विकसित हुआ।"
+        }
+      },
+      {
+        title: {
+          en: "2. Deccan Historical and Cultural Tradition",
+          kn: "2. ಡೆಕ್ಕನ್ನ ಐತಿಹಾಸಿಕ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಪರಂಪರೆ",
+          hi: "2. दक्कन की ऐतिहासिक और सांस्कृतिक परंपरा"
+        },
+        description: {
+          en: "Traditions surrounding Shalivahana preserve a strong connection with the Deccan, especially Pratishthana (Paithan), linking the figure with an important centre of ancient Deccan history.",
+          kn: "ಶಾಲಿವಾಹನರನ್ನು ಸುತ್ತುವರಿದ ಪರಂಪರೆಗಳು ಡೆಕ್ಕನ್ ಪ್ರದೇಶದೊಂದಿಗೆ, ವಿಶೇಷವಾಗಿ ಪ್ರತಿಷ್ಠಾನ (ಪೈಠಣ)ದೊಂದಿಗೆ ಬಲವಾದ ಸಂಬಂಧವನ್ನು ಉಳಿಸಿಕೊಂಡಿವೆ. ಇದರಿಂದ ಈ ವ್ಯಕ್ತಿ ಪ್ರಾಚೀನ ಡೆಕ್ಕನ್ ಇತಿಹಾಸದ ಪ್ರಮುಖ ಕೇಂದ್ರದೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಲ್ಪಡುತ್ತಾರೆ.",
+          hi: "शालिवाहन से जुड़ी परंपराएँ दक्कन, विशेषकर प्रतिष्ठान (पैठन), से गहरा संबंध बनाए रखती हैं और इस व्यक्तित्व को प्राचीन दक्कन के एक महत्वपूर्ण केंद्र से जोड़ती हैं।"
+        }
+      },
+      {
+        title: {
+          en: "3. Enduring Calendrical Legacy",
+          kn: "3. ಶಾಶ್ವತ ಕಾಲಗಣನಾ ಪರಂಪರೆ",
+          hi: "3. स्थायी कालगणना परंपरा"
+        },
+        description: {
+          en: "The Shaka calendar tradition associated in later usage with Shalivahana remains an important part of Indian calendrical and cultural practice.",
+          kn: "ನಂತರದ ಬಳಕೆಯಲ್ಲಿ ಶಾಲಿವಾಹನರೊಂದಿಗೆ ಸಂಬಂಧಿಸಲಾದ ಶಕ ಕಾಲಗಣನಾ ಪರಂಪರೆಯು ಭಾರತೀಯ ಕಾಲಗಣನೆ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಆಚರಣೆಯ ಪ್ರಮುಖ ಭಾಗವಾಗಿ ಉಳಿದಿದೆ.",
+          hi: "बाद के प्रचलन में शालिवाहन से जोड़ी गई शक कालगणना परंपरा भारतीय कालगणना और सांस्कृतिक व्यवहार का एक महत्वपूर्ण हिस्सा बनी हुई है।"
+        }
+      },
+      {
+        title: {
+          en: "4. Literary and Traditional Memory",
+          kn: "4. ಸಾಹಿತ್ಯಿಕ ಮತ್ತು ಪರಂಪರೆಯ ಸ್ಮರಣೆ",
+          hi: "4. साहित्यिक और पारंपरिक स्मृति"
+        },
+        description: {
+          en: "Stories and traditions associated with Shalivahana contributed to the preservation of a distinctive royal and cultural memory within later Indian literature and regional traditions.",
+          kn: "ಶಾಲಿವಾಹನರಿಗೆ ಸಂಬಂಧಿಸಿದ ಕಥೆಗಳು ಮತ್ತು ಪರಂಪರೆಗಳು ನಂತರದ ಭಾರತೀಯ ಸಾಹಿತ್ಯ ಮತ್ತು ಪ್ರಾದೇಶಿಕ ಪರಂಪರೆಗಳಲ್ಲಿ ವಿಶಿಷ್ಟ ರಾಜಕೀಯ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಸ್ಮೃತಿಯ ಸಂರಕ್ಷಣೆಗೆ ಕೊಡುಗೆ ನೀಡಿವೆ.",
+          hi: "शालिवाहन से जुड़ी कथाओं और परंपराओं ने बाद के भारतीय साहित्य तथा क्षेत्रीय परंपराओं में एक विशिष्ट राजकीय और सांस्कृतिक स्मृति के संरक्षण में योगदान दिया।"
+        }
+      },
+      {
+        title: {
+          en: "5. Association with Pratishthana",
+          kn: "5. ಪ್ರತಿಷ್ಠಾನದೊಂದಿಗೆ ಸಂಬಂಧ",
+          hi: "5. प्रतिष्ठान से संबंध"
+        },
+        description: {
+          en: "The traditional association of Shalivahana with Pratishthana connects the figure with Paithan, an ancient centre of political, commercial and cultural activity in the Deccan.",
+          kn: "ಶಾಲಿವಾಹನರ ಪ್ರತಿಷ್ಠಾನದೊಂದಿಗೆ ಇರುವ ಪರಂಪರೆಯ ಸಂಬಂಧವು ಈ ವ್ಯಕ್ತಿಯನ್ನು ಡೆಕ್ಕನ್ನ ಪ್ರಾಚೀನ ರಾಜಕೀಯ, ವಾಣಿಜ್ಯ ಮತ್ತು ಸಾಂಸ್ಕೃತಿಕ ಚಟುವಟಿಕೆಗಳ ಕೇಂದ್ರವಾಗಿದ್ದ ಪೈಠಣದೊಂದಿಗೆ ಸಂಪರ್ಕಿಸುತ್ತದೆ.",
+          hi: "शालिवाहन का प्रतिष्ठान से पारंपरिक संबंध उन्हें पैठन से जोड़ता है, जो दक्कन में राजनीतिक, वाणिज्यिक और सांस्कृतिक गतिविधियों का एक प्राचीन केंद्र था।"
+        }
+      }
+    ],
+
+    historicalCaveat: {
+      en: "Shalivahana belongs to a historically layered tradition in which literary, calendrical and historical elements overlap. The association between Shalivahana and the Shaka era is deeply established in later Indian tradition, but the precise historical identity of the ruler called Shalivahana and his relationship to the origin of the era cannot be treated as an uncomplicated, independently verified biography.",
+      kn: "ಶಾಲಿವಾಹನರು ಸಾಹಿತ್ಯಿಕ, ಕಾಲಗಣನಾ ಮತ್ತು ಐತಿಹಾಸಿಕ ಅಂಶಗಳು ಪರಸ್ಪರ ಬೆರೆತಿರುವ ಬಹುಪದರದ ಪರಂಪರೆಗೆ ಸೇರಿದ್ದಾರೆ. ಶಾಲಿವಾಹನ ಮತ್ತು ಶಕ ಕಾಲಗಣನೆಯ ನಡುವಿನ ಸಂಬಂಧವು ನಂತರದ ಭಾರತೀಯ ಪರಂಪರೆಯಲ್ಲಿ ಆಳವಾಗಿ ಸ್ಥಾಪಿತವಾಗಿದೆ. ಆದರೆ ಶಾಲಿವಾಹನ ಎಂಬ ಹೆಸರಿನ ರಾಜನ ನಿಖರ ಐತಿಹಾಸಿಕ ಗುರುತು ಮತ್ತು ಆ ಕಾಲಗಣನೆಯ ಆರಂಭದೊಂದಿಗೆ ಅವರ ಸಂಬಂಧವನ್ನು ಸರಳವಾಗಿ ಸ್ವತಂತ್ರವಾಗಿ ದೃಢೀಕರಿಸಲಾದ ಜೀವನಚರಿತ್ರೆಯಾಗಿ ಪರಿಗಣಿಸಲಾಗುವುದಿಲ್ಲ.",
+      hi: "शालिवाहन ऐसी बहुस्तरीय परंपरा से जुड़े हैं जिसमें साहित्यिक, कालगणना संबंधी और ऐतिहासिक तत्व एक-दूसरे से जुड़े हुए हैं। शालिवाहन और शक युग के बीच संबंध बाद की परंपरा में गहराई से स्थापित है, लेकिन शालिवाहन नामक शासक की सटीक ऐतिहासिक पहचान और उस युग की उत्पत्ति से उनका संबंध एक सरल, स्वतंत्र रूप से प्रमाणित जीवनी के रूप में नहीं माना जा सकता।"
+    },
+
+    civilizationalSignificance: {
+      en: "Shalivahana occupies an enduring place in Indian civilizational memory through the convergence of royal tradition, Deccan history and the Shaka calendrical tradition. The figure is particularly significant as a representation of how historical memory, regional traditions and systems of timekeeping became interconnected across generations.",
+      kn: "ರಾಜಪರಂಪರೆ, ಡೆಕ್ಕನ್ ಇತಿಹಾಸ ಮತ್ತು ಶಕ ಕಾಲಗಣನಾ ಪರಂಪರೆಯ ಸಂಗಮದ ಮೂಲಕ ಶಾಲಿವಾಹನರು ಭಾರತೀಯ ನಾಗರಿಕತಾ ಸ್ಮೃತಿಯಲ್ಲಿ ಶಾಶ್ವತ ಸ್ಥಾನ ಪಡೆದಿದ್ದಾರೆ. ಇತಿಹಾಸ ಸ್ಮೃತಿ, ಪ್ರಾದೇಶಿಕ ಪರಂಪರೆಗಳು ಮತ್ತು ಕಾಲಗಣನಾ ವ್ಯವಸ್ಥೆಗಳು ಪೀಳಿಗೆಗಳಿಂದ ಹೇಗೆ ಪರಸ್ಪರ ಸಂಪರ್ಕಗೊಂಡವು ಎಂಬುದನ್ನು ಪ್ರತಿನಿಧಿಸುವ ವ್ಯಕ್ತಿತ್ವವಾಗಿ ಅವರು ವಿಶೇಷ ಮಹತ್ವ ಹೊಂದಿದ್ದಾರೆ.",
+      hi: "राजपरंपरा, दक्कन के इतिहास और शक कालगणना परंपरा के संगम के कारण शालिवाहन भारतीय सभ्यतागत स्मृति में स्थायी स्थान रखते हैं। वे इस बात के महत्वपूर्ण प्रतिनिधि हैं कि ऐतिहासिक स्मृति, क्षेत्रीय परंपराएँ और समयगणना की प्रणालियाँ पीढ़ियों के दौरान किस प्रकार एक-दूसरे से जुड़ीं।"
+    },
+
+    pdfDocument: {
+      title: {
+        en: "Samrat Shalivahana",
+        kn: "ಸಾಮ್ರಾಟ್ ಶಾಲಿವಾಹನ",
+        hi: "सम्राट शालिवाहन"
+      },
+      url: "/data/mahapurushas-pdfs/shalivahana/Samrat Shalivahana.pdf",
+      fileName: "Samrat Shalivahana.pdf",
+      fileSize: "613 KB"
+    }
   }
 };
