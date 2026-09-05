@@ -22,7 +22,7 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'v-s9uYf8yA3Ury5JYtJInRm';
+const CACHE_VERSION = 'v-1zSXdbE-2bDXwZKmMehd8';
 
 const CACHE_NAMES = {
   shell:  `app-shell-${CACHE_VERSION}`,

@@ -21,6 +21,12 @@ import { mountainsGeometry } from '@/data/mountainsGeometry';
 import { riversGeometry } from '@/data/riversGeometry';
 import { COUNTRY_LABELS } from '@/data/regionsGeometry';
 import { mahapurushasGeometry } from '@/data/mahapurushasGeometry';
+import {
+  computeMahapurushaPlacements,
+  CandidatePlacement,
+  CANDIDATE_PLACEMENTS,
+  clearLabelDimensionCache,
+} from '@/utils/mahapurushaCollision';
 import { Location } from '@/types/location';
 import {
   MAP_CONFIG,
@@ -500,6 +506,68 @@ const MahapurushaLayer = React.memo(({ onItemClick }: { onItemClick: (loc: Locat
   const { selectedLocation } = useMap();
   const { activeFilters } = useFilter();
   const { lang } = useLanguageStore();
+  const leafletMap = useLeafletMap();
+
+  const [placements, setPlacements] = useState<Record<string, CandidatePlacement>>(() => {
+    if (typeof window !== 'undefined' && leafletMap) {
+      try {
+        return computeMahapurushaPlacements(leafletMap, mahapurushasGeometry, lang, selectedLocation?.id);
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  });
+
+  const recalculatePlacements = useCallback(() => {
+    if (!leafletMap || !activeFilters.mahapurusha) return;
+    const computed = computeMahapurushaPlacements(
+      leafletMap,
+      mahapurushasGeometry,
+      lang,
+      selectedLocation?.id
+    );
+    setPlacements(prev => {
+      let changed = false;
+      const prevKeys = Object.keys(prev);
+      const compKeys = Object.keys(computed);
+      if (prevKeys.length !== compKeys.length) {
+        changed = true;
+      } else {
+        for (const key of compKeys) {
+          if (!prev[key] || prev[key].id !== computed[key].id) {
+            changed = true;
+            break;
+          }
+        }
+      }
+      return changed ? computed : prev;
+    });
+  }, [leafletMap, activeFilters.mahapurusha, lang, selectedLocation?.id]);
+
+  useEffect(() => {
+    recalculatePlacements();
+
+    const map = leafletMap;
+    if (!map) return;
+
+    map.on('zoomend', recalculatePlacements);
+    map.on('moveend', recalculatePlacements);
+    map.on('resize', recalculatePlacements);
+
+    const handleWindowResize = () => {
+      clearLabelDimensionCache();
+      recalculatePlacements();
+    };
+    window.addEventListener('resize', handleWindowResize);
+
+    return () => {
+      map.off('zoomend', recalculatePlacements);
+      map.off('moveend', recalculatePlacements);
+      map.off('resize', recalculatePlacements);
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, [leafletMap, recalculatePlacements]);
 
   if (!activeFilters.mahapurusha) return null;
 
@@ -508,6 +576,7 @@ const MahapurushaLayer = React.memo(({ onItemClick }: { onItemClick: (loc: Locat
       {mahapurushasGeometry.map((person) => {
         const title = person.name[lang] || person.name.en;
         const isSelected = selectedLocation?.id === person.id;
+        const placement = placements[person.id] || CANDIDATE_PLACEMENTS[0];
 
         return (
           <Marker
@@ -526,11 +595,22 @@ const MahapurushaLayer = React.memo(({ onItemClick }: { onItemClick: (loc: Locat
             }}
           >
             <Tooltip
+              key={`${person.id}-${placement.id}-${lang}`}
               permanent
-              direction="bottom"
-              offset={[0, 8]}
+              direction={placement.direction}
+              offset={placement.offset}
               className="sacred-label mahapurusha-label"
               opacity={0.9}
+              eventHandlers={{
+                click: () => onItemClick({
+                  id: person.id,
+                  category: 'mahapurusha',
+                  name: person.name,
+                  latitude: person.coords[0],
+                  longitude: person.coords[1],
+                  description: "",
+                } as Location)
+              }}
             >
               {title}
             </Tooltip>
