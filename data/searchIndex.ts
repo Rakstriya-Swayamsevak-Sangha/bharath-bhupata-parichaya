@@ -123,6 +123,15 @@ const mahapurushas: SearchItem[] = Object.values(mahapurushaKnowledge).map((p) =
       "ಚಂದ್ರಗುಪ್ತ", "ಚಂದ್ರಗುಪ್ತ ಮೌರ್ಯ", "ಮೌರ್ಯ", "ಮೌರ್ಯ ಸಾಮ್ರಾಜ್ಯ", "ಪಾಟಲಿಪುತ್ರ", "ಮಗಧ",
       "चंद्रगुप्त", "चंद्रगुप्त मौर्य", "मौर्य", "मौर्य साम्राज्य", "पाटलिपुत्र", "मगध"
     ] : []),
+    ...(p.id === "vikramaditya" ? [
+      "vikramaditya", "king vikramaditya", "raja vikramaditya", "vikrama", "vikram",
+      "vikram samvat", "samvat", "ujjain", "avanti", "malwa", "navaratna", "shakari",
+      "chandragupta ii", "chandragupta vikramaditya", "gupta", "betal", "vetala",
+      "baital pachisi", "singhasan battisi", "simhasana", "nyaya", "kavya", "kalidasa",
+      "varahamihira",
+      "ವಿಕ್ರಮಾದಿತ್ಯ", "ರಾಜಾ ವಿಕ್ರಮಾದಿತ್ಯ", "ವಿಕ್ರಮ", "ವಿಕ್ರಮ ಸಂವತ್ಸರ", "ಉಜ್ಜಯಿನಿ", "ಅವಂತಿ", "ನವರತ್ನ", "ಬೇತಾಳ", "ಸಿಂಹಾಸನ",
+      "विक्रमादित्य", "राजा विक्रमादित्य", "विक्रम", "विक्रम संवत", "उज्जैन", "अवंती", "मालवा", "नवरत्न", "शकारि", "वेताल", "सिंहासन बत्तीसी"
+    ] : []),
   ],
   importance: 10,
 }));

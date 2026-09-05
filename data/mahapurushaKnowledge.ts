@@ -212,7 +212,7 @@ export const mahapurushaKnowledge: Record<string, MahapurushaKnowledge> = {
         kn: "ಚಾಣಕ್ಯನ ಇತಿಹಾಸ ಮತ್ತು ಚಿಂತನೆ",
         hi: "चाणक्य का इतिहास एवं चिंतन"
       },
-      url: "/chanakya/Chanakya's History.pdf",
+      url: "/data/mahapurushas-pdfs/chanakya/Chanakya's History.pdf",
       fileName: "Chanakya's History.pdf",
       fileSize: "476 KB"
     }
@@ -351,6 +351,142 @@ export const mahapurushaKnowledge: Record<string, MahapurushaKnowledge> = {
       url: "/data/mahapurushas-pdfs/chandragupta-maurya/Samrat Chandragupta.pdf",
       fileName: "Samrat Chandragupta.pdf",
       fileSize: "10.5 MB"
+    }
+  },
+  vikramaditya: {
+    id: "vikramaditya",
+    category: "mahapurusha",
+
+    title: {
+      en: "Vikramaditya",
+      kn: "ವಿಕ್ರಮಾದಿತ್ಯ",
+      hi: "विक्रमादित्य"
+    },
+
+    subtitle: {
+      en: "Legendary and historical tradition of kingship centred on Ujjain",
+      kn: "ಉಜ್ಜಯಿನಿಯನ್ನು ಕೇಂದ್ರವಾಗಿಸಿಕೊಂಡ ರಾಜತ್ವದ ಐತಿಹಾಸಿಕ ಮತ್ತು ಪರಂಪರೆಯ ಸ್ಮರಣೆ",
+      hi: "उज्जयिनी केंद्रित राजपरंपरा की ऐतिहासिक और पारंपरिक स्मृति"
+    },
+
+    researchStatus: {
+      birthplaceConfidence: "disputed",
+      birthDateConfidence: "unknown"
+    },
+
+    identity: {
+      period: {
+        en: "Historically uncertain; the Vikramaditya tradition spans different periods and sources",
+        kn: "ಐತಿಹಾಸಿಕವಾಗಿ ಅನಿಶ್ಚಿತ; ವಿಕ್ರಮಾದಿತ್ಯ ಪರಂಪರೆ ವಿಭಿನ್ನ ಕಾಲಘಟ್ಟಗಳು ಮತ್ತು ಮೂಲಗಳಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ",
+        hi: "ऐतिहासिक रूप से अनिश्चित; विक्रमादित्य की परंपरा विभिन्न कालों और स्रोतों में मिलती है"
+      },
+      birthDate: {
+        en: "Unknown",
+        kn: "ತಿಳಿದಿಲ್ಲ",
+        hi: "अज्ञात"
+      },
+      birthPlace: {
+        en: "Uncertain; Ujjain is a major traditional association",
+        kn: "ನಿಶ್ಚಿತವಲ್ಲ; ಉಜ್ಜಯಿನಿ ಪ್ರಮುಖ ಪರಂಪರೆಯ ಸಂಬಂಧಿತ ಸ್ಥಳವಾಗಿದೆ",
+        hi: "अनिश्चित; उज्जयिनी एक प्रमुख पारंपरिक संबद्ध स्थान है"
+      },
+      alsoKnownAs: {
+        en: "Vikramaditya; Vikrama",
+        kn: "ವಿಕ್ರಮಾದಿತ್ಯ; ವಿಕ್ರಮ",
+        hi: "विक्रमादित्य; विक्रम"
+      }
+    },
+
+    historicalContext: {
+      en: "Vikramaditya is one of the most prominent royal names in Indian historical and literary tradition. The name is associated particularly with Ujjain and with the Vikrama era tradition. However, historians distinguish between historically attested rulers who used the title Vikramaditya and the later literary and legendary Vikramaditya tradition. The identity of the Vikramaditya remembered in the Ekatmata Stotra should therefore be presented with appropriate historical caution rather than being treated as an unquestionably identified single ruler.",
+      kn: "ವಿಕ್ರಮಾದಿತ್ಯ ಎಂಬುದು ಭಾರತೀಯ ಐತಿಹಾಸಿಕ ಮತ್ತು ಸಾಹಿತ್ಯಿಕ ಪರಂಪರೆಯಲ್ಲಿ ಅತ್ಯಂತ ಪ್ರಸಿದ್ಧವಾದ ರಾಜನಾಮಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ. ಈ ಹೆಸರು ವಿಶೇಷವಾಗಿ ಉಜ್ಜಯಿನಿ ಮತ್ತು ವಿಕ್ರಮ ಸಂವತ್ಸರದ ಪರಂಪರೆಯೊಂದಿಗೆ ಸಂಬಂಧಿಸಿದೆ. ಆದರೆ ಇತಿಹಾಸಕಾರರು ವಿಕ್ರಮಾದಿತ್ಯ ಎಂಬ ಬಿರುದನ್ನು ಬಳಸಿದ ಐತಿಹಾಸಿಕವಾಗಿ ದೃಢೀಕೃತ ರಾಜರು ಮತ್ತು ನಂತರದ ಸಾಹಿತ್ಯಿಕ ಹಾಗೂ ಪೌರಾಣಿಕ ವಿಕ್ರಮಾದಿತ್ಯ ಪರಂಪರೆಯ ನಡುವೆ ವ್ಯತ್ಯಾಸ ಮಾಡುತ್ತಾರೆ. ಆದ್ದರಿಂದ ಏಕಾತ್ಮತಾ ಸ್ತೋತ್ರದಲ್ಲಿ ಸ್ಮರಿಸಲ್ಪಡುವ ವಿಕ್ರಮಾದಿತ್ಯರನ್ನು ಒಂದೇ ನಿರ್ವಿವಾದ ಐತಿಹಾಸಿಕ ರಾಜನಾಗಿ ಪರಿಗಣಿಸದೆ, ಸೂಕ್ತ ಐತಿಹಾಸಿಕ ಎಚ್ಚರಿಕೆಯಿಂದ ಪ್ರಸ್ತುತಪಡಿಸಬೇಕು.",
+      hi: "विक्रमादित्य भारतीय ऐतिहासिक और साहित्यिक परंपरा में सबसे प्रसिद्ध राजकीय नामों में से एक है। यह नाम विशेष रूप से उज्जयिनी और विक्रम संवत् की परंपरा से जुड़ा है। हालांकि इतिहासकार विक्रमादित्य की उपाधि धारण करने वाले ऐतिहासिक रूप से प्रमाणित शासकों और बाद की साहित्यिक तथा पौराणिक विक्रमादित्य परंपरा के बीच अंतर करते हैं। इसलिए एकात्मता स्तोत्र में स्मरण किए गए विक्रमादित्य को बिना पर्याप्त प्रमाण के एक ही निश्चित ऐतिहासिक शासक के रूप में प्रस्तुत नहीं किया जाना चाहिए।"
+    },
+
+    contributions: [
+      {
+        title: {
+          en: "1. Enduring Royal Tradition of Ujjain",
+          kn: "1. ಉಜ್ಜಯಿನಿಯ ಶಾಶ್ವತ ರಾಜಪರಂಪರೆ",
+          hi: "1. उज्जयिनी की स्थायी राजपरंपरा"
+        },
+        description: {
+          en: "The Vikramaditya tradition became deeply associated with Ujjain and contributed to the city's enduring place in Indian historical and literary memory.",
+          kn: "ವಿಕ್ರಮಾದಿತ್ಯ ಪರಂಪರೆಯು ಉಜ್ಜಯಿನಿಯೊಂದಿಗೆ ಆಳವಾಗಿ ಸಂಬಂಧಿಸಿಕೊಂಡು, ಭಾರತೀಯ ಐತಿಹಾಸಿಕ ಮತ್ತು ಸಾಹಿತ್ಯಿಕ ಸ್ಮೃತಿಯಲ್ಲಿ ಈ ನಗರದ ಶಾಶ್ವತ ಸ್ಥಾನಕ್ಕೆ ಕೊಡುಗೆ ನೀಡಿತು.",
+          hi: "विक्रमादित्य की परंपरा उज्जयिनी से गहराई से जुड़ी और भारतीय ऐतिहासिक तथा साहित्यिक स्मृति में इस नगर के स्थायी महत्व को मजबूत किया।"
+        }
+      },
+      {
+        title: {
+          en: "2. Association with the Vikrama Era",
+          kn: "2. ವಿಕ್ರಮ ಸಂವತ್ಸರದೊಂದಿಗೆ ಸಂಬಂಧ",
+          hi: "2. विक्रम संवत् से संबंध"
+        },
+        description: {
+          en: "The name Vikramaditya became closely connected in later tradition with the Vikrama era, an important calendrical tradition that continues to be used in South Asia.",
+          kn: "ವಿಕ್ರಮಾದಿತ್ಯ ಎಂಬ ಹೆಸರು ನಂತರದ ಪರಂಪರೆಯಲ್ಲಿ ವಿಕ್ರಮ ಸಂವತ್ಸರದೊಂದಿಗೆ ಆಪ್ತವಾಗಿ ಸಂಬಂಧಿಸಲಾಯಿತು. ಇದು ದಕ್ಷಿಣ ಏಷ್ಯಾದಲ್ಲಿ ಇಂದಿಗೂ ಬಳಕೆಯಲ್ಲಿರುವ ಪ್ರಮುಖ ಕಾಲಗಣನಾ ಪರಂಪರೆಯಾಗಿದೆ.",
+          hi: "बाद की परंपरा में विक्रमादित्य का नाम विक्रम संवत् से निकटता से जोड़ा गया, जो दक्षिण एशिया की एक महत्वपूर्ण कालगणना परंपरा है और आज भी विभिन्न क्षेत्रों में प्रचलित है।"
+        }
+      },
+      {
+        title: {
+          en: "3. Symbol of Ideal Kingship",
+          kn: "3. ಆದರ್ಶ ರಾಜತ್ವದ ಪ್ರತೀಕ",
+          hi: "3. आदर्श राजत्व का प्रतीक"
+        },
+        description: {
+          en: "In later Sanskrit and regional literary traditions, Vikramaditya became a model of courageous, generous and just kingship. These qualities belong primarily to the literary tradition and should not be presented as independently verified biographical facts.",
+          kn: "ನಂತರದ ಸಂಸ್ಕೃತ ಮತ್ತು ಪ್ರಾದೇಶಿಕ ಸಾಹಿತ್ಯ ಪರಂಪರೆಗಳಲ್ಲಿ ವಿಕ್ರಮಾದಿತ್ಯರು ಧೈರ್ಯಶಾಲಿ, ಉದಾರ ಮತ್ತು ನ್ಯಾಯಪರ ರಾಜತ್ವದ ಮಾದರಿಯಾಗಿ ರೂಪುಗೊಂಡರು. ಈ ಗುಣಗಳು ಮುಖ್ಯವಾಗಿ ಸಾಹಿತ್ಯ ಪರಂಪರೆಗೆ ಸೇರಿವೆ; ಅವುಗಳನ್ನು ಸ್ವತಂತ್ರವಾಗಿ ದೃಢೀಕರಿಸಲಾದ ಜೀವನಚರಿತ್ರೆಯ ಸಂಗತಿಗಳಾಗಿ ಪ್ರಸ್ತುತಪಡಿಸಬಾರದು.",
+          hi: "बाद की संस्कृत और क्षेत्रीय साहित्यिक परंपराओं में विक्रमादित्य को साहसी, उदार और न्यायप्रिय राजत्व के आदर्श के रूप में प्रस्तुत किया गया। ये विशेषताएँ मुख्यतः साहित्यिक परंपरा से संबंधित हैं और इन्हें स्वतंत्र रूप से प्रमाणित जीवनी संबंधी तथ्य के रूप में प्रस्तुत नहीं किया जाना चाहिए।"
+        }
+      },
+      {
+        title: {
+          en: "4. Influence on Indian Literary Memory",
+          kn: "4. ಭಾರತೀಯ ಸಾಹಿತ್ಯಿಕ ಸ್ಮೃತಿಯ ಮೇಲೆ ಪ್ರಭಾವ",
+          hi: "4. भारतीय साहित्यिक स्मृति पर प्रभाव"
+        },
+        description: {
+          en: "Stories associated with Vikramaditya became an enduring part of Indian narrative literature, especially through traditions surrounding Vikram and the Vetala and other collections of royal legends.",
+          kn: "ವಿಕ್ರಮಾದಿತ್ಯರಿಗೆ ಸಂಬಂಧಿಸಿದ ಕಥೆಗಳು ಭಾರತೀಯ ಕಥನ ಸಾಹಿತ್ಯದ ಶಾಶ್ವತ ಭಾಗವಾಗಿ ಬೆಳೆದವು. ವಿಶೇಷವಾಗಿ ವಿಕ್ರಮ–ವೇತಾಳ ಪರಂಪರೆ ಮತ್ತು ಇತರ ರಾಜಕಥಾ ಸಂಕಲನಗಳ ಮೂಲಕ ಈ ಸ್ಮರಣೆ ವ್ಯಾಪಕವಾಯಿತು.",
+          hi: "विक्रमादित्य से जुड़ी कथाएँ भारतीय आख्यान साहित्य का स्थायी हिस्सा बन गईं, विशेषकर विक्रम-वेताल परंपरा और राजकीय आख्यानों के अन्य संग्रहों के माध्यम से।"
+        }
+      },
+      {
+        title: {
+          en: "5. Ujjain in Civilizational Memory",
+          kn: "5. ನಾಗರಿಕತಾ ಸ್ಮೃತಿಯಲ್ಲಿ ಉಜ್ಜಯಿನಿ",
+          hi: "5. सभ्यतागत स्मृति में उज्जयिनी"
+        },
+        description: {
+          en: "The association of Vikramaditya with Ujjain reinforced the city's significance as a centre of political, cultural, literary and calendrical traditions in the Indian civilizational imagination.",
+          kn: "ವಿಕ್ರಮಾದಿತ್ಯರೊಂದಿಗೆ ಉಜ್ಜಯಿನಿಯ ಸಂಬಂಧವು ಭಾರತೀಯ ನಾಗರಿಕತಾ ಸ್ಮೃತಿಯಲ್ಲಿ ರಾಜಕೀಯ, ಸಾಂಸ್ಕೃತಿಕ, ಸಾಹಿತ್ಯಿಕ ಮತ್ತು ಕಾಲಗಣನಾ ಪರಂಪರೆಗಳ ಕೇಂದ್ರವಾಗಿ ನಗರದ ಮಹತ್ವವನ್ನು ಮತ್ತಷ್ಟು ಬಲಪಡಿಸಿತು.",
+          hi: "विक्रमादित्य के साथ उज्जयिनी के संबंध ने भारतीय सभ्यतागत स्मृति में राजनीतिक, सांस्कृतिक, साहित्यिक और कालगणना परंपराओं के केंद्र के रूप में इस नगर के महत्व को मजबूत किया।"
+        }
+      }
+    ],
+
+    historicalCaveat: {
+      en: "The name Vikramaditya represents a complex historical tradition rather than an unquestionably identifiable single individual. Several historical rulers used Vikramaditya as a title, while later literature developed a powerful legendary king associated with Ujjain, heroic virtues and the Vikrama era. The historical identity intended by the Ekatmata Stotra should therefore be treated as a traditional and historically layered reference rather than as a simple biographical identification.",
+      kn: "ವಿಕ್ರಮಾದಿತ್ಯ ಎಂಬ ಹೆಸರು ಒಂದೇ ನಿರ್ವಿವಾದ ವ್ಯಕ್ತಿಯನ್ನು ಸೂಚಿಸುವುದಕ್ಕಿಂತ ಸಂಕೀರ್ಣವಾದ ಐತಿಹಾಸಿಕ ಪರಂಪರೆಯನ್ನು ಪ್ರತಿನಿಧಿಸುತ್ತದೆ. ಹಲವು ಐತಿಹಾಸಿಕ ರಾಜರು ವಿಕ್ರಮಾದಿತ್ಯ ಎಂಬ ಬಿರುದನ್ನು ಬಳಸಿದ್ದಾರೆ; ನಂತರದ ಸಾಹಿತ್ಯವು ಉಜ್ಜಯಿನಿ, ವೀರಗುಣಗಳು ಮತ್ತು ವಿಕ್ರಮ ಸಂವತ್ಸರದೊಂದಿಗೆ ಸಂಬಂಧಿಸಿದ ಪ್ರಭಾವಶಾಲಿ ಪೌರಾಣಿಕ ರಾಜನ ರೂಪವನ್ನು ಅಭಿವೃದ್ಧಿಪಡಿಸಿದೆ. ಆದ್ದರಿಂದ ಏಕಾತ್ಮತಾ ಸ್ತೋತ್ರದಲ್ಲಿ ಉದ್ದೇಶಿಸಲಾದ ವಿಕ್ರಮಾದಿತ್ಯರನ್ನು ಸರಳ ಜೀವನಚರಿತ್ರೆಯ ಗುರುತಾಗಿ ಪರಿಗಣಿಸದೆ, ಪರಂಪರೆ ಮತ್ತು ಇತಿಹಾಸದ ಹಲವು ಪದರಗಳನ್ನು ಹೊಂದಿರುವ ಉಲ್ಲೇಖವಾಗಿ ಪ್ರಸ್ತುತಪಡಿಸಬೇಕು.",
+      hi: "विक्रमादित्य नाम किसी एक निर्विवाद रूप से पहचाने गए व्यक्ति के बजाय एक जटिल ऐतिहासिक परंपरा का प्रतिनिधित्व करता है। कई ऐतिहासिक शासकों ने विक्रमादित्य की उपाधि धारण की, जबकि बाद के साहित्य में उज्जयिनी, वीरता और विक्रम संवत् से जुड़ा एक प्रभावशाली आदर्श राजा विकसित हुआ। इसलिए एकात्मता स्तोत्र में उल्लिखित विक्रमादित्य को सरल जीवनी संबंधी पहचान के बजाय इतिहास और परंपरा की अनेक परतों वाले संदर्भ के रूप में प्रस्तुत किया जाना चाहिए।"
+    },
+
+    civilizationalSignificance: {
+      en: "Vikramaditya occupies an unusual place in Indian civilizational memory because the name connects historical kingship, Ujjain, calendrical tradition and a large body of literary storytelling. His importance within the Ekatmata Stotra is therefore best represented as the enduring memory of a celebrated model of kingship rather than through unsupported claims about a single ruler's precise historical biography.",
+      kn: "ವಿಕ್ರಮಾದಿತ್ಯ ಎಂಬ ಹೆಸರು ಐತಿಹಾಸಿಕ ರಾಜತ್ವ, ಉಜ್ಜಯಿನಿ, ಕಾಲಗಣನಾ ಪರಂಪರೆ ಮತ್ತು ವಿಶಾಲ ಸಾಹಿತ್ಯಿಕ ಕಥನ ಪರಂಪರೆಯನ್ನು ಸಂಪರ್ಕಿಸುವುದರಿಂದ ಭಾರತೀಯ ನಾಗರಿಕತಾ ಸ್ಮೃತಿಯಲ್ಲಿ ವಿಶಿಷ್ಟ ಸ್ಥಾನ ಹೊಂದಿದೆ. ಆದ್ದರಿಂದ ಏಕಾತ್ಮತಾ ಸ್ತೋತ್ರದಲ್ಲಿನ ಅವರ ಮಹತ್ವವನ್ನು ಒಂದೇ ರಾಜನ ನಿಖರ ಜೀವನಚರಿತ್ರೆಯ ಕುರಿತು ಆಧಾರರಹಿತ ಹೇಳಿಕೆಗಳ ಮೂಲಕವಲ್ಲ, ಪ್ರಸಿದ್ಧ ರಾಜತ್ವದ ಆದರ್ಶದ ಶಾಶ್ವತ ಸ್ಮರಣೆಯಾಗಿ ಪ್ರಸ್ತುತಪಡಿಸುವುದು ಸೂಕ್ತವಾಗಿದೆ.",
+      hi: "विक्रमादित्य भारतीय सभ्यतागत स्मृति में एक विशिष्ट स्थान रखते हैं क्योंकि यह नाम ऐतिहासिक राजत्व, उज्जयिनी, कालगणना परंपरा और विशाल साहित्यिक आख्यान परंपरा को जोड़ता है। इसलिए एकात्मता स्तोत्र में उनका महत्व किसी एक शासक की सटीक जीवनी के बारे में अप्रमाणित दावों के बजाय आदर्श राजत्व की दीर्घकालीन सांस्कृतिक स्मृति के रूप में प्रस्तुत करना अधिक उचित है।"
+    },
+
+    pdfDocument: {
+      title: {
+        en: "Samrat Vikramaditya",
+        kn: "ಸಾಮ್ರಾಟ್ ವಿಕ್ರಮಾದಿತ್ಯ",
+        hi: "सम्राट विक्रमादित्य"
+      },
+      url: "/data/mahapurushas-pdfs/vikramaditya/Samrat Vikramaditya.pdf",
+      fileName: "Samrat Vikramaditya.pdf",
+      fileSize: "7.4 MB"
     }
   }
 };

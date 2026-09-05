@@ -47,5 +47,21 @@ export const mahapurushasGeometry: MahapurushaAnchor[] = [
       kn: "ಮೌರ್ಯರ ರಾಜಧಾನಿಯಾದ ಪಾಟಲಿಪುತ್ರ",
       hi: "मौर्य राजधानी पाटलिपुत्र"
     }
+  },
+  {
+    id: "vikramaditya",
+    name: {
+      en: "Vikramaditya",
+      kn: "ವಿಕ್ರಮಾದಿತ್ಯ",
+      hi: "विक्रमादित्य"
+    },
+    category: "mahapurusha",
+    coords: [23.18, 75.78],
+    associationType: "traditional",
+    associationWording: {
+      en: "Ujjain, traditionally associated with Vikramaditya",
+      kn: "ವಿಕ್ರಮಾದಿತ್ಯರೊಂದಿಗೆ ಪರಂಪರೆಯಿಂದ ಸಂಬಂಧಿಸಲ್ಪಟ್ಟ ಉಜ್ಜಯಿನಿ",
+      hi: "परंपरा में विक्रमादित्य से संबद्ध उज्जयिनी"
+    }
   }
 ];

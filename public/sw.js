@@ -22,7 +22,7 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'v-ovwcGqRaxlP2X0yG-3RzF';
+const CACHE_VERSION = 'v-UTjGAIRtt4_vYb53Fhszl';
 
 const CACHE_NAMES = {
   shell:  `app-shell-${CACHE_VERSION}`,
@@ -162,6 +162,7 @@ const ASSET_URLS = [
   '/place-images/regions/sri-lanka.jpg',
   '/place-images/mahapurushas/chanakya.webp',
   '/place-images/mahapurushas/chandragupta_maurya.webp',
+  '/place-images/mahapurushas/vikramaditya.webp',
 ];
 
 // Data files that return arrays when parsed (used for context-aware fallbacks)
